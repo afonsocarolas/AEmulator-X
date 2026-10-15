@@ -23,6 +23,11 @@ The Plus notice below, with its credits and history, is kept unchanged.
     (`app/src/main/java/app/aemu/core/BootSound.kt`), picker dialog (`app/src/main/java/app/aemu/ui/BootSoundPicker.kt`,
     `SettingsSheet.kt`), strings in `strings_x.xml`; tests in `BootSoundTest.kt`.
   - Updater: `-x<N>` versions and bare `x<N>` tags compare by X release (`AppUpdateManager.kt`, `AppVersionCompareTest.kt`).
+- **2026-10-15**: AEmulator X3 (`0.0.0.2.13-x3`): Android 1.x–2.1.
+  - Version detection for 1.0–2.1 firmware without `ro.build.version.sdk` (was guessed as API 19) and for trees
+    without a `build.prop`; profile version 16 re-analyses earlier imports (`Analyzer.kt`, `EffectiveApiTest.kt`).
+  - Framebuffer fallback: firmware that composites into fb0 and never draws through the GPU bridge (T-Mobile G1
+    1.6) is shown from fb0 once boot completes (`GuestVm.kt` `fbDrawnAt`, `VmActivity.kt`).
 
 ---
 
