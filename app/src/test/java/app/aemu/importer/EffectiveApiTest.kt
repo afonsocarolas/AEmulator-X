@@ -24,4 +24,17 @@ class EffectiveApiTest {
         assertEquals(24, Analyzer.effectiveApi(null, null, "N"))
         assertEquals(10, Analyzer.effectiveApi(null, null, "2.3.4"))
     }
+
+    // AEmulator X: 1.0–2.1 used to be guessed as KitKat (19)
+    @Test fun oldReleasesWithoutSdkAreRecognised() {
+        assertEquals(1, Analyzer.effectiveApi(null, null, "1.0"))
+        assertEquals(2, Analyzer.effectiveApi(null, null, "1.1"))
+        assertEquals(3, Analyzer.effectiveApi(null, null, "1.5"))
+        assertEquals(4, Analyzer.effectiveApi(null, null, "1.6"))
+        assertEquals(5, Analyzer.effectiveApi(null, null, "2.0"))
+        assertEquals(6, Analyzer.effectiveApi(null, null, "2.0.1"))
+        assertEquals(7, Analyzer.effectiveApi(null, null, "2.1-update1"))
+        assertEquals(8, Analyzer.effectiveApi(null, null, "2.2.1"))
+        assertEquals(7, Analyzer.effectiveApi(7, null, "2.1"))
+    }
 }
