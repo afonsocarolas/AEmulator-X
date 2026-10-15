@@ -646,6 +646,9 @@ class VmActivity : ComponentActivity() {
 
     // ------------------------------------------------------------------ AEmulator X: screen recording
 
+    /** the guest turned out to draw into fb0 only (see the fb fallback in Overlay); the GPU surface is no longer shown */
+    @Volatile private var fbFallback = false
+
     @Volatile private var recorder: app.aemu.core.ScreenRecorder? = null
     /** wall-clock start of the running recording, 0 when not recording (drives the REC pill and the menu label) */
     private var recStartedAt by mutableLongStateOf(0L)
@@ -984,12 +987,27 @@ class VmActivity : ComponentActivity() {
                 if (want != onFb && (guest.passthrough || onFb)) {
                     onFb = want
                     if (want) { guest.pages = 2; guest.format = vm.logoFormat }
-                    guest.passthrough = !want; guest.poke()
+                    guest.passthrough = !want && !fbFallback; guest.poke()
                 }
                 delay(200)
             }
         }
-        LaunchedEffect(Unit) { while (true) { if (vm.recoveryMode) guest.format = vm.recoveryFormat; seconds = vm.bootSeconds(); frames = if (vm.glInApp) dev.lk.m7sense.GlBridge.frames() else guest.rings; delay(500) } }
+        // AEmulator X: old firmware (seen with T-Mobile G1 1.6) composites in software straight into fb0 and never
+        // draws through the GPU bridge, so the bridge surface stayed black although Android had booted. Once boot has
+        // completed, the bridge has shown no frame and fb0 has real pixels, show fb0 instead. Firmware that uses the
+        // bridge has always drawn through it (boot animation) by then, so it never switches.
+        LaunchedEffect(vm) {
+            while (!fbFallback) {
+                delay(1000)
+                val done = vm.bootDoneAt
+                if (!guest.passthrough || !vm.glInApp || vm.recoveryMode || done == 0L || vm.fbDrawnAt == 0L) continue
+                if (System.currentTimeMillis() - done < 4000 || dev.lk.m7sense.GlBridge.frames() > 0) continue
+                fbFallback = true
+                vm.log("display: the guest draws into fb0, not through the GPU bridge: showing fb0")
+                guest.passthrough = false; guest.poke()
+            }
+        }
+        LaunchedEffect(Unit) { while (true) { if (vm.recoveryMode) guest.format = vm.recoveryFormat; seconds = vm.bootSeconds(); frames = if (vm.glInApp && !fbFallback) dev.lk.m7sense.GlBridge.frames() else guest.rings; delay(500) } }
         // как только гость начал рисовать — карточку убираем, остаётся маленький индикатор
         val drawing = frames > 30
         Box(Modifier.fillMaxSize()) {

@@ -1167,8 +1167,12 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
      * into fb0 (e.g. the boot logo or the lock screen). A framebuffer that is zero at the end of the boot can mean "never
      * written" or "a black frame was written"; this tells the two apart. Never writes to the file.
      */
+    /** AEmulator X: when the guest first put a non-black pixel into fb0 this boot (0 = not yet); see VmActivity's fb fallback. */
+    @Volatile var fbDrawnAt = 0L
+
     private fun watchFb0() {
         if (recoveryMode) return
+        fbDrawnAt = 0L
         val f = paths.fb
         Thread({
             val start = System.currentTimeMillis()
@@ -1186,6 +1190,7 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
                         }
                         if (nz > 0) {
                             seen = true
+                            fbDrawnAt = System.currentTimeMillis()
                             log("fb0: first non-black pixels ${(System.currentTimeMillis() - start) / 1000.0} s after boot start ($nz non-zero bytes, first at offset $firstAt)")
                         }
                     }
