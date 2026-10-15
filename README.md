@@ -40,7 +40,7 @@ AEmulator X boots a real Android 2.3–7.x system image straight from a firmware
 
 - Android 8.0+ on a 64-bit ARM phone (arm64-v8a)
 - About 1–3 GB of free space per firmware
-- A recent Snapdragon / Dimensity / Tensor chip is recommended
+- A recent Snapdragon / Dimensity / Tensor chip is recommended; AEmulator X also recognises the MediaTek Helio G81 Ultra (MT6769 platform, Mali-G52 GPU)
 
 ## ⚙️ How it works
 

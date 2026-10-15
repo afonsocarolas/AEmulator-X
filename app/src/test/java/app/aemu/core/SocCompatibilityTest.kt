@@ -14,6 +14,14 @@ class SocCompatibilityTest {
         assertEquals(SocCompatibility.Family.TENSOR, SocCompatibility.family("Google Tensor G4", ""))
         assertEquals(SocCompatibility.Family.TENSOR, SocCompatibility.family("", "gs101"))
     }
+    // AEmulator X: Helio G81 Ultra (MT6769), as SOC_MODEL on Android 12+ or Build.HARDWARE before that
+    @Test fun recognizesHelioG81UltraPlatform() {
+        assertEquals(SocCompatibility.Family.HELIO, SocCompatibility.family("MT6769Z", ""))
+        assertEquals(SocCompatibility.Family.HELIO, SocCompatibility.family("MT6769", "mt6769"))
+        assertEquals(SocCompatibility.Family.HELIO, SocCompatibility.family("", "mt6769"))
+        assertEquals(SocCompatibility.Family.HELIO, SocCompatibility.family("MediaTek Helio G81 Ultra", ""))
+        assertEquals(SocCompatibility.Family.HELIO, SocCompatibility.family("Helio G85", ""))
+    }
     @Test fun unknownOrOtherMediaTekIsNotSilentlyWhitelisted() {
         for (model in listOf("", "unknown", "Exynos 2400", "Unisoc T610", "Helio G99", "MT6789", "MT9999"))
             assertEquals(SocCompatibility.Family.UNVERIFIED, SocCompatibility.family(model, ""))
