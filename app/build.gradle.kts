@@ -36,7 +36,7 @@ android {
         versionName = "0.0.0.2.13-x1" // <AEmulator base>.<Plus release>-x<X release>
         ndk { abiFilters += listOf("arm64-v8a") }
         // AEmulator X: fork repository for updates and links (gradle.properties: aemuX.repo)
-        buildConfigField("String", "X_REPO", "\"" + (project.findProperty("aemuX.repo") ?: "YOUR_GITHUB_USER/AEmulator-X") + "\"")
+        buildConfigField("String", "X_REPO", "\"" + (project.findProperty("aemuX.repo") ?: "afonsocarolas/AEmulator-X") + "\"")
     }
 
     signingConfigs {
