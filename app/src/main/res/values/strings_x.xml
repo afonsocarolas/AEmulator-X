@@ -7,4 +7,21 @@
     <string name="x_rec_saving">Saving the recording…</string>
     <string name="x_rec_saved">Recording saved: %1$s</string>
     <string name="x_rec_failed">Screen recording is not available on this phone</string>
+    <!-- X2: boot sound picker -->
+    <string name="x_bs_title">Boot sound</string>
+    <string name="x_bs_sub">Plays on the phone when this system starts booting</string>
+    <string name="x_bs_hint">A chosen sound replaces the firmware’s own boot sound: the system stays muted until it has booted.</string>
+    <string name="x_bs_firmware">Firmware default</string>
+    <string name="x_bs_none">Silent</string>
+    <string name="x_bs_builtin">AEmulator X sounds</string>
+    <string name="x_bs_chime">X Chime</string>
+    <string name="x_bs_retro">Retro 8-bit</string>
+    <string name="x_bs_rise">Rise</string>
+    <string name="x_bs_custom_header">Your own sound</string>
+    <string name="x_bs_custom">Pick an audio file…</string>
+    <string name="x_bs_from_fw">From this firmware</string>
+    <string name="x_bs_scanning">Looking for sounds…</string>
+    <string name="x_bs_no_fw">No sound files found in this firmware</string>
+    <string name="x_bs_preview">Preview</string>
+    <string name="x_bs_import_failed">Could not use that file</string>
 </resources>

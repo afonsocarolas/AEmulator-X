@@ -21,4 +21,14 @@ class AppVersionCompareTest {
         assertTrue(newer("v0.0.0.3.1", "0.0.0.2.99"))
         assertFalse(newer("v0.0.0.2.99", "0.0.0.3.1"))
     }
+
+    // AEmulator X, 2026-10-15: X releases are <Plus version>-x<N>, tags either the full version or just x<N>
+    @Test fun nextXReleaseIsNewer() {
+        assertTrue(newer("0.0.0.2.13-x2", "0.0.0.2.13-x1"))
+        assertTrue(newer("x2", "0.0.0.2.13-x1"))
+        assertTrue(newer("x10", "0.0.0.2.13-x9"))
+        assertFalse(newer("x1", "0.0.0.2.13-x1"))
+        assertFalse(newer("x1", "0.0.0.2.13-x2"))
+        assertFalse(newer("0.0.0.2.13-x1", "0.0.0.2.13-x2"))
+    }
 }

@@ -75,6 +75,7 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
     private val liveStatus = LiveVmStatus(ctx.filesDir)
     private fun setState(s: State) {
         state = s
+        bootSoundFor(s)
         runCatching { liveStatus.publish(img.id, VmUiPolicy.active(s.name)) }
             .onFailure { log("library status: ${it.message}") }
         stateListeners.forEach { runCatching { it(s) } }
@@ -157,6 +158,36 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
             failure = Msg.of(t)
             log("✖ boot aborted: $failure")
             setState(State.FAILED)
+        }
+    }
+
+    // AEmulator X: boot sound picker. A chosen sound plays on the phone as Android starts booting, and the guest is
+    // muted until boot completes so the firmware's own boot sound does not play on top of it.
+    @Volatile private var bootSound: BootSound.Playing? = null
+    @Volatile private var bootMuted = false
+
+    private fun bootSoundFor(s: State) {
+        val choice = settings.bootSound
+        when (s) {
+            State.BOOTING -> {
+                if (recoveryMode || nativeUi || !BootSound.replacesFirmware(choice) || bootMuted) return
+                bootMuted = true
+                audio.muted = true
+                if (choice != BootSound.NONE) {
+                    log("boot sound: $choice")
+                    bootSound = BootSound.play(paths, choice, ::log) { bootSound = null }
+                }
+            }
+            State.RUNNING -> if (bootMuted) Thread {
+                // the boot animation (and its sound) winds down a moment after boot completion
+                Thread.sleep(2500)
+                if (bootMuted) { bootMuted = false; audio.muted = false }
+            }.apply { isDaemon = true }.start()
+            State.STOPPING, State.STOPPED, State.FAILED -> {
+                bootSound?.stop(); bootSound = null
+                if (bootMuted) { bootMuted = false; audio.muted = false }
+            }
+            else -> {}
         }
     }
 

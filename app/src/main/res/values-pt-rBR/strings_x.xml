@@ -6,4 +6,21 @@
     <string name="x_rec_saving">Salvando a gravação…</string>
     <string name="x_rec_saved">Gravação salva: %1$s</string>
     <string name="x_rec_failed">A gravação de tela não está disponível neste celular</string>
+    <!-- X2: boot sound picker -->
+    <string name="x_bs_title">Som de inicialização</string>
+    <string name="x_bs_sub">Toca no celular quando este sistema começa a iniciar</string>
+    <string name="x_bs_hint">O som escolhido substitui o som de inicialização da firmware: o sistema fica mudo até terminar de iniciar.</string>
+    <string name="x_bs_firmware">Padrão da firmware</string>
+    <string name="x_bs_none">Silencioso</string>
+    <string name="x_bs_builtin">Sons do AEmulator X</string>
+    <string name="x_bs_chime">X Chime</string>
+    <string name="x_bs_retro">Retrô 8-bit</string>
+    <string name="x_bs_rise">Ascensão</string>
+    <string name="x_bs_custom_header">Seu próprio som</string>
+    <string name="x_bs_custom">Escolher um arquivo de áudio…</string>
+    <string name="x_bs_from_fw">Desta firmware</string>
+    <string name="x_bs_scanning">Procurando sons…</string>
+    <string name="x_bs_no_fw">Nenhum arquivo de som encontrado nesta firmware</string>
+    <string name="x_bs_preview">Ouvir</string>
+    <string name="x_bs_import_failed">Não foi possível usar esse arquivo</string>
 </resources>

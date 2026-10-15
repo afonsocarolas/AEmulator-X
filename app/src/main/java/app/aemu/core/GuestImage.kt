@@ -71,6 +71,8 @@ data class VmSettings(
     val qemuArgs: String = "",
     /** Guest services whose qemu system calls are traced into the service log, comma separated ("mediaserver,zygote"). */
     val straceServices: String = "",
+    /** AEmulator X: boot sound played on the phone when this VM boots; see [BootSound] ("" = the firmware's own) */
+    val bootSound: String = "",
     /** ro.hardware given to the guest at launch; blank = whatever the firmware defines */
     val hardware: String = "",
     /** Emulated Wi-Fi: the guest sees a connected Wi-Fi network [wifiSsid] that carries the host's internet; applies at the next full VM boot. */
@@ -107,7 +109,7 @@ data class VmSettings(
         .put("motionSensors", motionSensors).put("disableSensors", disableSensors).put("gyroLock", gyroLock).put("hostResolution", hostResolution)
         .put("skipSetupWizard", skipSetupWizard)
         .put("disableGoogleApps", disableGoogleApps)
-        .put("ramMb", ramMb).put("radio", radio).put("imei", imei).put("serial", serial).put("kernel", kernel).put("baseband", baseband).put("networkType", networkType).put("qemuArgs", qemuArgs).put("straceServices", straceServices)
+        .put("ramMb", ramMb).put("radio", radio).put("imei", imei).put("serial", serial).put("kernel", kernel).put("baseband", baseband).put("networkType", networkType).put("qemuArgs", qemuArgs).put("straceServices", straceServices).put("bootSound", bootSound)
         .put("hardware", hardware)
         .put("wifi", wifi).put("wifiSsid", wifiSsid).put("wifiPassword", wifiPassword)
         .put("sim", sim.toJson()).put("sim2", sim2.toJson()).put("dualSim", dualSim)
@@ -216,6 +218,7 @@ data class VmSettings(
                 networkType = NetworkType.sanitize(o.optInt("networkType", d.networkType)),
                 qemuArgs = o.optString("qemuArgs", ""),
                 straceServices = o.optString("straceServices", ""),
+                bootSound = o.optString("bootSound", ""),
                 hardware = cleanHardware(o.optString("hardware", "")),
                 wifi = o.optBoolean("wifi", d.wifi),
                 wifiSsid = WifiEmu.cleanSsid(o.optString("wifiSsid", d.wifiSsid)).ifEmpty { WifiEmu.DEFAULT_SSID },

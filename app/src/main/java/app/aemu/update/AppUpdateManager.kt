@@ -103,8 +103,15 @@ object AppUpdateManager {
      * Возвращает true, если latestTag новее чем currentVersion.
      */
     fun isNewerVersion(latestTag: String, currentVersion: String): Boolean {
-        val cleanLatest = latestTag.trim().removePrefix("v").removePrefix("V")
-        val cleanCurrent = currentVersion.trim().removePrefix("v").removePrefix("V")
+        // AEmulator X: "<base>-x<N>" counts the X release as one more segment; a bare "x<N>" tag means "<current base>-x<N>"
+        fun xNorm(v: String, base: String): String {
+            val t = v.trim().removePrefix("v").removePrefix("V")
+            val bare = Regex("x(\\d+)", RegexOption.IGNORE_CASE).matchEntire(t)
+            return if (bare != null) "$base.${bare.groupValues[1]}" else t.replace(Regex("-x(?=\\d)", RegexOption.IGNORE_CASE), ".")
+        }
+        val base = currentVersion.trim().removePrefix("v").removePrefix("V").substringBefore("-x").substringBefore("-X")
+        val cleanLatest = xNorm(latestTag, base)
+        val cleanCurrent = xNorm(currentVersion, base)
 
         if (cleanLatest.equals(cleanCurrent, ignoreCase = true)) return false
 

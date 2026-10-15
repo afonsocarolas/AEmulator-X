@@ -209,6 +209,9 @@ fun SettingsSheet(img: GuestImage, onDismiss: () -> Unit, onSave: (VmSettings) -
             OtaSection(img, resetting) { resetting = it }
 
             Spacer(Modifier.height(8.dp))
+            BootSoundSection(img, s.bootSound) { s = s.copy(bootSound = it) } // AEmulator X2
+
+            Spacer(Modifier.height(8.dp))
             Text(stringResource(R.string.vs_controls), style = MaterialTheme.typography.titleMedium)
             Toggle(stringResource(R.string.vs_nav), stringResource(R.string.vs_nav_sub), s.showNavBar) { s = s.copy(showNavBar = it) }
             Toggle(stringResource(R.string.vs_hide_menu), stringResource(R.string.vs_hide_menu_sub), s.hideMenuButton) { s = s.copy(hideMenuButton = it) }

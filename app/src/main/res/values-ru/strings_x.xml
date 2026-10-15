@@ -6,4 +6,21 @@
     <string name="x_rec_saving">Сохраняем запись…</string>
     <string name="x_rec_saved">Запись сохранена: %1$s</string>
     <string name="x_rec_failed">Запись экрана недоступна на этом телефоне</string>
+    <!-- X2: boot sound picker -->
+    <string name="x_bs_title">Звук загрузки</string>
+    <string name="x_bs_sub">Играет на телефоне, когда система начинает загружаться</string>
+    <string name="x_bs_hint">Выбранный звук заменяет собственный звук прошивки: до конца загрузки система без звука.</string>
+    <string name="x_bs_firmware">Как в прошивке</string>
+    <string name="x_bs_none">Без звука</string>
+    <string name="x_bs_builtin">Звуки AEmulator X</string>
+    <string name="x_bs_chime">X Chime</string>
+    <string name="x_bs_retro">Ретро 8-бит</string>
+    <string name="x_bs_rise">Подъём</string>
+    <string name="x_bs_custom_header">Свой звук</string>
+    <string name="x_bs_custom">Выбрать аудиофайл…</string>
+    <string name="x_bs_from_fw">Из этой прошивки</string>
+    <string name="x_bs_scanning">Ищем звуки…</string>
+    <string name="x_bs_no_fw">В этой прошивке нет звуковых файлов</string>
+    <string name="x_bs_preview">Прослушать</string>
+    <string name="x_bs_import_failed">Не удалось использовать этот файл</string>
 </resources>

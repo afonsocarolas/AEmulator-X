@@ -16,6 +16,7 @@ AEmulator X boots a real Android 2.3–7.x system image straight from a firmware
 
 - **🎬 Screen recording**: ⋮ menu → **Record screen**. Records the guest screen as H.264 video with the guest's own sound (AAC), 30 fps, sharp even on old 320×480 screens (scaled to 640–1280 px). A pulsing **REC** pill shows the time; tap it (or ⋮ → **Stop recording**) to save to `Movies/AEmulator/<time>-<VM>.mp4`. Works in both GPU-bridge and framebuffer modes, and in recovery. Only the guest screen is recorded, not the host's bars or menus.
 - **🌌 Cooler UI**: an electric violet / magenta / cyan palette with a deep near-black dark mode, an animated aurora background behind the library, a glowing gradient **X** wordmark, and glass firmware cards with gradient release badges and Start buttons.
+- **🔔 Boot sound picker** (X2): VM settings → **Boot sound**. Choose the firmware's own sound, silence, one of three original AEmulator X sounds (X Chime, Retro 8-bit, Rise), any sound file found inside the firmware (PowerOn.wav, UI/notification/ringtone sounds…), or your own audio file. Every option has a ▶ preview. A chosen sound replaces the firmware's boot sound: the system stays muted until it has booted.
 - Package `app.aemu.x`: installs **next to** AEmulator Plus, so you can keep both.
 
 ## ✨ Everything from Plus

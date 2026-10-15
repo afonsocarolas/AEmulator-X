@@ -17,6 +17,12 @@ The Plus notice below, with its credits and history, is kept unchanged.
     `/sdcard/Movies/AEmulator/<timestamp>-<VM id>.mp4` (`app/src/main/java/app/aemu/core/ScreenRecorder.kt`;
     audio tap in `AudioOut.kt`; shared pixel decoding in `Screenshot.kt`; menu item and REC indicator in
     `VmActivity.kt`; `strings_x.xml`).
+- **2026-10-15**: AEmulator X2 (`0.0.0.2.13-x2`).
+  - Boot sound picker: per-VM `bootSound` setting (`GuestImage.kt`), playback and guest muting while booting
+    (`GuestVm.kt`), synthesised built-in sounds, firmware sound scan and custom files
+    (`app/src/main/java/app/aemu/core/BootSound.kt`), picker dialog (`app/src/main/java/app/aemu/ui/BootSoundPicker.kt`,
+    `SettingsSheet.kt`), strings in `strings_x.xml`; tests in `BootSoundTest.kt`.
+  - Updater: `-x<N>` versions and bare `x<N>` tags compare by X release (`AppUpdateManager.kt`, `AppVersionCompareTest.kt`).
 
 ---
 
