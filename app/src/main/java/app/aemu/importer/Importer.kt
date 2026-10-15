@@ -131,6 +131,8 @@ class Importer(
         src.read(0, head); head.flip()
         val h = ByteArray(head.remaining()).also { head.get(it) }
         if (h.size < 2) throw LocalizedIOException("empty or truncated firmware file", R.string.imp_empty_or_truncated_firmware_file)
+        // Odin's own "Orion.ops" (a ~100 byte settings file shipped next to Odin Multi Downloader) is not an OPPO .ops firmware
+        if (depth > 0 && name.endsWith(".ops", true) && src.size < 0x200) { log("skipped $name: too small to be an OPS firmware container"); return }
         when {
             // raw NAND partition dump (mtd0.img ... mtdN.img): nothing in the name says which partition it is
             NandDump.isMtdName(name.replace('\\', '/').substringAfterLast('/')) -> importMtdDump(src, name)
@@ -1375,7 +1377,7 @@ class Importer(
             // Odin names members "system.img.md5", "boot.img.md5", ...: match on the real image name
             val base = PartitionNames.stripOdinMd5(n.substringAfterLast('/'))
             // дерево rootfs целиком (system/, data/, dev/, …)
-            if (fullRoot == null && (n == "system" || n.startsWith("system/") || n.startsWith("init.rc") || n.startsWith("default.prop"))) fullRoot = true
+            if (fullRoot == null && ((n == "system" && !e.isFile) || n.startsWith("system/") || n.startsWith("init.rc") || n.startsWith("default.prop"))) fullRoot = true
             when {
                 isSonyName(base) && e.isFile && e.size > 0 -> importSonyFile(spill(tar.nonClosing(), base), depth)
                 base.equals("system.yaffs2.img", true) && e.isFile -> {
@@ -1384,6 +1386,15 @@ class Importer(
                     finally { t.delete() }
                 }
                 base.endsWith(".yaffs2.img", true) -> {}
+                // Early Samsung Odin PDA tars (GT-I7500 and other Android 1.x/2.x era phones) name the partition images
+                // "system", "userdata", "recovery", "kernel" with no extension. A regular file called "system" is the
+                // YAFFS2 /system image, not a folder of the rootfs tree.
+                n == "system" && e.isFile && e.size > 1_000_000 -> {
+                    val t = spill(tar.nonClosing(), base)
+                    try { FileChannel.open(t.toPath(), StandardOpenOption.READ).use { c -> importImage(ChannelSource(c), "system") } }
+                    finally { t.delete() }
+                }
+                n == "userdata" && e.isFile -> {}
                 isOemName(base.replace(Regex("(?i)\\.lz4$"), "")) && e.isFile && !inSystemDump(n) -> {
                     val t = spill(maybeLz4(tar, base), base)
                     try { FileChannel.open(t.toPath(), StandardOpenOption.READ).use { c -> importOem(ChannelSource(c)) } } finally { t.delete() }

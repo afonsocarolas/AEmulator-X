@@ -152,6 +152,20 @@ object DeltaOta {
         return OtaMetadata(listOf(fps.first()), fps.drop(1).lastOrNull(), devices, null)
     }
 
+    private val SCRIPT_FP = Regex("""file_getprop\(\s*"/system/build\.prop"\s*,\s*"ro\.build\.fingerprint"\s*\)\s*==\s*"([^"]+)\"""")
+
+    /**
+     * The same for an edify script: "assert(file_getprop(build.prop, fingerprint) == A || file_getprop(...) == B)" lists the
+     * build the OTA is for and, second, the one it leads to (so that it can be run again).
+     */
+    private fun scriptMetadata(text: String): OtaMetadata {
+        val head = text.lineSequence().filter { !it.trimStart().startsWith("#") }.joinToString("\n").substringBefore("apply_patch_check")
+        val fps = SCRIPT_FP.findAll(head).map { it.groupValues[1] }.distinct().toList()
+        if (fps.isEmpty()) throw OtaException("this OTA's update-script does not say which build it is for", R.string.ota_this_ota_s_update_script_does)
+        val devices = LEGACY_DEV.findAll(head).map { it.groupValues[1] }.toSortedSet().toList()
+        return OtaMetadata(listOf(fps.first()), fps.drop(1).lastOrNull(), devices, null)
+    }
+
     /** "SYSTEM:bin/x" → "/system/bin/x", "DATA:x" → "/data/x". */
     private fun legacyPath(p: String): String = when {
         p.startsWith("SYSTEM:") -> "/system" + p.removePrefix("SYSTEM:").let { if (it.isEmpty()) "" else "/" + it.trimStart('/') }
@@ -207,6 +221,11 @@ object DeltaOta {
         zip.getEntry(LEGACY)?.takeIf { zip.getEntry(SCRIPT) == null }?.let { le ->
             return legacyMetadata(zip.getInputStream(le).use { it.readBytes() }.toString(Charsets.UTF_8))
         }
+        if (zip.getEntry(METADATA) == null) zip.getEntry(SCRIPT)?.let { se ->
+            // Android 2.x edify OTAs (e.g. Droid ESD56 -> ESE81) have no META-INF/com/android/metadata: the builds and the
+            // device are taken from the asserts at the top of the script instead
+            return scriptMetadata(zip.getInputStream(se).use { it.readBytes() }.toString(Charsets.UTF_8))
+        }
         val e = zip.getEntry(METADATA) ?: throw OtaException("not an OTA package (no $METADATA)", R.string.ota_not_an_ota_package_no, METADATA)
         if (zip.getEntry(SCRIPT) == null) throw OtaException("not an OTA package (no updater-script)", R.string.ota_not_an_ota_package_no_updater)
         val kv = LinkedHashMap<String, String>()
@@ -235,7 +254,7 @@ object DeltaOta {
     private fun parseBuild(s: String): BuildId? {
         val parts = s.trim().split(':')
         if (parts.size !in 2..3) return null
-        val head = if (parts.size == 3) parts[0].takeIf { it.split('/').size == 3 && it.isNotBlank() } ?: return null else null
+        val head = if (parts.size == 3) parts[0].takeIf { it.split('/').size in 3..4 && it.isNotBlank() } ?: return null else null
         val mid = parts[parts.size - 2].split('/')
         val tail = parts[parts.size - 1].split('/')
         if (mid.size != 3 || tail.size != 2 || (mid + tail).any { it.isBlank() }) return null
@@ -317,7 +336,12 @@ object DeltaOta {
 
     private const val Q = "\"(?:\\\\.|[^\"\\\\])*\""
     private val APPLY = Regex("""\bapply_patch\s*\(\s*"([^"]+)"\s*,\s*"-"\s*,\s*"?([0-9a-fA-F]{40})"?\s*,\s*(\d+)\s*,\s*"?([0-9a-fA-F]{40})"?\s*,\s*package_extract_file\s*\(\s*"([^"]+)"\s*\)\s*\)\s*(?:\|\|\s*abort\s*\(\s*$Q\s*\)\s*)?;""")
+    // Android 2.x: the patches are unpacked to /tmp/patchtmp first and named as "<source sha>:/tmp/patchtmp/<zip path below patch/>"
+    private val APPLY_OLD = Regex("""\bapply_patch\s*\(\s*"([^"]+)"\s*,\s*"-"\s*,\s*"?([0-9a-fA-F]{40})"?\s*,\s*(\d+)\s*,\s*"([0-9a-fA-F]{40}):/tmp/patchtmp/([^"]+)"\s*\)\s*(?:\|\|\s*abort\s*\(\s*$Q\s*\)\s*)?;""")
     private val APPLY_ANY = Regex("""\bapply_patch\s*\(""")
+    // raw writes of radio / modem / bootloader partitions (the Droid's "mbm", the CDMA baseband); the boot partition is not among them
+    private val RAW_OTHER = Regex("""\bwrite_raw_image\s*\(\s*$Q\s*,\s*"(?!boot")[^"]*"\s*\)""")
+    private val BASEBAND = Regex("""\b[A-Za-z0-9_]+\.update_cdma_bp\s*\(\s*$Q\s*,\s*$Q\s*\)""")
     private val VERIFY = Regex("""\bassert\s*\(\s*sha1_check\s*\(\s*read_file\s*\(\s*"([^"]+)"\s*\)\s*((?:,\s*"[0-9a-fA-F]{40}"\s*)+)\)\s*\)\s*;""")
     private val SHA1_ANY = Regex("""\bsha1_check\s*\(""")
     private val READ_ANY = Regex("""\bread_file\s*\(""")
@@ -398,7 +422,9 @@ object DeltaOta {
         // (sbl1, tz, rpm, aboot...) that a VM does not have; the whole section is cut out like the other partitions
         val bootloaders = BOOTLOADER.findAll(afterGate).count()
         val stagedBootloaders = BOOTLOADER_IF.findAll(afterGate).count()
+        val rawImages = RAW_OTHER.findAll(afterGate).count() + BASEBAND.findAll(afterGate).count()
         val text = afterGate.replace(BOOTLOADER, "").replace(BOOTLOADER_END, "").replace(BOOTLOADER_IF, "")
+            .replace(RAW_OTHER, "").replace(BASEBAND, "")
         val bare = text.replace(Regex(Q), "\"\"")
 
         val unknown = CALL.findAll(bare).map { it.groupValues[1] }.filter { it !in HANDLED && it !in IGNORED }.toSortedSet()
@@ -409,12 +435,15 @@ object DeltaOta {
         var boot: PatchStep? = null
         val notes = ArrayList<Msg>()
         if (text.contains("huawei_bootloader_update")) notes.add(Msg("the bootloader / modem images of this OTA are not part of a VM and were skipped", R.string.ota_the_bootloader_modem_images_of_this))
+        if (rawImages > 0) notes.add(Msg("the modem / baseband / bootloader images of this OTA are not part of a VM and were skipped", R.string.ota_the_bootloader_modem_images_of_this))
         if (bootloaders > 0 || stagedBootloaders > 0) notes.add(Msg("the bootloader images (sbl1, tz, rpm, aboot...) are not part of a VM and were skipped", R.string.ota_the_bootloader_images_sbl_tz_rpm))
         val matches = APPLY.findAll(text).toList()
-        if (matches.size != APPLY_ANY.findAll(text).count()) throw OtaException("the updater-script has apply_patch calls this app cannot read", R.string.ota_the_updater_script_has_apply_patch)
-        for (m in matches) {
-            val g = m.groupValues
-            val step = PatchStep(g[1], g[2].lowercase(), g[3].toLong(), g[4].lowercase(), g[5])
+        val oldMatches = APPLY_OLD.findAll(text).toList()
+        if (matches.size + oldMatches.size != APPLY_ANY.findAll(text).count()) throw OtaException("the updater-script has apply_patch calls this app cannot read", R.string.ota_the_updater_script_has_apply_patch)
+        val applies = (matches.map { m -> val g = m.groupValues; m.range.first to PatchStep(g[1], g[2].lowercase(), g[3].toLong(), g[4].lowercase(), g[5]) } +
+            oldMatches.map { m -> val g = m.groupValues; m.range.first to PatchStep(g[1], g[2].lowercase(), g[3].toLong(), g[4].lowercase(), "patch/" + g[5]) })
+            .sortedBy { it.first }.map { it.second }
+        for (step in applies) {
             when {
                 step.path.startsWith("/") -> steps.add(step)
                 // EMMC:<device>:<size>:<sha>[:<size>:<sha>…] (MTD:<name>:… on Android 2.x), the partition name is the last path segment of <device>
@@ -429,7 +458,7 @@ object DeltaOta {
         // a path with a trailing slash is a folder
         val deletes = statements(text, "delete").flatMap { a -> a.map { it to it.endsWith("/") } } +
             statements(text, "delete_recursive").flatMap { a -> a.map { it to true } }
-        val extracts = statements(text, "package_extract_dir").filter { it.size == 2 }.map { Extract(it[0], it[1], true) } +
+        val extracts = statements(text, "package_extract_dir").filter { it.size == 2 && !it[1].startsWith("/tmp/") }.map { Extract(it[0], it[1], true) } +
             statements(text, "package_extract_file").filter { it.size == 2 && !it[1].startsWith("/dev/") && !it[1].startsWith("/tmp/") }.map { Extract(it[0], it[1], false) }
         val renames = statements(text, "rename").filter { it.size == 2 }.map { ("/" + it[0].trimStart('/')) to ("/" + it[1].trimStart('/')) }
         val links = statements(text, "symlink").filter { it.size >= 2 }.flatMap { a -> a.drop(1).map { a[0] to it } }
@@ -689,8 +718,21 @@ object DeltaOta {
             if (h == s.srcSha) return Loc.Need(f, Fix())
             for (fix in fixes(b)) if (!fix.identity && sha1(fix.revert(b)) == s.srcSha) return Loc.Need(f, fix)
         }
+        // The app rewrites some files (audio_policy.conf, libGLES_android.so...) and keeps the stock original next to
+        // them as ".rom" / ".sw". If the live file was edited, the OTA is checked against and applied to that original.
+        for (f in places.flatMap { p -> guestFile(paths, p).let { g -> SIDECARS.map { File(g.path + it) } } }) {
+            if (!f.isFile) continue
+            seen = true
+            val b = f.readBytes()
+            val h = sha1(b)
+            if (h == s.tgtSha) return Loc.Done
+            if (h == s.srcSha) return Loc.Need(f, Fix())
+            for (fix in fixes(b)) if (!fix.identity && sha1(fix.revert(b)) == s.srcSha) return Loc.Need(f, fix)
+        }
         return Loc.Bad(if (seen) "modified" else "missing")
     }
+
+    private val SIDECARS = listOf(".rom", ".sw")
 
     /** What [matchBootImage] found: the boot image as the OTA sees it, and whether that is already the updated one. */
     internal class BootMatch(val image: ByteArray, val isTarget: Boolean)
@@ -722,7 +764,8 @@ object DeltaOta {
 
     /** True if [path] (or its parked copy) hashes to one of [shas], also with the app's own edits undone. */
     private fun hashesTo(paths: VmPaths, path: String, shas: Set<String>): Boolean {
-        for (f in listOf(guestFile(paths, path), parkedFile(paths, path))) {
+        val g = guestFile(paths, path)
+        for (f in listOf(g, parkedFile(paths, path)) + SIDECARS.map { File(g.path + it) }) {
             if (!f.isFile) continue
             val b = f.readBytes()
             if (sha1(b) in shas) return true

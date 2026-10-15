@@ -26,7 +26,7 @@ source/build scripts in this checkout (only `libaemuhost.so` has the
 
 - `libqemu_gb.so`, `libqemu_kk.so` — patched QEMU engines;
 - `libbinderd_gb.so`, `libbinderd_kk.so`;
-- `libglserverd_gb.so`, `libglserverd_kk.so`;
+- `libglserverd_gb.so`, `libglserverd_kk.so`, `libglserverd_kk_mali.so` (one-instruction binary patch of `libglserverd_kk.so`);
 - `libdhdrun_gb.so`, `libdhdrun_kk.so`;
 - `libdhdslot.so`, `libglbridge.so`.
 

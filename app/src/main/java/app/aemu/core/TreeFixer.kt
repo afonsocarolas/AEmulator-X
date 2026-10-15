@@ -169,6 +169,7 @@ class TreeFixer(
         disableStallingPackages()
         glassLocationProvider()
         seedDefaultIme()
+        lockWearRotation()
         for (n in LOGS) File(root, "dev/log/$n").let { if (!it.isFile) { it.parentFile?.mkdirs(); it.createNewFile() } }
         makeFb()
     }
@@ -1876,6 +1877,31 @@ class TreeFixer(
         }.onFailure { log("setup: pre-boot provisioning failed: ${it.message}") }
     }
 
+    /**
+     * Wear: pin the display to 0° before the system starts. A rotation makes WindowManager freeze the screen and take a
+     * SurfaceControl.screenshot() for the rotation animation while it holds the ActivityManager lock. Under the GL bridge
+     * that capture can block forever (GLConsumer \"doGLFenceWait: error waiting for fence: -25\" precedes it), every
+     * system_server thread then waits on the AMS lock, the Watchdog kills system_server and zygote exits with 137.
+     * Real watches do not auto-rotate either. Needs an existing settings.db (second and later boots).
+     */
+    fun lockWearRotation() {
+        if (!img.skin.equals("Wear", ignoreCase = true)) return
+        val db = settingsDb() ?: return
+        runCatching {
+            SQLiteDatabase.openDatabase(db.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).use { d ->
+                val hasTable = d.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='system'", null).use { it.count > 0 }
+                if (!hasTable) return@use
+                fun put(name: String, value: String) {
+                    val cv = android.content.ContentValues().apply { put("name", name); put("value", value) }
+                    if (d.update("system", cv, "name=?", arrayOf(name)) == 0) d.insert("system", null, cv)
+                }
+                put("accelerometer_rotation", "0")
+                put("user_rotation", "0")
+            }
+            log("wear: screen rotation locked to 0° (avoids the rotation-animation screenshot that can hang system_server)")
+        }.onFailure { log("wear: could not lock the rotation: ${it.message}") }
+    }
+
     fun noScreenSleep() {
         val db = settingsDb() ?: return
         runCatching {
@@ -2153,13 +2179,66 @@ class TreeFixer(
             val link = File(root, "system/framework/aemu-owners.jar")
             if (!isLink(link)) { link.delete(); Os.symlink(paths.owners.absolutePath, link.path) }
         }
-        if (img.api < 21) return
+        if (img.api < 21) {
+            // 4.4: keep the NFC app (Settings and the framework expect the adapter to exist) and just keep NFC switched off
+            if (img.api >= 19) { restoreNfc(); nfcOffByDefault() }
+            return
+        }
         val parked = File(root, "system/.aemu-parked").apply { mkdirs() }
         for (dir in listOf("system/app", "system/priv-app")) File(root, dir).listFiles()?.filter { it.name.startsWith("Nfc") }?.forEach { f ->
             val dst = File(parked, f.relativeTo(root).path.replace('/', '#'))
             if (f.renameTo(dst)) log("parked ${f.name}")
         }
     }
+
+    /** Puts back NFC files an earlier build of the emulator moved into system/.aemu-parked on a 4.4 image. */
+    private fun restoreNfc() = runCatching {
+        val parked = File(root, "system/.aemu-parked")
+        parked.listFiles()?.filter {
+            it.name.startsWith("system#app#Nfc") || it.name.startsWith("system#priv-app#Nfc") ||
+                it.name.startsWith("system#etc#permissions#android.hardware.nfc")
+        }?.forEach { f ->
+            val dst = File(root, f.name.replace('#', '/'))
+            if (!dst.exists() && f.renameTo(dst)) log("restored ${dst.name}")
+        }
+    }.onFailure { log("nfc restore failed: ${it.message}") }
+
+    /**
+     * 4.4: there is no NFC chip behind the HAL ("hw_get_module" fails) and NfcService's watchdog aborts the app while it
+     * enables the stack, which loops forever. NfcService only enables the stack when its "nfc_on" preference is true, so the
+     * preference is forced to false before every boot. The app, the adapter and the feature flags all stay in place.
+     */
+    private fun nfcOffByDefault() = runCatching {
+        val pkgDir = File(root, "data/data/com.android.nfc")
+        val prefsDir = File(pkgDir, "shared_prefs")
+        val prefs = File(prefsDir, "NfcServicePrefs.xml")
+        val fresh = mutableListOf<File>()
+        for (d in listOf(pkgDir, prefsDir)) if (!d.isDirectory) { d.mkdirs(); d.setReadable(true, false); d.setWritable(true, false); d.setExecutable(true, false); fresh += d }
+        val old = if (prefs.isFile) prefs.readText() else ""
+        val flag = Regex("<boolean name=\"nfc_on\" value=\"[a-z]+\"\\s*/>")
+        val text = when {
+            old.isBlank() || !old.contains("<map") ->
+                "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n    <boolean name=\"nfc_on\" value=\"false\" />\n    <boolean name=\"first_boot\" value=\"false\" />\n</map>\n"
+            flag.containsMatchIn(old) -> old.replace(flag, "<boolean name=\"nfc_on\" value=\"false\" />")
+            old.contains("<map />") -> old.replace("<map />", "<map>\n    <boolean name=\"nfc_on\" value=\"false\" />\n</map>")
+            else -> old.replace("</map>", "    <boolean name=\"nfc_on\" value=\"false\" />\n</map>")
+        }
+        if (text != old) {
+            if (!prefs.isFile) fresh += prefs
+            prefs.writeText(text)
+            prefs.setReadable(true, false); prefs.setWritable(true, false)
+            log("nfc: NfcService preference nfc_on forced off (no NFC hardware)")
+        }
+        if (fresh.isNotEmpty()) {
+            // new files are root-owned for the guest; hand them to the nfc uid (1027) through the owners table
+            val sb = StringBuilder()
+            for (f in fresh) {
+                val st = Os.lstat(f.absolutePath)
+                sb.append(String.format("%016x %016x %08x %08x\n", st.st_dev, st.st_ino, 1027, 1027))
+            }
+            paths.owners.appendText(sb.toString())
+        }
+    }.onFailure { log("nfc: could not switch NFC off: ${it.message}") }
 
     private fun mainStackMaps() {
         if (img.api < 21) return

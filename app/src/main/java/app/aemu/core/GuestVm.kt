@@ -673,9 +673,16 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
                 // Android 4.4 (API 19, incl. the KKWT Wear image): the real bridge client; everything else keeps the placeholder
                 val bridgeJar = img.api == 19 && File(paths.root, "system/framework/aemu-bt.jar").isFile
                 synchronized(procs) { procs.remove("aemu-bt") }?.let { runCatching { it.destroyForcibly() } }
-                startService(GuestService("aemu-bt", listOf(appProcess,
+                startStub(GuestService("aemu-bt", listOf(appProcess,
                     "-Djava.class.path=/system/framework/${if (bridgeJar) "aemu-bt.jar" else "aemu-stubs.jar"}", "/system/bin",
                     if (bridgeJar) "app.aemu.stub.BtService" else "app.aemu.stub.BtStub", btName), optional = true))
+                // aemu-bt and aemu-net load the same aemu-stubs.jar. On 5.0+ the first ART start of that jar creates its
+                // compiled copy in dalvik-cache; two processes doing it at once made one of them SIGBUS (exit 135) and the
+                // guest then had no bluetooth_manager (BluetoothAdapter null, Wear home crash-loop). Let the first finish.
+                if (!bridgeJar && img.api >= 21) {
+                    val t0 = SystemClock.uptimeMillis()
+                    waitFor("aemu-bt first start", 4_000) { SystemClock.uptimeMillis() - t0 > 2_500 || !alive().contains("aemu-bt") }
+                }
             }
             // emulated Wi-Fi: the guest service answers WifiManager as a connected access point and, on 5.0+, registers the
             // Wi-Fi network itself (instead of the Ethernet placeholder below)
@@ -687,7 +694,7 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
             // 5.0–7.x: a registered network, otherwise ConnectivityService says "no active network" and browsers stay offline
             if (svc.name == "zygote" && img.api in 21..25 && !wifiOn && engine == Engine.KK && File(paths.root, "system/framework/aemu-stubs.jar").isFile) {
                 synchronized(procs) { procs.remove("aemu-net") }?.let { runCatching { it.destroyForcibly() } }
-                startService(GuestService("aemu-net", listOf(appProcess,
+                startStub(GuestService("aemu-net", listOf(appProcess,
                     "-Djava.class.path=/system/framework/aemu-stubs.jar", "/system/bin", "app.aemu.stub.NetStub"), optional = true))
             }
             if (svc.name == BootMediaServices.LEGACY_LOGO) { LegacyLogoPatch.apply(paths.root, ::log); LegacyLogoPatch.provideHeadsetState(paths.root, ::log) }
@@ -797,7 +804,7 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
                     return
                 }
                 log(if (img.api >= 21) "GPU bridge: standalone glserverd" else "in-app GPU bridge failed, falling back to standalone glserverd")
-                spawn("glserverd", listOf(paths.nativeBin(engine.glserverd).absolutePath,
+                spawn("glserverd", listOf(paths.nativeBin(engine.glserverdFor(HostInfo.gpu())).absolutePath,
                     "-s", paths.glSock.absolutePath, "-fb", paths.fb.absolutePath,
                     "-notify", paths.frameSock.absolutePath, "-w", "$w", "-h", "$h"), emptyMap())
                 waitFor("GL bridge socket", 10_000) { paths.glSock.exists() }
@@ -860,6 +867,14 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
     /** app_process, or app_process32 on firmware that has only that. */
     private val appProcess: String get() = AppProcess.path(paths.root)
 
+    /** Helper services that are not in the firmware's init plan; the watchdog restarts them after a signal death. */
+    private val stubServices = java.util.concurrent.ConcurrentHashMap<String, GuestService>()
+
+    private fun startStub(svc: GuestService) {
+        stubServices[svc.name] = svc
+        startService(svc)
+    }
+
     private fun startService(svc: GuestService, propsFile: File? = null) {
         if (!File(paths.root, svc.argv.first().removePrefix("/")).isFile) {
             log("· ${svc.name}: ${svc.argv.first()} missing, skipping")
@@ -917,6 +932,13 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
     }
 
     private val qemuFallbackStarted = java.util.concurrent.atomic.AtomicBoolean(false)
+    private val swGlFallbackStarted = java.util.concurrent.atomic.AtomicBoolean(false)
+
+    /** The last zygote run ended in a SIGSEGV with libGLES_android.so (the software GL) on the stack. */
+    private fun softwareGlCrashed(): Boolean = runCatching {
+        val last = paths.log("zygote").readText().substringAfterLast("=== zygote")
+        (last.contains("SIGSEGV") || last.contains("Segmentation fault")) && last.contains("libGLES_android.so")
+    }.getOrDefault(false)
 
     /** A 2.x guest linker could not map its first library (stock qemu holds 0x40000000): reboot with the patched translator. */
     private fun fallbackToPatchedQemu(service: String) {
@@ -1074,7 +1096,20 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
                     while (!stopping && p.isAlive) {
                         if (p.waitFor(1, java.util.concurrent.TimeUnit.SECONDS)) break
                         waited++
-                        if (waited == 30) log("boot animation is still running 30 s after service.bootanim.exit=1, waiting (not killing it)")
+                        // Watchdog: the guest reported boot completion and set the exit property, yet the animation keeps drawing.
+                        // Record what the guest can actually read, re-assert the property once, and only then give up waiting:
+                        // a layer that is already stuck on top of a finished UI cannot be made worse by killing its owner.
+                        if (waited == 10) {
+                            val seen = props.get("service.bootanim.exit")
+                            log("boot animation watchdog: still alive 10 s after exit=1; area value=\"$seen\", re-asserting")
+                            props.put("service.bootanim.exit", "1")
+                        }
+                        if (waited == 30) log("boot animation is still running 30 s after service.bootanim.exit=1, waiting")
+                        if (waited == 60 && bootDoneAt != 0L && !recoveryMode) {
+                            log("boot animation did not exit 60 s after boot completion (area value=\"${props.get("service.bootanim.exit")}\"), stopping it")
+                            p.destroy()
+                            if (!p.waitFor(3, java.util.concurrent.TimeUnit.SECONDS)) p.destroyForcibly()
+                        }
                     }
                     // the watchdog reaps the exited process and checks the layer if the exit code was non-zero
                     // (only 2.3 / MIUI ICS animations never poll the property; see the api < 16 note below)
@@ -1194,6 +1229,16 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
                     // a clean exit (code 0) is the normal end of the animation; anything else is a crash or a kill
                     if (name == "bootanim" && code != 0) checkDeadBootAnimLayer(code)
                     if (name == "zygote") {
+                        // 2.x with "Phone GPU" off: the firmware's software renderer (pixelflinger, libGLES_android.so) crashes
+                        // under qemu inside SurfaceFlinger, which lives in system_server, so zygote dies with 137 on every boot
+                        // and the loop never ends. The GL bridge is the working path: switch it on and restart the VM once.
+                        if (state != State.FAILED && engine == Engine.GB && !settings.gpu && softwareGlCrashed() &&
+                            swGlFallbackStarted.compareAndSet(false, true)) {
+                            log("✖ software renderer (libGLES_android.so) crashed in SurfaceFlinger; turning the Phone GPU bridge on and restarting the VM")
+                            ImageStore.update(ctx, img.id) { it.copy(settings = it.settings.copy(gpu = true)) }
+                            onPower?.invoke(true, "")
+                            continue
+                        }
                         // Glass 4.4 first boot: IMMS fails without a selected IME; settings.db now exists, so seed it and boot again once
                         if (state != State.FAILED && !everBooted && !imeRetried && guestLogHas(GlassImePolicy.FAILURE_MARK)) {
                             imeRetried = true
@@ -1225,6 +1270,18 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
                             zygoteRestarts++
                             log("✖ zygote crashed (code $code), restarting system ($zygoteRestarts)")
                             restartZygote()
+                        }
+                        continue
+                    }
+                    // aemu-bt / aemu-net died on a signal (SIGBUS 135, SIGSEGV 139, SIGABRT 134): start the same stub again, the
+                    // second start finds the compiled jar already in place. A clean exit or a deliberate kill is left alone.
+                    val stub = stubServices[name]
+                    if (stub != null) {
+                        val k = restarts.getOrDefault(name, 0)
+                        if (code in 129..159 && code != 137 && code != 143 && k < 3) {
+                            restarts[name] = k + 1
+                            log("service $name crashed (code $code), restarting (${k + 1}/3)")
+                            runCatching { startService(stub) }
                         }
                         continue
                     }
@@ -1494,4 +1551,4 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
     private fun isLinkTo(f: File, target: String) = runCatching { android.system.Os.readlink(f.absolutePath) == target }.getOrDefault(false)
 
     private fun stamp() = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.US).format(java.util.Date())
-}
+}

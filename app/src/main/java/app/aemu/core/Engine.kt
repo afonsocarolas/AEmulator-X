@@ -41,6 +41,14 @@ enum class Engine(
         guestGles = "libGLES.so",
     );
 
+    /**
+     * Standalone GL server for this host GPU. On Mali the server must not put an app's ES2+ context into the share
+     * group of SurfaceFlinger's ES1 context: the driver then hands the app an ES 1.1 context, no shader compiles and
+     * hwui aborts in a loop (5.0+). The *_mali build only shares ES1 contexts with each other.
+     */
+    fun glserverdFor(gpu: String): String =
+        if (this == KK && gpu.contains("mali")) "libglserverd_kk_mali.so" else glserverd
+
     companion object {
         /**
          * KK — универсальный: GL-мост в приложении (быстрее) и полный GLES 1/2/3, работает и с 2.2.
