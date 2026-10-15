@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="x_rec_start">Gravar tela</string>
+    <string name="x_rec_stop">Parar gravação</string>
+    <string name="x_rec_started">Gravando a tela…</string>
+    <string name="x_rec_saving">Salvando a gravação…</string>
+    <string name="x_rec_saved">Gravação salva: %1$s</string>
+    <string name="x_rec_failed">A gravação de tela não está disponível neste celular</string>
+</resources>

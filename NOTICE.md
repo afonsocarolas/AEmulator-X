@@ -1,3 +1,25 @@
+# AEmulator X modification notice
+
+**AEmulator X** is a modified fork of
+[somerandomusernam2/AEmulator-Plus](https://github.com/somerandomusernam2/AEmulator-Plus) `0.0.0.2.13`,
+still licensed under the GNU General Public License, version 3; see [LICENSE](LICENSE).
+Files modified for X carry a dated "Modified for AEmulator X" (or "Added for AEmulator X") notice.
+The Plus notice below, with its credits and history, is kept unchanged.
+
+- **2026-10-15**: AEmulator X.
+  - Rebrand: app name, package `app.aemu.x` (installs next to Plus), version `0.0.0.2.13-x1`; the
+    updater and GitHub link follow `aemuX.repo` in `gradle.properties` (`app/build.gradle.kts`,
+    `AppUpdateManager.kt`, `UpdateAssetPolicy.kt`, `AppSettingsActivity.kt`, `ExperimentalFeatures.kt`).
+  - Cooler UI: violet/magenta/cyan palette (`Theme.kt`, `colors.xml`), animated aurora background,
+    gradient wordmark, glass firmware cards with gradient badges and Start buttons
+    (`app/src/main/java/app/aemu/ui/XStyle.kt`, `MainActivity.kt`).
+  - Screen recording: guest screen (H.264) and guest sound (AAC) to
+    `/sdcard/Movies/AEmulator/<timestamp>-<VM id>.mp4` (`app/src/main/java/app/aemu/core/ScreenRecorder.kt`;
+    audio tap in `AudioOut.kt`; shared pixel decoding in `Screenshot.kt`; menu item and REC indicator in
+    `VmActivity.kt`; `strings_x.xml`).
+
+---
+
 # AEmulator Plus modification notice
 
 **AEmulator Plus** is a modified fork of

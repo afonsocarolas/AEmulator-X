@@ -27,14 +27,16 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "app.aemu.plus" // Modified for AEmulator Plus, 2026-10-04: single variant, no clone
+        applicationId = "app.aemu.x" // Modified for AEmulator X, 2026-10-15: own package, installs next to Plus
         minSdk = 26
         // 28: гостевые бинарники запускаются из каталога данных приложения (W^X для targetSdk>=29)
         //noinspection ExpiredTargetSdkVersion
         targetSdk = 28
         versionCode = 33
-        versionName = "0.0.0.2.13" // <AEmulator base>.<Plus release>
+        versionName = "0.0.0.2.13-x1" // <AEmulator base>.<Plus release>-x<X release>
         ndk { abiFilters += listOf("arm64-v8a") }
+        // AEmulator X: fork repository for updates and links (gradle.properties: aemuX.repo)
+        buildConfigField("String", "X_REPO", "\"" + (project.findProperty("aemuX.repo") ?: "YOUR_GITHUB_USER/AEmulator-X") + "\"")
     }
 
     signingConfigs {

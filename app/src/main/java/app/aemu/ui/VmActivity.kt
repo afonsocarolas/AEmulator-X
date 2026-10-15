@@ -1,6 +1,7 @@
 /* Modified for AEmulator Sunset through 2026-10-03: natural-edge controls, cutout and
  * compatibility and camera integration.
- * Modified for AEmulator Plus, 2026-10-12: VM screen themes, device skins (merged from Super Plus). GPL-3.0; see LICENSE and NOTICE.md. */
+ * Modified for AEmulator Plus, 2026-10-12: VM screen themes, device skins (merged from Super Plus).
+ * Modified for AEmulator X, 2026-10-15: screen recording (core/ScreenRecorder.kt), REC indicator. GPL-3.0; see LICENSE and NOTICE.md. */
 package app.aemu.ui
 
 import app.aemu.R
@@ -35,6 +36,10 @@ import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material.icons.rounded.Keyboard
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.Screenshot
+import androidx.compose.material.icons.rounded.FiberManualRecord
+import androidx.compose.material.icons.rounded.Stop
+import androidx.compose.foundation.clickable
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Sms
 import androidx.compose.material.icons.rounded.Call
@@ -498,6 +503,7 @@ class VmActivity : ComponentActivity() {
         orientationListener?.disable()
         vmRoot = null
         heldNavKeys.releaseAll()
+        finishRecordingBlocking()
         if (::guest.isInitialized) guest.stop()
         shellRx?.let { runCatching { unregisterReceiver(it) } }
         guestShellSession?.close()
@@ -507,6 +513,7 @@ class VmActivity : ComponentActivity() {
     private fun stopVm() {
         if (!endingVm.compareAndSet(false, true)) return
         thread {
+            finishRecordingBlocking()
             vm.stop()
             VmHost.vm = null
             runOnUiThread { finishAndRemoveTask() }
@@ -635,6 +642,92 @@ class VmActivity : ComponentActivity() {
             val saved = runCatching { app.aemu.core.Screenshot.take(this, vmId, g.fb, g.w, g.h, fmt, g.pages, g.shownPage) }.getOrNull()
             toast(if (saved != null) getString(R.string.m_screenshot_saved, saved) else getString(R.string.m_failed))
         }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: screen recording
+
+    @Volatile private var recorder: app.aemu.core.ScreenRecorder? = null
+    /** wall-clock start of the running recording, 0 when not recording (drives the REC pill and the menu label) */
+    private var recStartedAt by mutableLongStateOf(0L)
+
+    private fun toggleRecording() { if (recorder != null) stopRecording() else startRecording() }
+
+    private fun startRecording() {
+        val g = guest
+        if (g.w <= 0 || g.h <= 0 || recorder != null) return
+        val rec = app.aemu.core.ScreenRecorder(this, vm.img.id, g.w, g.h, vm.audio.sampleRate, vm::log)
+        recorder = rec
+        recStartedAt = System.currentTimeMillis()
+        thread(name = "aemu-rec-grab") {
+            if (!rec.start()) {
+                if (recorder !== rec) return@thread // stopped before it got going
+                recorder = null
+                runOnUiThread { recStartedAt = 0L }
+                toast(getString(R.string.x_rec_failed))
+                return@thread
+            }
+            vm.audio.tap = rec::submitPcm
+            toast(getString(R.string.x_rec_started))
+            grabFrames(rec)
+        }
+    }
+
+    /** Grabs the guest screen [ScreenRecorder.FPS] times a second until [rec] is no longer the active recorder. */
+    private fun grabFrames(rec: app.aemu.core.ScreenRecorder) {
+        val copyThread = android.os.HandlerThread("aemu-rec-copy").apply { start() }
+        val copyHandler = android.os.Handler(copyThread.looper)
+        var copyBmp: android.graphics.Bitmap? = null
+        var fbGrab: app.aemu.core.ScreenRecorder.FbGrabber? = null
+        val frameNs = 1_000_000_000L / app.aemu.core.ScreenRecorder.FPS
+        var next = System.nanoTime()
+        try {
+            while (recorder === rec) {
+                val g = guest
+                if (g.passthrough && surfaceView.width > 0 && surfaceView.height > 0 && surfaceView.holder.surface.isValid) {
+                    // in-app GPU bridge: the frame only exists on the SurfaceView; PixelCopy scales it to the video size
+                    val b = copyBmp ?: android.graphics.Bitmap.createBitmap(rec.width, rec.height, android.graphics.Bitmap.Config.ARGB_8888).also { copyBmp = it }
+                    val done = java.util.concurrent.CountDownLatch(1)
+                    val ok = java.util.concurrent.atomic.AtomicBoolean(false)
+                    runCatching {
+                        android.view.PixelCopy.request(surfaceView, b, { r -> ok.set(r == android.view.PixelCopy.SUCCESS); done.countDown() }, copyHandler)
+                    }.onFailure { done.countDown() }
+                    if (done.await(250, java.util.concurrent.TimeUnit.MILLISECONDS)) { if (ok.get()) rec.submitFrame(b) }
+                    else copyBmp = null // a late copy may still write into the old bitmap: never reuse it
+                } else {
+                    val fg = fbGrab ?: app.aemu.core.ScreenRecorder.FbGrabber(g.w, g.h).also { fbGrab = it }
+                    val fmt = if (vm.recoveryMode) vm.recoveryFormat else g.format
+                    if (fg.grab(g.fb, fmt, g.pages, g.shownPage)) rec.submitFrame(fg.bitmap)
+                }
+                next += frameNs
+                val wait = next - System.nanoTime()
+                if (wait > 0) Thread.sleep(wait / 1_000_000, (wait % 1_000_000).toInt())
+                else if (wait < -5 * frameNs) next = System.nanoTime() // fell behind (slow phone): do not try to catch up
+            }
+        } catch (_: InterruptedException) {
+        } finally {
+            copyThread.quitSafely()
+        }
+    }
+
+    private fun stopRecording() {
+        val rec = recorder ?: return
+        recorder = null
+        vm.audio.tap = null
+        recStartedAt = 0L
+        toast(getString(R.string.x_rec_saving))
+        thread(name = "aemu-rec-stop") {
+            val saved = rec.stop()
+            toast(if (saved != null) getString(R.string.x_rec_saved, saved) else getString(R.string.m_failed))
+        }
+    }
+
+    /** Before the :vm process goes away: finish the MP4 so it is not left half-written. Blocking. */
+    private fun finishRecordingBlocking() {
+        val rec = recorder ?: return
+        recorder = null
+        if (::vm.isInitialized) vm.audio.tap = null
+        runOnUiThread { recStartedAt = 0L }
+        rec.stop()?.let { toast(getString(R.string.x_rec_saved, it)) }
     }
 
     // integrated adb shell: one persistent guest sh, history survives closing the dialog
@@ -854,6 +947,7 @@ class VmActivity : ComponentActivity() {
         heldNavKeys.releaseAll()
         val id = vm.img.id
         thread {
+            finishRecordingBlocking()
             vm.stop()
             VmHost.vm = null
             // the GL bridge cannot come up twice in one process, so a reboot restarts the :vm process
@@ -866,6 +960,7 @@ class VmActivity : ComponentActivity() {
         // Removing the whole task here could also remove the new restart activity.
         try { VmRestartActivity.handoff(this, id, recovery, processLifetime, lowPower) }
         catch (_: Exception) { endingVm.set(false); toast(getString(R.string.vm_restart_failed)); return }
+        finishRecordingBlocking()
         finish()
         android.os.Process.killProcess(android.os.Process.myPid())
     }
@@ -928,6 +1023,14 @@ class VmActivity : ComponentActivity() {
                 }
             }
 
+            // AEmulator X: recording indicator; tap it to stop
+            if (recStartedAt != 0L && !showLog) {
+                var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
+                LaunchedEffect(recStartedAt) { while (true) { now = System.currentTimeMillis(); delay(500) } }
+                RecordingPill(now - recStartedAt, Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 8.dp)
+                    .clickable(onClickLabel = stringResource(R.string.x_rec_stop)) { stopRecording() })
+            }
+
             // журнал
             AnimatedVisibility(visible = showLog, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.fillMaxSize()) {
                 LogPanel(onClose = { showLog = false })
@@ -984,6 +1087,9 @@ class VmActivity : ComponentActivity() {
                         enabled = running, onClick = { menu = false; dialog = Dlg.SHELL })
                     DropdownMenuItem(text = { Text(stringResource(R.string.m_screenshot)) }, leadingIcon = { Icon(Icons.Rounded.Screenshot, null) },
                         enabled = running, onClick = { menu = false; screenshot() })
+                    DropdownMenuItem(text = { Text(stringResource(if (recStartedAt != 0L) R.string.x_rec_stop else R.string.x_rec_start)) },
+                        leadingIcon = { Icon(if (recStartedAt != 0L) Icons.Rounded.Stop else Icons.Rounded.FiberManualRecord, null, tint = XBrand.Rec) },
+                        enabled = running || recStartedAt != 0L, onClick = { menu = false; toggleRecording() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.m_save_logs)) }, leadingIcon = { Icon(Icons.Rounded.Download, null) },
                         onClick = { menu = false; saveLogs() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.m_settings)) }, leadingIcon = { Icon(Icons.Rounded.Settings, null) },

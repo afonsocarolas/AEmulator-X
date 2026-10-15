@@ -1,33 +1,36 @@
 <div align="center">
 
-<img src="docs/assets/logo.png" width="128" alt="AEmulator Plus logo"/>
+<img src="docs/assets/logo.png" width="128" alt="AEmulator X logo"/>
 
-# AEmulator Plus
+# AEmulator X
 
-**Run classic Android firmware — HTC Sense, TouchWiz, MIUI, AOSP — on a modern phone. No root, no PC.**
-
-**🇬🇧 English** · [🇷🇺 Русский](docs/i18n/README.ru.md) · [🇺🇦 Українська](docs/i18n/README.uk.md) · [🇩🇪 Deutsch](docs/i18n/README.de.md) · [🇫🇷 Français](docs/i18n/README.fr.md) · [🇪🇸 Español](docs/i18n/README.es.md) · [🇧🇷 Português](docs/i18n/README.pt-BR.md) · [🇮🇹 Italiano](docs/i18n/README.it.md) · [🇵🇱 Polski](docs/i18n/README.pl.md) · [🇹🇷 Türkçe](docs/i18n/README.tr.md) · [🇸🇦 العربية](docs/i18n/README.ar.md) · [🇮🇷 فارسی](docs/i18n/README.fa.md) · [🇮🇳 हिन्दी](docs/i18n/README.hi.md) · [🇮🇩 Indonesia](docs/i18n/README.id.md) · [🇻🇳 Tiếng Việt](docs/i18n/README.vi.md) · [🇨🇳 简体中文](docs/i18n/README.zh-CN.md) · [🇯🇵 日本語](docs/i18n/README.ja.md) · [🇰🇷 한국어](docs/i18n/README.ko.md)
+**A fork of [AEmulator Plus](https://github.com/somerandomusernam2/AEmulator-Plus) with a cooler UI and screen recording.**
 
 </div>
 
 ---
 
-AEmulator Plus boots a real Android 2.3–7.x system image straight from a firmware file you already have: a recovery ZIP, an Odin archive or a Google factory image. It translates the old ARM code with a patched QEMU, emulates the kernel’s binder, draws with your phone’s GPU and plays sound through Android’s audio stack — everything runs inside a normal app.
+AEmulator X boots a real Android 2.3–7.x system image straight from a firmware file you already have, exactly like AEmulator Plus, and adds:
 
-## ✨ Features
+## ✨ New in X
+
+- **🎬 Screen recording**: ⋮ menu → **Record screen**. Records the guest screen as H.264 video with the guest's own sound (AAC), 30 fps, sharp even on old 320×480 screens (scaled to 640–1280 px). A pulsing **REC** pill shows the time; tap it (or ⋮ → **Stop recording**) to save to `Movies/AEmulator/<time>-<VM>.mp4`. Works in both GPU-bridge and framebuffer modes, and in recovery. Only the guest screen is recorded, not the host's bars or menus.
+- **🌌 Cooler UI**: an electric violet / magenta / cyan palette with a deep near-black dark mode, an animated aurora background behind the library, a glowing gradient **X** wordmark, and glass firmware cards with gradient release badges and Start buttons.
+- Package `app.aemu.x`: installs **next to** AEmulator Plus, so you can keep both.
+
+## ✨ Everything from Plus
 
 - Import almost any firmware format: CWM/TWRP ZIP, Samsung Odin `.tar.md5`, Google factory `.tgz`, `system.img`, OTA `system.new.dat.br`, Motorola `.sbf`, sparse images, EDL images, Spreadtrum `.pac`, HTC `.nbh`, HTC `RUU.exe`
 - Vendor skins work as shipped: HTC Sense, Samsung TouchWiz, MIUI, AOSP
 - Hardware graphics through the GL bridge, sound, touch and multitouch, network with a modern TLS proxy
 - Shared memory-card folder for APKs, music and photos
-- **VM screen themes and theme editor**: the navigation bar and the frame around the guest screen follow a theme — Original, Sunset, Gingerbread 2.x, Honeycomb 3.x, Holo 4.x or Lollipop 5.x — or your own, made in an editor with a live preview (key shapes and size, bar/key/pressed/frame colours, glow and halo, floating or flat bar, frame picture, rounded screen corners). Themes can be shared as `.aetheme` files. App settings › Appearance › VM screen theme.
-- Material 3 Expressive interface in 19 languages
-- Free and open source (GPL-3.0)
+- VM screen themes and theme editor, Material 3 Expressive interface in 19 languages
+- Free and open source (GPL-3.0); see [NOTICE.md](NOTICE.md) for what X changed
 
 ## 🚀 Quick start
 
-1. Download the APK from [Releases](https://github.com/somerandomusernam2/AEmulator-Plus/releases) and install it.
-2. Open AEmulator Plus → **Add firmware** and pick the file. Import takes a few minutes.
+1. Download the APK from this repository's Releases page and install it.
+2. Open AEmulator X → **Add firmware** and pick the file. Import takes a few minutes.
 3. Press **Start**. The first boot is slower: the system optimises its apps.
 4. Use the ⋮ menu for volume, power button and logs; the ⚙️ button opens app settings and language.
 

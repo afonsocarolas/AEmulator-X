@@ -125,8 +125,13 @@ object Screenshot {
             } else f.seek(off)
             f.readFully(data)
         }
-        val bb = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN)
         val px = IntArray(w * h)
+        decodePixels(ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN), px, format)
+        return Bitmap.createBitmap(px, w, h, Bitmap.Config.ARGB_8888)
+    }
+
+    /** Raw fb0 pixels ([bb], little endian) → opaque ARGB in [px]; formats as in [take]. Also used by ScreenRecorder. */
+    internal fun decodePixels(bb: ByteBuffer, px: IntArray, format: Int) {
         when (format) {
             0 -> for (i in px.indices) {
                 val v = bb.getShort(i * 2).toInt() and 0xFFFF
@@ -143,7 +148,6 @@ object Screenshot {
                 px[i] = -0x1000000 or ((v and 0xff) shl 16) or (v and 0xff00) or ((v shr 16) and 0xff)
             }
         }
-        return Bitmap.createBitmap(px, w, h, Bitmap.Config.ARGB_8888)
     }
 
     /** Inserts a pHYs chunk right after IHDR, like PIL's save(dpi=...). */

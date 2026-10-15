@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Added for AEmulator X, 2026-10-15: screen recording. Other languages fall back to English. -->
+<resources>
+    <string name="x_rec_start">Record screen</string>
+    <string name="x_rec_stop">Stop recording</string>
+    <string name="x_rec_started">Recording the screen…</string>
+    <string name="x_rec_saving">Saving the recording…</string>
+    <string name="x_rec_saved">Recording saved: %1$s</string>
+    <string name="x_rec_failed">Screen recording is not available on this phone</string>
+</resources>

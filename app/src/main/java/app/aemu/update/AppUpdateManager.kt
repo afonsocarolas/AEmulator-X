@@ -40,10 +40,11 @@ sealed interface UpdateState {
 }
 
 /** Modified for AEmulator Sunset on 2026-09-30: use the fork's releases.
- * Modified for AEmulator Plus on 2026-10-04: use the Plus releases. GPL-3.0; see NOTICE.md. */
+ * Modified for AEmulator Plus on 2026-10-04: use the Plus releases.
+ * Modified for AEmulator X on 2026-10-15: use the X fork releases (BuildConfig.X_REPO). GPL-3.0; see NOTICE.md. */
 object AppUpdateManager {
-    private const val RELEASES_API = "https://api.github.com/repos/somerandomusernam2/AEmulator-Plus/releases"
-    private const val GITHUB_REPO_URL = "https://github.com/somerandomusernam2/AEmulator-Plus"
+    private val RELEASES_API = "https://api.github.com/repos/${app.aemu.BuildConfig.X_REPO}/releases"
+    private val GITHUB_REPO_URL = "https://github.com/${app.aemu.BuildConfig.X_REPO}"
 
     /**
      * Запрос к GitHub API для получения информации о последнем релизе с APK-файлом.
@@ -55,7 +56,7 @@ object AppUpdateManager {
             conn.connectTimeout = 15000
             conn.readTimeout = 15000
             conn.setRequestProperty("Accept", "application/vnd.github+json")
-            conn.setRequestProperty("User-Agent", "AEmulator-Plus-App")
+            conn.setRequestProperty("User-Agent", "AEmulator-X-App")
 
             if (conn.responseCode != HttpURLConnection.HTTP_OK) {
                 throw Exception("HTTP ${conn.responseCode}: ${conn.responseMessage}")
@@ -152,7 +153,7 @@ object AppUpdateManager {
             conn.connectTimeout = 15000
             conn.readTimeout = 30000
             conn.instanceFollowRedirects = true
-            conn.setRequestProperty("User-Agent", "AEmulator-Plus-App")
+            conn.setRequestProperty("User-Agent", "AEmulator-X-App")
 
             val code = conn.responseCode
             if (code in listOf(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, 307, 308)) {

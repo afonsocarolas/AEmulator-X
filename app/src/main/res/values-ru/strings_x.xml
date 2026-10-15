@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="x_rec_start">Запись экрана</string>
+    <string name="x_rec_stop">Остановить запись</string>
+    <string name="x_rec_started">Идёт запись экрана…</string>
+    <string name="x_rec_saving">Сохраняем запись…</string>
+    <string name="x_rec_saved">Запись сохранена: %1$s</string>
+    <string name="x_rec_failed">Запись экрана недоступна на этом телефоне</string>
+</resources>

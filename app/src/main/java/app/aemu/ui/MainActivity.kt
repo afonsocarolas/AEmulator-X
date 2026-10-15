@@ -35,6 +35,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.semantics.Role
@@ -221,11 +222,18 @@ fun Library(model: LibraryModel) {
         }
     }
 
+    // AEmulator X: the library floats over the animated aurora; bars and scaffold are see-through
+    AuroraBackground(Modifier.fillMaxSize()) {
     Scaffold(
         modifier = Modifier.nestedScroll(scroll.nestedScrollConnection),
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
         topBar = {
             LargeFlexibleTopAppBar(
                 title = { SunsetTitle() },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.85f),
+                ),
                 actions = {
                     IconButton(onClick = { ctx.startActivity(Intent(ctx, RomCatalogActivity::class.java)) }) {
                         Icon(Icons.Rounded.List, stringResource(R.string.catalog_title))
@@ -305,6 +313,7 @@ fun Library(model: LibraryModel) {
             }
         }
     }
+    } // AuroraBackground
 
     settingsFor?.let { img ->
         SettingsSheet(img, onDismiss = { settingsFor = null }, onSave = { s -> model.updateSettings(img, s); settingsFor = null })
@@ -523,14 +532,11 @@ private fun ImportCard(s: ImportState, onCancel: () -> Unit, onDismiss: () -> Un
 private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Unit, onRename: () -> Unit, onDelete: () -> Unit, baseName: String? = null, active: Boolean = false) {
     val ctx = LocalContext.current
     val lowPowerLabel = stringResource(R.string.lpm_start)
-    Card(shape = MaterialTheme.shapes.large, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)) {
+    // AEmulator X: glass card, gradient release badge, gradient Start button
+    Box(Modifier.fillMaxWidth().glass(MaterialTheme.shapes.large)) {
         Column(Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(52.dp)) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(img.release.take(3), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                    }
-                }
+                XBadge(img.release.take(3))
                 Spacer(Modifier.width(14.dp))
                 Column(Modifier.weight(1f)) {
                     Text(img.name, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
@@ -551,9 +557,11 @@ private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Un
             img.warnings.firstOrNull()?.let { Text("⚠ " + ImportWarnings.text(ctx, it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary) }
             Spacer(Modifier.height(12.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(shape = ButtonDefaults.shape, color = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.height(48.dp).combinedClickable(role = Role.Button,
+                Surface(shape = ButtonDefaults.shape, color = androidx.compose.ui.graphics.Color.Transparent,
+                    contentColor = androidx.compose.ui.graphics.Color.White,
+                    modifier = Modifier.height(48.dp).clip(ButtonDefaults.shape)
+                        .background(if (active) androidx.compose.ui.graphics.Brush.linearGradient(listOf(XBrand.Cyan, XBrand.Violet)) else XBrand.gradient)
+                        .combinedClickable(role = Role.Button,
                         onClick = onStart, onLongClickLabel = if (!active) lowPowerLabel else null,
                         onLongClick = if (!active) ({
                             VmActivity.start(ctx, img.id, lowPower = true)

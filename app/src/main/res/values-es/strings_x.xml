@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="x_rec_start">Grabar pantalla</string>
+    <string name="x_rec_stop">Detener grabación</string>
+    <string name="x_rec_started">Grabando la pantalla…</string>
+    <string name="x_rec_saving">Guardando la grabación…</string>
+    <string name="x_rec_saved">Grabación guardada: %1$s</string>
+    <string name="x_rec_failed">La grabación de pantalla no está disponible en este teléfono</string>
+</resources>
