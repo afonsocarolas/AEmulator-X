@@ -37,4 +37,7 @@
     <string name="x_probe_sub">This firmware is 64-bit, which AEmulator cannot boot yet. The probe tries to run its shell directly on this phone and reports what happens. It changes nothing and boots nothing.</string>
     <string name="x_probe_copy">Copy report</string>
     <string name="x_probe_copied">Report copied</string>
+    <!-- Start on 64-bit firmware -->
+    <string name="x_arm64_start_title">This firmware is 64-bit</string>
+    <string name="x_arm64_start_text">%1$s is 64-bit (arm64) firmware. AEmulator X’s engine can only boot 32-bit firmware, so starting it would just make every system service crash.\n\nExperimental 64-bit tools are in this firmware’s settings (⚙), at the bottom.</string>
 </resources>

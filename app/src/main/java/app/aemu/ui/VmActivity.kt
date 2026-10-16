@@ -1394,6 +1394,17 @@ class VmActivity : ComponentActivity() {
         const val EXTRA_RECOVERY = "recovery"
         const val EXTRA_LOW_POWER = "low_power"
         fun start(ctx: Context, id: String, recovery: Boolean = false, lowPower: Boolean = false) {
+            // AEmulator X: the engine only runs 32-bit ARM; a 64-bit firmware would only crash-loop (code 255/134)
+            val img = runCatching { app.aemu.core.ImageStore.get(ctx, id) }.getOrNull()
+            if (img != null && img.abi.startsWith("arm64")) {
+                if (ctx is android.app.Activity) android.app.AlertDialog.Builder(ctx)
+                    .setTitle(R.string.x_arm64_start_title)
+                    .setMessage(ctx.getString(R.string.x_arm64_start_text, img.name))
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+                else Toast.makeText(ctx, ctx.getString(R.string.x_arm64_start_title), Toast.LENGTH_LONG).show()
+                return
+            }
             ctx.startActivity(Intent(ctx, VmActivity::class.java).putExtra(EXTRA_ID, id).putExtra(EXTRA_RECOVERY, recovery).putExtra(EXTRA_LOW_POWER, lowPower)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }

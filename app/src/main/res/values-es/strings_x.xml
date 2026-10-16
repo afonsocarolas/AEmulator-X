@@ -36,4 +36,7 @@
     <string name="x_probe_sub">Este firmware es de 64 bits, que AEmulator aún no puede arrancar. La prueba intenta ejecutar su shell directamente en este teléfono e informa del resultado. No cambia ni arranca nada.</string>
     <string name="x_probe_copy">Copiar informe</string>
     <string name="x_probe_copied">Informe copiado</string>
+    <!-- Start on 64-bit firmware -->
+    <string name="x_arm64_start_title">Este firmware es de 64 bits</string>
+    <string name="x_arm64_start_text">%1$s es un firmware de 64 bits (arm64). El motor de AEmulator X solo arranca firmwares de 32 bits, así que iniciarlo solo haría fallar todos los servicios del sistema.\n\nLas herramientas experimentales de 64 bits están en los ajustes de este firmware (⚙), al final.</string>
 </resources>
