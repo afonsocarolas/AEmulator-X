@@ -24,4 +24,10 @@
     <string name="x_bs_no_fw">No sound files found in this firmware</string>
     <string name="x_bs_preview">Preview</string>
     <string name="x_bs_import_failed">Could not use that file</string>
+    <!-- square grid library -->
+    <string name="x_lib_layout">Library layout</string>
+    <string name="x_lib_list">List</string>
+    <string name="x_lib_grid">Square grid</string>
+    <string name="x_lib_3d">3D</string>
+    <string name="x_lib_layout_sub">How the firmware library is shown: a list of cards, square tiles with each system’s last screen, or 3D phones you swipe through.</string>
 </resources>

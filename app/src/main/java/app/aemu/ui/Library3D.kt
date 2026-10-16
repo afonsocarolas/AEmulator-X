@@ -507,7 +507,7 @@ private fun Details(img: GuestImage, active: Boolean, baseName: String?, onStart
 
 /** Grows every time the library comes back to the screen (e.g. from a VM), so new thumbnails are picked up. */
 @Composable
-private fun rememberResumeCount(): Int {
+internal fun rememberResumeCount(): Int {
     val owner = LocalLifecycleOwner.current
     var n by remember { mutableIntStateOf(0) }
     DisposableEffect(owner) {
@@ -520,7 +520,7 @@ private fun rememberResumeCount(): Int {
 
 /** The firmware's last screen (Screenshot.THUMB in its folder), decoded off the main thread; null before the first boot. */
 @Composable
-private fun rememberThumbnail(img: GuestImage, refresh: Int): ImageBitmap? {
+internal fun rememberThumbnail(img: GuestImage, refresh: Int): ImageBitmap? {
     val ctx = LocalContext.current
     val thumb by produceState<ImageBitmap?>(null, img.id, refresh) {
         value = withContext(Dispatchers.IO) {

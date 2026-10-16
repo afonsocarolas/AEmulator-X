@@ -23,4 +23,10 @@
     <string name="x_bs_no_fw">В этой прошивке нет звуковых файлов</string>
     <string name="x_bs_preview">Прослушать</string>
     <string name="x_bs_import_failed">Не удалось использовать этот файл</string>
+    <!-- square grid library -->
+    <string name="x_lib_layout">Вид библиотеки</string>
+    <string name="x_lib_list">Список</string>
+    <string name="x_lib_grid">Плитки</string>
+    <string name="x_lib_3d">3D</string>
+    <string name="x_lib_layout_sub">Как показывать библиотеку прошивок: списком карточек, квадратными плитками с последним экраном системы или 3D-телефонами, которые можно листать.</string>
 </resources>

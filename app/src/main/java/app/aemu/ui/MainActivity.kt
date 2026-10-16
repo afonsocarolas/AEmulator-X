@@ -175,11 +175,13 @@ fun Library(model: LibraryModel) {
     var help by remember { mutableStateOf(false) }
     var addMenu by remember { mutableStateOf(false) }
     var containerFrom by remember { mutableStateOf<GuestImage?>(null) }
-    // 3D library is an opt-in app setting; re-read it when returning from Settings
-    var view3d by remember { mutableStateOf(AppPrefs.library3d(ctx)) }
+    // library layout (list / AEmulator X square grid / 3D) is an app setting; re-read it when returning from Settings
+    var layout by remember { mutableStateOf(AppPrefs.libraryLayout(ctx)) }
+    val view3d = layout == AppPrefs.LAYOUT_3D
+    val gridRefresh = rememberResumeCount()
     DisposableEffect(lifecycleOwner) {
         val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
-            if (e == Lifecycle.Event.ON_RESUME) view3d = AppPrefs.library3d(ctx)
+            if (e == Lifecycle.Event.ON_RESUME) layout = AppPrefs.libraryLayout(ctx)
         }
         lifecycleOwner.lifecycle.addObserver(obs)
         onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
@@ -275,6 +277,44 @@ fun Library(model: LibraryModel) {
                     onRename = { renameFor = it },
                     onDelete = { deleteFor = it },
                 )
+            } else if (layout == AppPrefs.LAYOUT_GRID && images.isNotEmpty()) androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+                // AEmulator X: square tiles, ~2 per row on phones, more on tablets; cards and headers span the row
+                columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(150.dp),
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 120.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                val full: (androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope) -> androidx.compose.foundation.lazy.grid.GridItemSpan =
+                    { androidx.compose.foundation.lazy.grid.GridItemSpan(it.maxLineSpan) }
+                item(span = full) { StorageAccessCard() }
+                if (!imp.active) item(span = full) { FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) }) }
+                item(span = full) {
+                    AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
+                        ImportCard(imp, onCancel = model::cancelImport, onDismiss = model::dismissImport)
+                    }
+                }
+                val systems = images.filter { it.baseId.isEmpty() }
+                val containers = images.filter { it.baseId.isNotEmpty() }
+                for ((title, list) in listOf(R.string.section_systems to systems, R.string.section_containers to containers)) {
+                    if (list.isEmpty()) continue
+                    item(key = "h$title", span = full) {
+                        Text(stringResource(title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(start = 4.dp, top = 4.dp))
+                    }
+                    items(list.size, key = { list[it].id }) { i ->
+                        val img = list[i]
+                        SquareTile(
+                            img,
+                            active = activeVmId == img.id,
+                            refresh = gridRefresh,
+                            onStart = { VmActivity.start(ctx, img.id) },
+                            onLowPower = { VmActivity.start(ctx, img.id, lowPower = true) },
+                            onSettings = { settingsFor = img },
+                            onRename = { renameFor = img },
+                            onDelete = { deleteFor = img },
+                        )
+                    }
+                }
             } else LazyColumn(
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 120.dp),
             ) {

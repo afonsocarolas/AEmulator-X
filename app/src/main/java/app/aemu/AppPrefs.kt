@@ -112,6 +112,15 @@ object AppPrefs {
     fun library3d(ctx: Context): Boolean = sp(ctx).getBoolean("library_3d", false)
     fun setLibrary3d(ctx: Context, v: Boolean) = sp(ctx).edit().putBoolean("library_3d", v).apply()
 
+    /** AEmulator X: library layout, [LAYOUT_LIST] / [LAYOUT_GRID] / [LAYOUT_3D]; before X it was only the 3D flag above. */
+    const val LAYOUT_LIST = "list"
+    const val LAYOUT_GRID = "grid"
+    const val LAYOUT_3D = "3d"
+    fun libraryLayout(ctx: Context): String = sp(ctx).getString("library_layout", null)
+        ?.takeIf { it in setOf(LAYOUT_LIST, LAYOUT_GRID, LAYOUT_3D) } ?: if (library3d(ctx)) LAYOUT_3D else LAYOUT_LIST
+    fun setLibraryLayout(ctx: Context, v: String) =
+        sp(ctx).edit().putString("library_layout", v).putBoolean("library_3d", v == LAYOUT_3D).apply()
+
     fun lastUpdateCheck(ctx: Context): Long = sp(ctx).getLong("last_update_check", 0L)
     fun setLastUpdateCheck(ctx: Context, v: Long) = sp(ctx).edit().putLong("last_update_check", v).apply()
 

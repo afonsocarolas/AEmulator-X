@@ -134,7 +134,7 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
     var hostUi by remember { mutableStateOf(AppPrefs.hostUiOptions(ctx)) }
     val scope = rememberCoroutineScope()
     var autoUpdates by remember { mutableStateOf(AppPrefs.autoCheckUpdates(ctx)) }
-    var library3d by remember { mutableStateOf(AppPrefs.library3d(ctx)) }
+    var libraryLayout by remember { mutableStateOf(AppPrefs.libraryLayout(ctx)) }
     var updateState by remember { mutableStateOf<UpdateState>(UpdateState.Idle) }
     var downloadJob by remember { mutableStateOf<Job?>(null) }
 
@@ -240,9 +240,31 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
 
             item {
                 Section(stringResource(R.string.as_appearance)) {
-                    Toggle(stringResource(R.string.as_library_3d), stringResource(R.string.as_library_3d_sub), library3d) {
-                        library3d = it; AppPrefs.setLibrary3d(ctx, it)
+                    // AEmulator X: List / Square grid / 3D instead of the 3D on/off switch
+                    Text(stringResource(R.string.x_lib_layout), style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))
+                    val layouts = listOf(AppPrefs.LAYOUT_LIST to R.string.x_lib_list, AppPrefs.LAYOUT_GRID to R.string.x_lib_grid,
+                        AppPrefs.LAYOUT_3D to R.string.x_lib_3d)
+                    Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
+                        layouts.forEachIndexed { i, (id, res) ->
+                            ToggleButton(
+                                checked = libraryLayout == id,
+                                onCheckedChange = { libraryLayout = id; AppPrefs.setLibraryLayout(ctx, id) },
+                                shapes = when (i) {
+                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                    layouts.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                },
+                                modifier = Modifier.weight(1f).semantics { role = Role.RadioButton },
+                                contentPadding = PaddingValues(horizontal = 8.dp),
+                            ) {
+                                Text(stringResource(res), maxLines = 1, softWrap = false,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, style = MaterialTheme.typography.labelLarge)
+                            }
+                        }
                     }
+                    Text(stringResource(R.string.x_lib_layout_sub), style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 8.dp))
                     if (app.aemu.core.HostDisplayPolicy.rotateWindow(ctx.resources.configuration.smallestScreenWidthDp)) {
                         Toggle(stringResource(R.string.as_tablet_navbar_rotation), stringResource(R.string.as_tablet_navbar_rotation_sub), hostUi.tabletNavbarRotation) {
                             hostUi = hostUi.copy(tabletNavbarRotation = it); AppPrefs.setHostUiOptions(ctx, hostUi)

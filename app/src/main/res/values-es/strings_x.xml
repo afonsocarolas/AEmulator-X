@@ -23,4 +23,10 @@
     <string name="x_bs_no_fw">No hay archivos de sonido en este firmware</string>
     <string name="x_bs_preview">Escuchar</string>
     <string name="x_bs_import_failed">No se pudo usar ese archivo</string>
+    <!-- square grid library -->
+    <string name="x_lib_layout">Diseño de la biblioteca</string>
+    <string name="x_lib_list">Lista</string>
+    <string name="x_lib_grid">Cuadrícula</string>
+    <string name="x_lib_3d">3D</string>
+    <string name="x_lib_layout_sub">Cómo se muestra la biblioteca de firmwares: lista de tarjetas, mosaicos cuadrados con la última pantalla de cada sistema o teléfonos 3D por los que deslizas.</string>
 </resources>

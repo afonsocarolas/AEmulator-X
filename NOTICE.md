@@ -28,6 +28,11 @@ The Plus notice below, with its credits and history, is kept unchanged.
     without a `build.prop`; profile version 16 re-analyses earlier imports (`Analyzer.kt`, `EffectiveApiTest.kt`).
   - Framebuffer fallback: firmware that composites into fb0 and never draws through the GPU bridge (T-Mobile G1
     1.6) is shown from fb0 once boot completes (`GuestVm.kt` `fbDrawnAt`, `VmActivity.kt`).
+- **2026-10-16**: AEmulator X4 (`0.0.0.2.13-x4`).
+  - Host chip: MediaTek Helio G81 Ultra (MT6769 platform) recognised (`SocCompatibility.kt`, `SocCompatibilityTest.kt`).
+  - Square grid library: `libraryLayout` app setting (List / Square grid / 3D, replaces the 3D switch; `AppPrefs.kt`,
+    `AppSettingsActivity.kt`), square tiles (`app/src/main/java/app/aemu/ui/LibraryGrid.kt`, `MainActivity.kt`; the
+    thumbnail helpers in `Library3D.kt` are now shared), strings in `strings_x.xml`.
 
 ---
 
