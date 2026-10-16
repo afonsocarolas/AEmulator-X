@@ -22,8 +22,15 @@ class SocCompatibilityTest {
         assertEquals(SocCompatibility.Family.HELIO, SocCompatibility.family("MediaTek Helio G81 Ultra", ""))
         assertEquals(SocCompatibility.Family.HELIO, SocCompatibility.family("Helio G85", ""))
     }
+    // AEmulator X: Kirin 980 (Huawei P30 Pro); EMUI on Android 9/10 has no SOC_MODEL, only Build.HARDWARE
+    @Test fun recognizesKirin980() {
+        assertEquals(SocCompatibility.Family.KIRIN, SocCompatibility.family("", "kirin980"))
+        assertEquals(SocCompatibility.Family.KIRIN, SocCompatibility.family("Kirin 980", ""))
+        assertEquals(SocCompatibility.Family.KIRIN, SocCompatibility.family("HiSilicon Kirin980", ""))
+        assertEquals(SocCompatibility.Family.KIRIN, SocCompatibility.family("hi3680", ""))
+    }
     @Test fun unknownOrOtherMediaTekIsNotSilentlyWhitelisted() {
-        for (model in listOf("", "unknown", "Exynos 2400", "Unisoc T610", "Helio G99", "MT6789", "MT9999"))
+        for (model in listOf("", "unknown", "Exynos 2400", "Unisoc T610", "Helio G99", "MT6789", "MT9999", "kirin970", "Kirin 990"))
             assertEquals(SocCompatibility.Family.UNVERIFIED, SocCompatibility.family(model, ""))
     }
 }
