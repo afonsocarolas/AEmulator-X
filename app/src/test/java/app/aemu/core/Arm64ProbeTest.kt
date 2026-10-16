@@ -33,6 +33,17 @@ class Arm64ProbeTest {
         } finally { dir.deleteRecursively() }
     }
 
+    @Test fun interpreterIsRewrittenInPlace() {
+        val dir = Files.createTempDirectory("patch").toFile()
+        try {
+            val sh = File(dir, "sh").apply { writeBytes(elf64(183, "/system/bin/linker64")) }
+            val out = Arm64Probe.patchInterp(sh, File(dir, "sh-d"), "./linker64")!!
+            assertEquals("./linker64", Arm64Probe.elf(out)!!.interp)
+            assertEquals(sh.length(), out.length())
+            assertNull(Arm64Probe.patchInterp(sh, File(dir, "sh-x"), "/a/path/that/is/far/too/long/linker64"))
+        } finally { dir.deleteRecursively() }
+    }
+
     @Test fun absoluteLinksResolveInsideTheGuestTree() {
         val root = Files.createTempDirectory("root").toFile()
         try {

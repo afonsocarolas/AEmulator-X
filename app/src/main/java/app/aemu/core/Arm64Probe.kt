@@ -51,10 +51,10 @@ object Arm64Probe {
         val hostLinker = File("/system/bin/linker64")
         val guestLibs = listOf(lib64.path, File(root, "vendor/lib64").path, File(root, "system/vendor/lib64").path).joinToString(":")
 
-        fun test(tag: String, what: String, cmd: List<String>, env: Map<String, String>) {
+        fun test(tag: String, what: String, cmd: List<String>, env: Map<String, String>, cwd: File? = null) {
             appendLine("\n[$tag] $what")
             appendLine("    $ ${cmd.joinToString(" ") { it.substringAfterLast('/') }}${if (env.isNotEmpty()) "   (${env.keys.joinToString()})" else ""}")
-            val r = exec(cmd, env)
+            val r = exec(cmd, env, cwd)
             appendLine("    exit: ${r.first}")
             r.second.lines().filter { it.isNotBlank() }.take(12).forEach { appendLine("    | ${it.take(200)}") }
             appendLine("    => ${if (r.second.contains("AEMU_PROBE_OK")) "WORKS" else "fails"}")
@@ -72,14 +72,23 @@ object Arm64Probe {
                 test("C", "guest linker + guest shell + guest libraries", listOf(linkerCopy.path, shCopy.path, "-c", SCRIPT),
                     mapOf("LD_LIBRARY_PATH" to guestLibs))
             else appendLine("\n[C] skipped: firmware has no linker64")
+            // D: linkers before Android 10 cannot be handed a program on their command line (C then only prints its
+            // usage). The real way: the kernel starts the program's PT_INTERP. A copy of the shell gets "./linker64",
+            // relative to the working directory, i.e. the guest linker copied next to it.
+            val patched = if (linkerCopy != null) patchInterp(shCopy, File(dir, "sh-d"), "./linker64") else null
+            if (patched != null)
+                test("D", "guest shell started by the kernel with the guest linker + guest libraries",
+                    listOf(patched.path, "-c", SCRIPT), mapOf("LD_LIBRARY_PATH" to guestLibs), cwd = dir)
+            else if (linkerCopy != null) appendLine("\n[D] skipped: could not point the shell at the guest linker")
         }
         dir.deleteRecursively()
         appendLine("\nPlease send this whole report to the AEmulator X developer.")
     }
 
     /** exit code (or a reason) and combined output, killed after 10 s. */
-    private fun exec(cmd: List<String>, env: Map<String, String>): Pair<String, String> = runCatching {
+    private fun exec(cmd: List<String>, env: Map<String, String>, cwd: File? = null): Pair<String, String> = runCatching {
         val pb = ProcessBuilder(cmd).redirectErrorStream(true)
+        if (cwd != null) pb.directory(cwd)
         pb.environment().putAll(env)
         val p = pb.start()
         val out = StringBuilder()
@@ -107,6 +116,32 @@ object Arm64Probe {
         }
         return null
     }
+
+    /**
+     * Copy of [src] whose PT_INTERP says [interp] instead (written in place, NUL-padded, so it must not be longer than
+     * the old path; the kernel reads the path through p_offset/p_filesz and stops at the first NUL).
+     */
+    internal fun patchInterp(src: File, dst: File, interp: String): File? = runCatching {
+        val bytes = src.readBytes()
+        val b = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+        if (bytes.size < 64 || bytes[4].toInt() != 2) return null // 64-bit only
+        val phoff = b.getLong(0x20).toInt()
+        val phentsize = b.getShort(0x36).toInt() and 0xffff
+        val phnum = b.getShort(0x38).toInt() and 0xffff
+        for (i in 0 until phnum) {
+            val ph = phoff + i * phentsize
+            if (b.getInt(ph) != 3) continue
+            val off = b.getLong(ph + 0x08).toInt()
+            val size = b.getLong(ph + 0x20).toInt()
+            val new = interp.toByteArray(Charsets.US_ASCII)
+            if (new.size + 1 > size) return null
+            for (j in 0 until size) bytes[off + j] = if (j < new.size) new[j] else 0
+            dst.writeBytes(bytes)
+            dst.setExecutable(true, false); dst.setReadable(true, false)
+            return dst
+        }
+        null
+    }.getOrNull()
 
     private fun copyExec(src: File, dst: File): File? = runCatching {
         src.inputStream().use { i -> dst.outputStream().use { o -> i.copyTo(o) } }
