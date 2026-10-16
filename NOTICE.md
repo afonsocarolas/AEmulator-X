@@ -46,6 +46,15 @@ The Plus notice below, with its credits and history, is kept unchanged.
   - AEmulator X themes (System, Violet, Ocean, Sunset, Emerald, Rose, Mono) for the scheme and brand gradient
     (`XStyle.kt` `XThemes`, `Theme.kt`, `AppPrefs.kt`, `AppSettingsActivity.kt`).
   - Start on 64-bit firmware shows an explanation instead of running the 32-bit engine (`VmActivity.kt`).
+  - Host chip: HiSilicon Kirin 980 recognised (`SocCompatibility.kt`, `SocCompatibilityTest.kt`).
+- **2026-10-16**: AEmulator X7 (`0.0.0.2.13-x7`).
+  - Play time per firmware (`app/src/main/java/app/aemu/core/PlayStats.kt`, `VmActivity.kt`).
+  - Favourites, search and sort for the library (`app/src/main/java/app/aemu/ui/LibrarySort.kt`, `MainActivity.kt`,
+    `LibraryGrid.kt`, `AppPrefs.kt`; tests in `LibrarySortTest.kt`).
+  - Home screen shortcuts (`app/src/main/java/app/aemu/core/HomeShortcut.kt`).
+  - Screenshots and recordings gallery (`app/src/main/java/app/aemu/ui/GalleryActivity.kt`, `AndroidManifest.xml`,
+    `res/xml/file_paths.xml`).
+  - On-screen game buttons (`app/src/main/java/app/aemu/ui/GamePadOverlay.kt`, `VmActivity.kt`).
 
 ---
 
