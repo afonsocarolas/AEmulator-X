@@ -40,4 +40,21 @@
     <!-- Start on 64-bit firmware -->
     <string name="x_arm64_start_title">This firmware is 64-bit</string>
     <string name="x_arm64_start_text">%1$s is 64-bit (arm64) firmware. AEmulator X’s engine can only boot 32-bit firmware, so starting it would just make every system service crash.\n\nExperimental 64-bit tools are in this firmware’s settings (⚙), at the bottom.</string>
+    <!-- controllers, tile pictures, themes -->
+    <string name="x_pad_title">Game controller</string>
+    <string name="x_pad_sub">Bluetooth or USB gamepads. Now: %1$s</string>
+    <string name="x_pad_auto">Automatic</string>
+    <string name="x_pad_gamepad">Gamepad buttons</string>
+    <string name="x_pad_classic">Classic phone keys</string>
+    <string name="x_cover_choose">Choose picture</string>
+    <string name="x_cover_remove">Remove picture</string>
+    <string name="x_cover_failed">Could not use that picture</string>
+    <string name="x_theme_title">AEmulator X theme</string>
+    <string name="x_theme_system">System</string>
+    <string name="x_theme_violet">Violet</string>
+    <string name="x_theme_ocean">Ocean</string>
+    <string name="x_theme_sunset">Sunset</string>
+    <string name="x_theme_emerald">Emerald</string>
+    <string name="x_theme_rose">Rose</string>
+    <string name="x_theme_mono">Mono</string>
 </resources>

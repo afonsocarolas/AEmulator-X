@@ -51,6 +51,33 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.aemu.R
 import app.aemu.core.GuestImage
+import app.aemu.core.TileCover
+import android.graphics.BitmapFactory
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.rounded.HideImage
+import androidx.compose.material.icons.rounded.Image
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlin.concurrent.thread
+
+/** The user's tile picture (TileCover), decoded off the main thread; null when there is none. */
+@Composable
+private fun rememberCover(id: String, rev: Int): ImageBitmap? {
+    val ctx = LocalContext.current
+    val cover by produceState<ImageBitmap?>(null, id, rev) {
+        value = withContext(Dispatchers.IO) {
+            runCatching { TileCover.file(ctx, id).takeIf { it.isFile }?.let { BitmapFactory.decodeFile(it.path)?.asImageBitmap() } }.getOrNull()
+        }
+    }
+    return cover
+}
 
 /**
  * One firmware as a square glass tile: its last screen (thumbnail) fills the tile under a dark scrim, the gradient
@@ -70,7 +97,18 @@ internal fun SquareTile(
     onDelete: () -> Unit,
 ) {
     var menu by remember { mutableStateOf(false) }
-    val thumb = rememberThumbnail(img, refresh)
+    val ctx = LocalContext.current
+    // AEmulator X: the user's own picture wins over the last screen; [coverRev] reloads it after a change
+    var coverRev by remember { mutableIntStateOf(0) }
+    val cover = rememberCover(img.id, refresh + coverRev)
+    val hasCover = cover != null
+    val thumb = cover ?: rememberThumbnail(img, refresh)
+    val pickCover = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) thread { val ok = TileCover.save(ctx, img.id, uri)
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                if (ok) coverRev++ else Toast.makeText(ctx, R.string.x_cover_failed, Toast.LENGTH_SHORT).show()
+            } }
+    }
     val shape = RoundedCornerShape(24.dp)
     val startLabel = stringResource(if (active) R.string.open_vm else R.string.start)
     Box(
@@ -110,6 +148,11 @@ internal fun SquareTile(
                         onClick = { menu = false; onSettings() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.rename)) }, leadingIcon = { Icon(Icons.Rounded.Edit, null) },
                         onClick = { menu = false; onRename() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_cover_choose)) }, leadingIcon = { Icon(Icons.Rounded.Image, null) },
+                        onClick = { menu = false; pickCover.launch(arrayOf("image/*")) })
+                    if (hasCover) DropdownMenuItem(text = { Text(stringResource(R.string.x_cover_remove)) },
+                        leadingIcon = { Icon(Icons.Rounded.HideImage, null) },
+                        onClick = { menu = false; TileCover.remove(ctx, img.id); coverRev++ })
                     DropdownMenuItem(text = { Text(stringResource(R.string.delete)) }, leadingIcon = { Icon(Icons.Rounded.Delete, null) },
                         onClick = { menu = false; onDelete() })
                 }

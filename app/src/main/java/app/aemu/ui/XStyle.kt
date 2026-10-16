@@ -12,6 +12,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -47,16 +50,67 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.cos
 import kotlin.math.sin
 
-/** The X brand colours: electric violet → magenta → cyan. */
+/**
+ * An AEmulator X colour style: the three gradient colours ([a] → [b] → [c]) of the wordmark, badges, buttons and
+ * aurora, plus the Material seed of the whole scheme ([seed] null = keep the system/dynamic/accent scheme).
+ */
+data class XTheme(val id: String, val label: Int, val seed: Long?, val a: Long, val b: Long, val c: Long)
+
+object XThemes {
+    val ALL = listOf(
+        XTheme("system", app.aemu.R.string.x_theme_system, null, 0xFF7C4DFF, 0xFFE040FB, 0xFF18FFFF),
+        XTheme("violet", app.aemu.R.string.x_theme_violet, 0xFF6A3DF0, 0xFF7C4DFF, 0xFFE040FB, 0xFF18FFFF),
+        XTheme("ocean", app.aemu.R.string.x_theme_ocean, 0xFF0277BD, 0xFF1A49FF, 0xFF00B8D4, 0xFF64FFDA),
+        XTheme("sunset", app.aemu.R.string.x_theme_sunset, 0xFFE64A19, 0xFFFF1744, 0xFFFF6D00, 0xFFFFD600),
+        XTheme("emerald", app.aemu.R.string.x_theme_emerald, 0xFF2E7D32, 0xFF00C853, 0xFF76FF03, 0xFFB9F6CA),
+        XTheme("rose", app.aemu.R.string.x_theme_rose, 0xFFD81B60, 0xFFF50057, 0xFFFF6E6E, 0xFFFFCCBC),
+        XTheme("mono", app.aemu.R.string.x_theme_mono, 0xFF616161, 0xFF424242, 0xFF9E9E9E, 0xFFFAFAFA),
+    )
+    fun byId(id: String?) = ALL.firstOrNull { it.id == id } ?: ALL[0]
+}
+
+/** The X brand colours, following the chosen [XTheme] (AemuTheme sets [theme] before drawing its content). */
 object XBrand {
-    val Violet = Color(0xFF7C4DFF)
-    val Magenta = Color(0xFFE040FB)
-    val Cyan = Color(0xFF18FFFF)
+    @Volatile var theme: XTheme = XThemes.ALL[0]
+    /** first, middle and last gradient colour (named after the original violet theme) */
+    val Violet: Color get() = Color(theme.a)
+    val Magenta: Color get() = Color(theme.b)
+    val Cyan: Color get() = Color(theme.c)
     val Rec = Color(0xFFFF1744)
 
     val gradient: Brush get() = Brush.linearGradient(listOf(Violet, Magenta, Cyan))
     fun sweep(alpha: Float = 1f): Brush =
         Brush.sweepGradient(listOf(Violet, Magenta, Cyan, Violet).map { it.copy(alpha = alpha) })
+}
+
+/** App settings › Appearance: one gradient swatch per [XThemes] entry; [set] gets the chosen id. */
+@Composable
+fun XThemePicker(current: String, set: (String) -> Unit) {
+    Text(androidx.compose.ui.res.stringResource(app.aemu.R.string.x_theme_title), style = MaterialTheme.typography.labelLarge,
+        modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))
+    Row(Modifier.horizontalScroll(androidx.compose.foundation.rememberScrollState()).padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        XThemes.ALL.forEach { t ->
+            val selected = t.id == current
+            androidx.compose.foundation.layout.Column(
+                Modifier.clip(RoundedCornerShape(12.dp)).clickable { set(t.id) }.padding(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
+                    Modifier.size(48.dp).clip(CircleShape)
+                        .background(Brush.linearGradient(listOf(Color(t.a), Color(t.b), Color(t.c))))
+                        .border(if (selected) 3.dp else 1.dp,
+                            if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outlineVariant, CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (selected) androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Rounded.Check, null,
+                        tint = Color.White, modifier = Modifier.size(24.dp))
+                }
+                Text(androidx.compose.ui.res.stringResource(t.label), style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(top = 4.dp))
+            }
+        }
+    }
 }
 
 /** Is the current scheme dark (follows the user's theme choice, not only the system one). */

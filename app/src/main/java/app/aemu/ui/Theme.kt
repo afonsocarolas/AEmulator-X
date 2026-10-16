@@ -125,7 +125,12 @@ fun AemuTheme(forceDark: Boolean? = null, content: @Composable () -> Unit) {
         else -> isSystemInDarkTheme()
     }
     val accent = app.aemu.AppPrefs.accentColor(ctx)
+    // AEmulator X: a chosen colour style overrides the accent/dynamic scheme and recolours the brand gradient
+    val xt = XThemes.byId(app.aemu.AppPrefs.xTheme(ctx))
+    XBrand.theme = xt
     val scheme = when {
+        xt.id == "violet" -> if (dark) Dark else Light
+        xt.seed != null -> schemeFromSeed(Color(xt.seed), dark)
         accent != 0 -> schemeFromSeed(Color(accent), dark)
         Build.VERSION.SDK_INT >= 31 && app.aemu.AppPrefs.dynamicColor(ctx) -> if (dark) dynamicDarkColorScheme(ctx) else dynamicLightColorScheme(ctx)
         dark -> Dark

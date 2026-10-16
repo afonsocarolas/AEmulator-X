@@ -219,6 +219,7 @@ fun SettingsSheet(img: GuestImage, onDismiss: () -> Unit, onSave: (VmSettings) -
             NavigationSettings(s) { s = it }
             Toggle(stringResource(R.string.vs_awake), stringResource(R.string.vs_awake_sub), s.keepScreenOn) { s = s.copy(keepScreenOn = it) }
             Toggle(stringResource(R.string.vs_single), stringResource(R.string.vs_single_sub), s.mtMode == 4) { s = s.copy(mtMode = if (it) 4 else 0) }
+            ControllerPicker(s.controllerMode, img.api) { s = s.copy(controllerMode = it) } // AEmulator X
 
             Spacer(Modifier.height(16.dp))
             VmExportSection(img, s, resetting) { resetting = it }
@@ -306,6 +307,29 @@ private fun WifiFields(s: VmSettings, set: (VmSettings) -> Unit) {
         modifier = Modifier.fillMaxWidth(),
     )
     Toggle(stringResource(R.string.vs_wifi_neighbors), stringResource(R.string.vs_wifi_neighbors_sub), s.wifiNeighbors) { set(s.copy(wifiNeighbors = it)) }
+}
+
+/** AEmulator X: game controller mapping (automatic / gamepad buttons / classic phone keys). */
+@Composable
+private fun ControllerPicker(mode: Int, api: Int, set: (Int) -> Unit) {
+    var open by remember { mutableStateOf(false) }
+    val labels = listOf(R.string.x_pad_auto, R.string.x_pad_gamepad, R.string.x_pad_classic).map { stringResource(it) }
+    val current = mode.coerceIn(0, 2)
+    val effective = labels[app.aemu.core.GamepadMap.resolve(mode, api)]
+    ListItem(
+        headlineContent = { Text(stringResource(R.string.x_pad_title)) },
+        supportingContent = { Text(stringResource(R.string.x_pad_sub, effective)) },
+        trailingContent = {
+            Box {
+                TextButton(onClick = { open = true }) { Text(labels[current]) }
+                DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                    labels.forEachIndexed { i, label -> DropdownMenuItem(text = { Text(label) }, onClick = { open = false; set(i) }) }
+                }
+            }
+        },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 /** Disabled / 0° / 180° / no-gyroscope list for the host motion sensors. */

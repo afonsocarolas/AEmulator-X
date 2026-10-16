@@ -112,6 +112,10 @@ object AppPrefs {
     fun library3d(ctx: Context): Boolean = sp(ctx).getBoolean("library_3d", false)
     fun setLibrary3d(ctx: Context, v: Boolean) = sp(ctx).edit().putBoolean("library_3d", v).apply()
 
+    /** AEmulator X: colour style id (ui/XStyle.kt XThemes); "system" keeps the accent/dynamic colours. */
+    fun xTheme(ctx: Context): String = sp(ctx).getString("x_theme", "system") ?: "system"
+    fun setXTheme(ctx: Context, id: String) = sp(ctx).edit().putString("x_theme", id).apply()
+
     /** AEmulator X: library layout, [LAYOUT_LIST] / [LAYOUT_GRID] / [LAYOUT_3D]; before X it was only the 3D flag above. */
     const val LAYOUT_LIST = "list"
     const val LAYOUT_GRID = "grid"

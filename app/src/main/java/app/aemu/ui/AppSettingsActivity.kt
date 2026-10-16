@@ -135,6 +135,7 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
     val scope = rememberCoroutineScope()
     var autoUpdates by remember { mutableStateOf(AppPrefs.autoCheckUpdates(ctx)) }
     var libraryLayout by remember { mutableStateOf(AppPrefs.libraryLayout(ctx)) }
+    var xTheme by remember { mutableStateOf(AppPrefs.xTheme(ctx)) }
     var updateState by remember { mutableStateOf<UpdateState>(UpdateState.Idle) }
     var downloadJob by remember { mutableStateOf<Job?>(null) }
 
@@ -240,6 +241,7 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
 
             item {
                 Section(stringResource(R.string.as_appearance)) {
+                    XThemePicker(xTheme) { xTheme = it; AppPrefs.setXTheme(ctx, it); onRestyle() }
                     // AEmulator X: List / Square grid / 3D instead of the 3D on/off switch
                     Text(stringResource(R.string.x_lib_layout), style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))

@@ -415,6 +415,7 @@ class VmActivity : ComponentActivity() {
         captureThumbnail()
         orientationListener?.disable()
         heldNavKeys.releaseAll()
+        if (::vm.isInitialized) padAxes.releaseAll()
         if (::vm.isInitialized) { vm.cameraVisible(false); vm.micVisible(false); vm.motionVisible(false) }
         super.onPause()
     }
@@ -473,15 +474,47 @@ class VmActivity : ComponentActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        val code = map(keyCode) ?: return super.onKeyDown(keyCode, event)
+        val code = padKey(keyCode, event) ?: map(keyCode) ?: return super.onKeyDown(keyCode, event)
         if (event.repeatCount == 0) vm.input.key(code, true)
         return true
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        val code = map(keyCode) ?: return super.onKeyUp(keyCode, event)
+        val code = padKey(keyCode, event) ?: map(keyCode) ?: return super.onKeyUp(keyCode, event)
         vm.input.key(code, false)
         return true
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: game controllers
+
+    private fun padMode() = app.aemu.core.GamepadMap.resolve(vm.settings.controllerMode, vm.img.api)
+
+    private fun isPad(event: android.view.InputEvent) =
+        event.isFromSource(android.view.InputDevice.SOURCE_GAMEPAD) || event.isFromSource(android.view.InputDevice.SOURCE_JOYSTICK)
+
+    /** Controller buttons and D-pad → guest codes; null for keys that do not come from a controller. */
+    private fun padKey(keyCode: Int, event: KeyEvent): Int? {
+        if (!::vm.isInitialized || vm.recoveryMode) return null
+        if (!isPad(event) && !KeyEvent.isGamepadButton(keyCode)) return null
+        return app.aemu.core.GamepadMap.key(keyCode, padMode())
+    }
+
+    private val padAxes by lazy { app.aemu.core.GamepadMap.Axes { code, down -> vm.input.key(code, down) } }
+
+    override fun onGenericMotionEvent(event: android.view.MotionEvent): Boolean {
+        if (::vm.isInitialized && !vm.recoveryMode && event.isFromSource(android.view.InputDevice.SOURCE_JOYSTICK) &&
+            event.action == android.view.MotionEvent.ACTION_MOVE) {
+            fun axis(a: Int) = event.getAxisValue(a)
+            // the hat (many pads send their D-pad as HAT_X/Y) wins over a resting left stick
+            val hx = axis(android.view.MotionEvent.AXIS_HAT_X); val hy = axis(android.view.MotionEvent.AXIS_HAT_Y)
+            val x = if (kotlin.math.abs(hx) > 0.1f) hx else axis(android.view.MotionEvent.AXIS_X)
+            val y = if (kotlin.math.abs(hy) > 0.1f) hy else axis(android.view.MotionEvent.AXIS_Y)
+            val l2 = maxOf(axis(android.view.MotionEvent.AXIS_LTRIGGER), axis(android.view.MotionEvent.AXIS_BRAKE))
+            val r2 = maxOf(axis(android.view.MotionEvent.AXIS_RTRIGGER), axis(android.view.MotionEvent.AXIS_GAS))
+            padAxes.update(x, y, l2, r2, padMode())
+            return true
+        }
+        return super.onGenericMotionEvent(event)
     }
 
     private fun recoveryKeys() = ::vm.isInitialized && vm.recoveryMode
