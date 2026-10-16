@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit
  */
 object Arm64Probe {
     private const val SCRIPT = "echo AEMU_PROBE_OK; uname -m; echo \"sh=\$0\""
+    /** E: every external command here must come from the firmware's toybox */
+    private const val SCRIPT_E = "echo AEMU_PROBE_OK; uname -m; uname -r; toybox --version; echo \"cmd uname: \$(command -v uname)\"; ls / | head -n 4"
     private const val EM_AARCH64 = 183
 
     data class Elf(val is64: Boolean, val machine: Int, val interp: String?, val static: Boolean)
@@ -80,6 +82,20 @@ object Arm64Probe {
                 test("D", "guest shell started by the kernel with the guest linker + guest libraries",
                     listOf(patched.path, "-c", SCRIPT), mapOf("LD_LIBRARY_PATH" to guestLibs), cwd = dir)
             else if (linkerCopy != null) appendLine("\n[D] skipped: could not point the shell at the guest linker")
+
+            // E: D's shell found the host's uname in the host /system/bin. Put the firmware's own toybox (same
+            // ./linker64 fix) and links for a few of its commands first on PATH, so the commands are the firmware's.
+            val toybox = resolve(root, "/system/bin/toybox")
+            val bin = File(dir, "bin").apply { mkdirs() }
+            val toyCopy = if (patched != null && toybox != null) patchInterp(toybox, File(bin, "toybox"), "./linker64") else null
+            if (toyCopy != null) {
+                val applets = listOf("uname", "ls", "cat", "head")
+                val linked = applets.count { a -> runCatching { android.system.Os.symlink("toybox", File(bin, a).path) }.isSuccess }
+                appendLine("\nguest toybox: ${describe(toybox!!)}; linked $linked/${applets.size} commands")
+                test("E", "guest shell + the firmware's own commands first on PATH",
+                    listOf(patched!!.path, "-c", SCRIPT_E),
+                    mapOf("LD_LIBRARY_PATH" to guestLibs, "PATH" to "${bin.path}:/system/bin"), cwd = dir)
+            } else appendLine("\n[E] skipped: ${if (toybox == null) "firmware has no toybox" else "D could not be prepared"}")
         }
         dir.deleteRecursively()
         appendLine("\nPlease send this whole report to the AEmulator X developer.")
