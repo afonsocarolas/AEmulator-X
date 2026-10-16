@@ -39,6 +39,7 @@ import androidx.compose.material.icons.rounded.Screenshot
 import androidx.compose.material.icons.rounded.FiberManualRecord
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.SportsEsports
+import androidx.compose.material.icons.rounded.Cast
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.mutableLongStateOf
@@ -554,6 +555,7 @@ class VmActivity : ComponentActivity() {
         orientationListener?.disable()
         vmRoot = null
         heldNavKeys.releaseAll()
+        stopVnc()
         finishRecordingBlocking()
         if (::guest.isInitialized) guest.stop()
         shellRx?.let { runCatching { unregisterReceiver(it) } }
@@ -782,6 +784,128 @@ class VmActivity : ComponentActivity() {
         if (::vm.isInitialized) vm.audio.tap = null
         runOnUiThread { recStartedAt = 0L }
         rec.stop()?.let { toast(getString(R.string.x_rec_saved, it)) }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: VNC server
+
+    @Volatile private var vncServer: app.aemu.core.VncServer? = null
+    private var vncAddress by mutableStateOf<String?>(null)
+    private var vncViewers by mutableStateOf(0)
+    private var vncDialog by mutableStateOf(false)
+    @Volatile private var vncButtons = 0
+
+    private fun startVnc() {
+        if (vncServer != null) { vncDialog = true; return }
+        val g = guest
+        if (g.w <= 0 || g.h <= 0) return
+        val srv = app.aemu.core.VncServer("AEmulator X - ${vm.img.name}", app.aemu.core.VncServer.newPassword(),
+            ::vncPointer, ::vncKey, vm::log)
+        thread(name = "aemu-vnc") {
+            val port = runCatching { srv.start(5900) }.getOrElse { toast(getString(R.string.x_vnc_failed, it.message.orEmpty())); return@thread }
+            srv.onViewers = { n -> runOnUiThread { vncViewers = n } }
+            vncServer = srv
+            val ip = localIp()
+            runOnUiThread { vncAddress = "${ip ?: "?"}:$port"; vncDialog = true }
+            vncGrab(srv)
+        }
+    }
+
+    private fun stopVnc() {
+        val s = vncServer ?: return
+        vncServer = null
+        s.stop()
+        vncAddress = null; vncViewers = 0; vncDialog = false
+        if (vncButtons and 1 != 0) runCatching { vm.input.touch(emptyList(), true) }
+        vncButtons = 0
+    }
+
+    /** Left button = finger (drags too), right button = Back, middle button = Home; coordinates are guest pixels. */
+    private fun vncPointer(x: Int, y: Int, buttons: Int) {
+        if (!::vm.isInitialized) return
+        val was = vncButtons; vncButtons = buttons
+        if (buttons and 1 != 0) vm.input.touch(listOf(app.aemu.core.InputService.P(0, x, y)), was and 1 == 0)
+        else if (was and 1 != 0) vm.input.touch(emptyList(), true)
+        fun press(code: Int) { vm.input.key(code, true); vm.input.key(code, false) }
+        if (buttons and 4 != 0 && was and 4 == 0) press(app.aemu.core.InputService.KEY_BACK)
+        if (buttons and 2 != 0 && was and 2 == 0) press(app.aemu.core.InputService.KEY_HOME)
+    }
+
+    private fun vncKey(keysym: Int, down: Boolean) {
+        if (!::vm.isInitialized) return
+        app.aemu.core.VncKeys.linux(keysym)?.let { vm.input.key(it, down) }
+    }
+
+    /** The phone's Wi-Fi/LAN IPv4 address, for the "connect to" text. */
+    private fun localIp(): String? = runCatching {
+        java.net.NetworkInterface.getNetworkInterfaces().toList()
+            .filter { it.isUp && !it.isLoopback }
+            .sortedByDescending { it.name.startsWith("wlan") }
+            .flatMap { it.inetAddresses.toList() }
+            .firstOrNull { it is java.net.Inet4Address && it.isSiteLocalAddress }?.hostAddress
+    }.getOrNull()
+
+    /** Feeds the server the guest screen at its own resolution: 15 fps with a viewer, 2 fps waiting for one. */
+    private fun vncGrab(srv: app.aemu.core.VncServer) {
+        val copyThread = android.os.HandlerThread("aemu-vnc-copy").apply { start() }
+        val copyHandler = android.os.Handler(copyThread.looper)
+        var copyBmp: android.graphics.Bitmap? = null
+        var fbGrab: app.aemu.core.ScreenRecorder.FbGrabber? = null
+        var px = IntArray(0)
+        try {
+            while (vncServer === srv) {
+                val started = android.os.SystemClock.uptimeMillis()
+                val g = guest
+                val w = g.w; val h = g.h
+                if (px.size != w * h) px = IntArray(w * h)
+                if (g.passthrough && surfaceView.width > 0 && surfaceView.height > 0 && surfaceView.holder.surface.isValid) {
+                    val b = copyBmp?.takeIf { it.width == w && it.height == h }
+                        ?: android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888).also { copyBmp = it }
+                    val done = java.util.concurrent.CountDownLatch(1)
+                    val ok = java.util.concurrent.atomic.AtomicBoolean(false)
+                    runCatching {
+                        android.view.PixelCopy.request(surfaceView, b, { r -> ok.set(r == android.view.PixelCopy.SUCCESS); done.countDown() }, copyHandler)
+                    }.onFailure { done.countDown() }
+                    if (done.await(250, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                        if (ok.get()) { b.getPixels(px, 0, w, 0, 0, w, h); srv.submitFrame(px, w, h) }
+                    } else copyBmp = null // a late copy may still write into it
+                } else {
+                    val fg = fbGrab?.takeIf { it.bitmap.width == w && it.bitmap.height == h }
+                        ?: app.aemu.core.ScreenRecorder.FbGrabber(w, h).also { fbGrab = it }
+                    val fmt = if (vm.recoveryMode) vm.recoveryFormat else g.format
+                    if (fg.grab(g.fb, fmt, g.pages, g.shownPage)) { fg.bitmap.getPixels(px, 0, w, 0, 0, w, h); srv.submitFrame(px, w, h) }
+                }
+                val period = if (srv.viewerCount > 0) 66L else 500L
+                val rest = period - (android.os.SystemClock.uptimeMillis() - started)
+                if (rest > 0) Thread.sleep(rest)
+            }
+        } catch (_: InterruptedException) {
+        } finally { copyThread.quitSafely() }
+    }
+
+    @Composable
+    private fun VncInfoDialog() {
+        val srv = vncServer ?: return
+        AlertDialog(
+            onDismissRequest = { vncDialog = false },
+            icon = { Icon(Icons.Rounded.Cast, null) },
+            title = { Text(stringResource(R.string.x_vnc_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(stringResource(R.string.x_vnc_connect))
+                    androidx.compose.foundation.text.selection.SelectionContainer {
+                        Column {
+                            Text(vncAddress.orEmpty(), style = MaterialTheme.typography.headlineSmall)
+                            Text(stringResource(R.string.x_vnc_password, srv.password), style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+                    Text(stringResource(R.string.x_vnc_viewers, vncViewers), style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.x_vnc_hint), style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            },
+            confirmButton = { TextButton(onClick = { stopVnc() }) { Text(stringResource(R.string.x_vnc_stop)) } },
+            dismissButton = { TextButton(onClick = { vncDialog = false }) { Text(stringResource(R.string.close)) } },
+        )
     }
 
     // integrated adb shell: one persistent guest sh, history survives closing the dialog
@@ -1100,6 +1224,20 @@ class VmActivity : ComponentActivity() {
                     .clickable(onClickLabel = stringResource(R.string.x_rec_stop)) { stopRecording() })
             }
 
+            // AEmulator X: VNC server pill (tap for address/password/stop) and its dialog
+            if (vncAddress != null && !showLog) {
+                Surface(shape = CircleShape, color = Color.Black.copy(alpha = 0.6f),
+                    modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = if (recStartedAt != 0L) 48.dp else 8.dp)
+                        .clickable { vncDialog = true }) {
+                    Row(Modifier.padding(horizontal = 12.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Rounded.Cast, null, tint = XBrand.Cyan, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(R.string.x_vnc_pill, vncViewers), color = Color.White, style = MaterialTheme.typography.labelLarge)
+                    }
+                }
+            }
+            if (vncDialog) VncInfoDialog()
+
             // AEmulator X: on-screen game buttons, through the same mapping as a real controller
             LaunchedEffect(Unit) { padVisible = uiPrefs.getBoolean("game_pad", false) }
             if (padVisible && !showLog && running) GamePadOverlay(onKey = { keyCode, down ->
@@ -1169,6 +1307,11 @@ class VmActivity : ComponentActivity() {
                         leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
                         trailingIcon = { if (padVisible) Icon(Icons.Rounded.Check, null) },
                         onClick = { menu = false; padVisible = !padVisible; uiPrefs.edit().putBoolean("game_pad", padVisible).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_vnc_title)) },
+                        leadingIcon = { Icon(Icons.Rounded.Cast, null) },
+                        trailingIcon = { if (vncAddress != null) Icon(Icons.Rounded.Check, null) },
+                        enabled = running || vncAddress != null,
+                        onClick = { menu = false; if (vncServer == null) startVnc() else vncDialog = true })
                     DropdownMenuItem(text = { Text(stringResource(R.string.m_save_logs)) }, leadingIcon = { Icon(Icons.Rounded.Download, null) },
                         onClick = { menu = false; saveLogs() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.m_settings)) }, leadingIcon = { Icon(Icons.Rounded.Settings, null) },

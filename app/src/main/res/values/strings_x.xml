@@ -75,4 +75,13 @@
     <string name="x_gallery_share">Share</string>
     <string name="x_gallery_delete_q">Delete this file?</string>
     <string name="x_pad_buttons">Game buttons</string>
+    <!-- VNC server -->
+    <string name="x_vnc_title">VNC server</string>
+    <string name="x_vnc_connect">Connect any VNC viewer (RealVNC Viewer, TigerVNC, bVNC…) on the same Wi-Fi to:</string>
+    <string name="x_vnc_password">Password: %1$s</string>
+    <string name="x_vnc_viewers">Viewers connected: %1$d</string>
+    <string name="x_vnc_hint">Click = tap, right-click = Back, middle-click = Home, Esc = Back. The password changes every time you start the server.</string>
+    <string name="x_vnc_stop">Stop server</string>
+    <string name="x_vnc_pill">VNC · %1$d</string>
+    <string name="x_vnc_failed">Could not start the VNC server: %1$s</string>
 </resources>

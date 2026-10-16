@@ -74,4 +74,13 @@
     <string name="x_gallery_share">Поделиться</string>
     <string name="x_gallery_delete_q">Удалить этот файл?</string>
     <string name="x_pad_buttons">Игровые кнопки</string>
+    <!-- VNC server -->
+    <string name="x_vnc_title">VNC-сервер</string>
+    <string name="x_vnc_connect">Подключите любой VNC-клиент (RealVNC Viewer, TigerVNC, bVNC…) в той же сети Wi-Fi к:</string>
+    <string name="x_vnc_password">Пароль: %1$s</string>
+    <string name="x_vnc_viewers">Подключено клиентов: %1$d</string>
+    <string name="x_vnc_hint">Клик = касание, правый клик = Назад, средний клик = Домой, Esc = Назад. Пароль меняется при каждом запуске сервера.</string>
+    <string name="x_vnc_stop">Остановить сервер</string>
+    <string name="x_vnc_pill">VNC · %1$d</string>
+    <string name="x_vnc_failed">Не удалось запустить VNC-сервер: %1$s</string>
 </resources>

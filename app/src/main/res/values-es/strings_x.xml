@@ -74,4 +74,13 @@
     <string name="x_gallery_share">Compartir</string>
     <string name="x_gallery_delete_q">¿Eliminar este archivo?</string>
     <string name="x_pad_buttons">Botones de juego</string>
+    <!-- VNC server -->
+    <string name="x_vnc_title">Servidor VNC</string>
+    <string name="x_vnc_connect">Conecta cualquier visor VNC (RealVNC Viewer, TigerVNC, bVNC…) en la misma red Wi-Fi a:</string>
+    <string name="x_vnc_password">Contraseña: %1$s</string>
+    <string name="x_vnc_viewers">Visores conectados: %1$d</string>
+    <string name="x_vnc_hint">Clic = toque, clic derecho = Atrás, clic central = Inicio, Esc = Atrás. La contraseña cambia cada vez que inicias el servidor.</string>
+    <string name="x_vnc_stop">Detener servidor</string>
+    <string name="x_vnc_pill">VNC · %1$d</string>
+    <string name="x_vnc_failed">No se pudo iniciar el servidor VNC: %1$s</string>
 </resources>
