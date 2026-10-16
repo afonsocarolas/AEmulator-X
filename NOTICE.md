@@ -33,6 +33,11 @@ The Plus notice below, with its credits and history, is kept unchanged.
   - Square grid library: `libraryLayout` app setting (List / Square grid / 3D, replaces the 3D switch; `AppPrefs.kt`,
     `AppSettingsActivity.kt`), square tiles (`app/src/main/java/app/aemu/ui/LibraryGrid.kt`, `MainActivity.kt`; the
     thumbnail helpers in `Library3D.kt` are now shared), strings in `strings_x.xml`.
+- **2026-10-16**: AEmulator X5 (`0.0.0.2.13-x5`): experimental 64-bit probe for arm64 firmware
+  (`app/src/main/java/app/aemu/core/Arm64Probe.kt`, `app/src/main/java/app/aemu/ui/Arm64ProbeSection.kt`,
+  `SettingsSheet.kt`, `strings_x.xml`; tests in `Arm64ProbeTest.kt`). Runs the firmware's shell natively in five ways
+  (host or guest linker and libraries, a PT_INTERP-rewritten copy started by the kernel, the firmware's toybox first on
+  PATH) and reports the result; it never writes into the firmware tree.
 
 ---
 

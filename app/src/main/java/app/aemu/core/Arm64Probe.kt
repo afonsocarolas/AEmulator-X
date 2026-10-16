@@ -18,8 +18,11 @@ import java.util.concurrent.TimeUnit
  *   A  host linker64 + guest sh + host libraries      does native exec of a guest arm64 binary work at all?
  *   B  host linker64 + guest sh + guest libraries     can the firmware's own bionic run under today's linker?
  *   C  guest linker64 + guest sh + guest libraries    can the firmware's own linker run on this kernel?
+ *   D  guest sh with PT_INTERP "./linker64"           the kernel starts the guest linker (pre-10 linkers need this)
+ *   E  D + the firmware's toybox first on PATH        are the commands the firmware's own?
  *
- * B and C are the interesting ones: C is what a native 64-bit engine would need (plus path redirection and binder).
+ * Seen on Oreo firmware + Android 16 host (2026-10-16): A, D and E work, B crashes, C only prints the old linker's usage.
+ * A native 64-bit engine would still need a file view (absolute paths into the firmware), binder, properties and GL.
  */
 object Arm64Probe {
     private const val SCRIPT = "echo AEMU_PROBE_OK; uname -m; echo \"sh=\$0\""
