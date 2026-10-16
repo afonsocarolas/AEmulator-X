@@ -38,6 +38,14 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `SettingsSheet.kt`, `strings_x.xml`; tests in `Arm64ProbeTest.kt`). Runs the firmware's shell natively in five ways
   (host or guest linker and libraries, a PT_INTERP-rewritten copy started by the kernel, the firmware's toybox first on
   PATH) and reports the result; it never writes into the firmware tree.
+- **2026-10-16**: AEmulator X6 (`0.0.0.2.13-x6`).
+  - Game controllers: host gamepad buttons, D-pad, sticks, hat and triggers to guest Linux key codes, gamepad or
+    classic phone-key mapping per VM (`app/src/main/java/app/aemu/core/GamepadMap.kt`, `VmActivity.kt`,
+    `GuestImage.kt` `controllerMode`, `SettingsSheet.kt`; tests in `GamepadMapTest.kt`).
+  - Custom tile pictures for the square grid (`app/src/main/java/app/aemu/core/TileCover.kt`, `LibraryGrid.kt`).
+  - AEmulator X themes (System, Violet, Ocean, Sunset, Emerald, Rose, Mono) for the scheme and brand gradient
+    (`XStyle.kt` `XThemes`, `Theme.kt`, `AppPrefs.kt`, `AppSettingsActivity.kt`).
+  - Start on 64-bit firmware shows an explanation instead of running the 32-bit engine (`VmActivity.kt`).
 
 ---
 
