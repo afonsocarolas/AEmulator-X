@@ -57,4 +57,22 @@
     <string name="x_theme_emerald">Emerald</string>
     <string name="x_theme_rose">Rose</string>
     <string name="x_theme_mono">Mono</string>
+    <!-- library tools, gallery, game buttons -->
+    <string name="x_search">Search</string>
+    <string name="x_search_hint">Search by name, version, skin or model</string>
+    <string name="x_sort">Sort</string>
+    <string name="x_sort_name">Name</string>
+    <string name="x_sort_version">Android version</string>
+    <string name="x_sort_recent">Recently played</string>
+    <string name="x_sort_added">Recently added</string>
+    <string name="x_fav_add">Add to favourites</string>
+    <string name="x_fav_remove">Remove from favourites</string>
+    <string name="x_shortcut">Add to home screen</string>
+    <string name="x_shortcut_unsupported">Your launcher does not support shortcuts</string>
+    <string name="x_played">Played %1$s · last %2$s</string>
+    <string name="x_gallery">Screenshots &amp; recordings</string>
+    <string name="x_gallery_empty">No screenshots or screen recordings yet. Take them from a running system’s ⋮ menu.</string>
+    <string name="x_gallery_share">Share</string>
+    <string name="x_gallery_delete_q">Delete this file?</string>
+    <string name="x_pad_buttons">Game buttons</string>
 </resources>

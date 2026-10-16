@@ -37,6 +37,8 @@ import androidx.compose.material.icons.rounded.Keyboard
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.Screenshot
 import androidx.compose.material.icons.rounded.FiberManualRecord
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.SportsEsports
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.mutableLongStateOf
@@ -409,9 +411,22 @@ class VmActivity : ComponentActivity() {
         applyCutoutBarrier()
         orientationListener?.enable()
         if (::vm.isInitialized) { vm.cameraVisible(true); vm.micVisible(true); vm.motionVisible(true) }
+        playingSince = android.os.SystemClock.elapsedRealtime()
+    }
+
+    /** AEmulator X: play time counts while the VM screen is in front (PlayStats, shown in the library). */
+    private var playingSince = 0L
+
+    private fun countPlayTime() {
+        val since = playingSince; playingSince = 0L
+        if (since == 0L || !::vm.isInitialized) return
+        val ms = android.os.SystemClock.elapsedRealtime() - since
+        val id = vm.img.id
+        thread { app.aemu.core.PlayStats.add(applicationContext, id, ms) }
     }
 
     override fun onPause() {
+        countPlayTime()
         captureThumbnail()
         orientationListener?.disable()
         heldNavKeys.releaseAll()
@@ -498,6 +513,9 @@ class VmActivity : ComponentActivity() {
         if (!isPad(event) && !KeyEvent.isGamepadButton(keyCode)) return null
         return app.aemu.core.GamepadMap.key(keyCode, padMode())
     }
+
+    /** on-screen game buttons shown (menu toggle, remembered in vm_ui prefs) */
+    private var padVisible by mutableStateOf(false)
 
     private val padAxes by lazy { app.aemu.core.GamepadMap.Axes { code, down -> vm.input.key(code, down) } }
 
@@ -1082,6 +1100,12 @@ class VmActivity : ComponentActivity() {
                     .clickable(onClickLabel = stringResource(R.string.x_rec_stop)) { stopRecording() })
             }
 
+            // AEmulator X: on-screen game buttons, through the same mapping as a real controller
+            LaunchedEffect(Unit) { padVisible = uiPrefs.getBoolean("game_pad", false) }
+            if (padVisible && !showLog && running) GamePadOverlay(onKey = { keyCode, down ->
+                app.aemu.core.GamepadMap.key(keyCode, padMode())?.let { code -> vm.input.key(code, down) }
+            })
+
             // журнал
             AnimatedVisibility(visible = showLog, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.fillMaxSize()) {
                 LogPanel(onClose = { showLog = false })
@@ -1141,6 +1165,10 @@ class VmActivity : ComponentActivity() {
                     DropdownMenuItem(text = { Text(stringResource(if (recStartedAt != 0L) R.string.x_rec_stop else R.string.x_rec_start)) },
                         leadingIcon = { Icon(if (recStartedAt != 0L) Icons.Rounded.Stop else Icons.Rounded.FiberManualRecord, null, tint = XBrand.Rec) },
                         enabled = running || recStartedAt != 0L, onClick = { menu = false; toggleRecording() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_pad_buttons)) },
+                        leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
+                        trailingIcon = { if (padVisible) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; padVisible = !padVisible; uiPrefs.edit().putBoolean("game_pad", padVisible).apply() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.m_save_logs)) }, leadingIcon = { Icon(Icons.Rounded.Download, null) },
                         onClick = { menu = false; saveLogs() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.m_settings)) }, leadingIcon = { Icon(Icons.Rounded.Settings, null) },

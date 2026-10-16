@@ -75,6 +75,10 @@
         <activity android:name=".ui.RomCatalogActivity" android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
 
+        <!-- AEmulator X: screenshots and screen recordings -->
+        <activity android:name=".ui.GalleryActivity" android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
         <activity
             android:name=".ui.VmActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|density|uiMode|navigation"

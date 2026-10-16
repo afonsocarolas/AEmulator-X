@@ -56,4 +56,22 @@
     <string name="x_theme_emerald">Esmeralda</string>
     <string name="x_theme_rose">Rosa</string>
     <string name="x_theme_mono">Mono</string>
+    <!-- library tools, gallery, game buttons -->
+    <string name="x_search">Pesquisar</string>
+    <string name="x_search_hint">Pesquisar por nome, versão, interface ou modelo</string>
+    <string name="x_sort">Ordenar</string>
+    <string name="x_sort_name">Nome</string>
+    <string name="x_sort_version">Versão do Android</string>
+    <string name="x_sort_recent">Jogados recentemente</string>
+    <string name="x_sort_added">Adicionados recentemente</string>
+    <string name="x_fav_add">Adicionar aos favoritos</string>
+    <string name="x_fav_remove">Remover dos favoritos</string>
+    <string name="x_shortcut">Adicionar à tela inicial</string>
+    <string name="x_shortcut_unsupported">Seu launcher não suporta atalhos</string>
+    <string name="x_played">Jogado %1$s · último %2$s</string>
+    <string name="x_gallery">Capturas e gravações</string>
+    <string name="x_gallery_empty">Ainda não há capturas nem gravações de tela. Faça-as pelo menu ⋮ de um sistema em execução.</string>
+    <string name="x_gallery_share">Compartilhar</string>
+    <string name="x_gallery_delete_q">Excluir este arquivo?</string>
+    <string name="x_pad_buttons">Botões de jogo</string>
 </resources>

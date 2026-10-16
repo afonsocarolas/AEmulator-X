@@ -58,6 +58,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.rounded.HideImage
 import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
+import androidx.compose.material.icons.rounded.AddToHomeScreen
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.graphics.ImageBitmap
@@ -95,6 +98,10 @@ internal fun SquareTile(
     onSettings: () -> Unit,
     onRename: () -> Unit,
     onDelete: () -> Unit,
+    favorite: Boolean = false,
+    stats: app.aemu.core.PlayStats.Stats? = null,
+    onFavorite: () -> Unit = {},
+    onShortcut: () -> Unit = {},
 ) {
     var menu by remember { mutableStateOf(false) }
     val ctx = LocalContext.current
@@ -133,6 +140,8 @@ internal fun SquareTile(
         Row(Modifier.fillMaxWidth().padding(10.dp), verticalAlignment = Alignment.Top) {
             XBadge(img.release.take(3), size = 40.dp)
             Spacer(Modifier.weight(1f))
+            if (favorite) Icon(Icons.Rounded.Star, stringResource(R.string.x_fav_remove), tint = XBrand.Magenta,
+                modifier = Modifier.padding(top = 4.dp).size(20.dp))
             if (active) Box(Modifier.padding(top = 6.dp, end = 4.dp).size(10.dp).clip(CircleShape).background(XBrand.Cyan)
                 .border(2.dp, Color.Black.copy(alpha = 0.4f), CircleShape))
             Box {
@@ -148,6 +157,11 @@ internal fun SquareTile(
                         onClick = { menu = false; onSettings() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.rename)) }, leadingIcon = { Icon(Icons.Rounded.Edit, null) },
                         onClick = { menu = false; onRename() })
+                    DropdownMenuItem(text = { Text(stringResource(if (favorite) R.string.x_fav_remove else R.string.x_fav_add)) },
+                        leadingIcon = { Icon(if (favorite) Icons.Rounded.StarBorder else Icons.Rounded.Star, null) },
+                        onClick = { menu = false; onFavorite() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_shortcut)) }, leadingIcon = { Icon(Icons.Rounded.AddToHomeScreen, null) },
+                        onClick = { menu = false; onShortcut() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_cover_choose)) }, leadingIcon = { Icon(Icons.Rounded.Image, null) },
                         onClick = { menu = false; pickCover.launch(arrayOf("image/*")) })
                     if (hasCover) DropdownMenuItem(text = { Text(stringResource(R.string.x_cover_remove)) },
@@ -163,7 +177,8 @@ internal fun SquareTile(
             Text(img.name, color = Color.White, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(img.displayVersion, color = Color.White.copy(alpha = 0.8f), maxLines = 1, overflow = TextOverflow.Ellipsis,
+                val played = stats?.takeIf { it.totalMs >= 1000 }?.let { " · ⏱ " + app.aemu.core.PlayStats.duration(it.totalMs) }.orEmpty()
+                Text(img.displayVersion + played, color = Color.White.copy(alpha = 0.8f), maxLines = 1, overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.labelSmall, modifier = Modifier.weight(1f, fill = false))
                 Box(Modifier.size(26.dp).clip(CircleShape).background(XBrand.gradient), contentAlignment = Alignment.Center) {
                     Icon(Icons.Rounded.PlayArrow, null, tint = Color.White, modifier = Modifier.size(18.dp))

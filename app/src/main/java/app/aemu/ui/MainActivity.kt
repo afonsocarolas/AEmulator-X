@@ -109,6 +109,15 @@ import app.aemu.AppPrefs
 import app.aemu.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.SearchOff
+import androidx.compose.material.icons.rounded.PhotoLibrary
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
+import androidx.compose.material.icons.rounded.AddToHomeScreen
+import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.List
 import android.content.Context
 
@@ -179,6 +188,26 @@ fun Library(model: LibraryModel) {
     var layout by remember { mutableStateOf(AppPrefs.libraryLayout(ctx)) }
     val view3d = layout == AppPrefs.LAYOUT_3D
     val gridRefresh = rememberResumeCount()
+    // AEmulator X: search, sort, favourites, play time, home screen shortcuts
+    var searching by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
+    var sort by remember { mutableStateOf(LibrarySort.Sort.of(AppPrefs.librarySort(ctx))) }
+    var favorites by remember { mutableStateOf(AppPrefs.favorites(ctx)) }
+    var sortMenu by remember { mutableStateOf(false) }
+    var moreMenu by remember { mutableStateOf(false) }
+    val stats by androidx.compose.runtime.produceState(emptyMap<String, app.aemu.core.PlayStats.Stats>(), images, gridRefresh) {
+        value = withContext(Dispatchers.IO) { images.associate { it.id to app.aemu.core.PlayStats.read(ctx, it.id) } }
+    }
+    fun arrange(list: List<GuestImage>) = LibrarySort.apply(list, query, sort, favorites, stats)
+    fun toggleFavorite(img: GuestImage) {
+        val on = img.id !in favorites
+        AppPrefs.setFavorite(ctx, img.id, on)
+        favorites = if (on) favorites + img.id else favorites - img.id
+    }
+    fun shortcut(img: GuestImage) {
+        if (!app.aemu.core.HomeShortcut.pin(ctx, img))
+            android.widget.Toast.makeText(ctx, R.string.x_shortcut_unsupported, android.widget.Toast.LENGTH_SHORT).show()
+    }
     DisposableEffect(lifecycleOwner) {
         val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
             if (e == Lifecycle.Event.ON_RESUME) layout = AppPrefs.libraryLayout(ctx)
@@ -237,11 +266,36 @@ fun Library(model: LibraryModel) {
                     scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.85f),
                 ),
                 actions = {
-                    IconButton(onClick = { ctx.startActivity(Intent(ctx, RomCatalogActivity::class.java)) }) {
-                        Icon(Icons.Rounded.List, stringResource(R.string.catalog_title))
+                    IconButton(onClick = { searching = !searching; if (!searching) query = "" }) {
+                        Icon(if (searching) Icons.Rounded.SearchOff else Icons.Rounded.Search, stringResource(R.string.x_search))
                     }
-                    IconButton(onClick = { help = true }) { Icon(Icons.Rounded.Info, stringResource(R.string.help)) }
-                    IconButton(onClick = { ctx.startActivity(Intent(ctx, AppSettingsActivity::class.java)) }) { Icon(Icons.Rounded.Settings, stringResource(R.string.settings)) } },
+                    Box {
+                        IconButton(onClick = { sortMenu = true }) {
+                            Icon(androidx.compose.material.icons.Icons.AutoMirrored.Rounded.Sort, stringResource(R.string.x_sort))
+                        }
+                        androidx.compose.material3.DropdownMenu(expanded = sortMenu, onDismissRequest = { sortMenu = false }) {
+                            listOf(LibrarySort.Sort.NAME to R.string.x_sort_name, LibrarySort.Sort.VERSION to R.string.x_sort_version,
+                                LibrarySort.Sort.RECENT to R.string.x_sort_recent, LibrarySort.Sort.ADDED to R.string.x_sort_added).forEach { (s, res) ->
+                                androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(res)) },
+                                    leadingIcon = { if (s == sort) Icon(Icons.Rounded.Check, null) },
+                                    onClick = { sort = s; AppPrefs.setLibrarySort(ctx, s.id); sortMenu = false })
+                            }
+                        }
+                    }
+                    IconButton(onClick = { ctx.startActivity(Intent(ctx, GalleryActivity::class.java)) }) {
+                        Icon(Icons.Rounded.PhotoLibrary, stringResource(R.string.x_gallery))
+                    }
+                    IconButton(onClick = { ctx.startActivity(Intent(ctx, AppSettingsActivity::class.java)) }) { Icon(Icons.Rounded.Settings, stringResource(R.string.settings)) }
+                    Box {
+                        IconButton(onClick = { moreMenu = true }) { Icon(Icons.Rounded.MoreVert, stringResource(R.string.menu)) }
+                        androidx.compose.material3.DropdownMenu(expanded = moreMenu, onDismissRequest = { moreMenu = false }) {
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.catalog_title)) },
+                                leadingIcon = { Icon(Icons.Rounded.List, null) },
+                                onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, RomCatalogActivity::class.java)) })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.help)) },
+                                leadingIcon = { Icon(Icons.Rounded.Info, null) }, onClick = { moreMenu = false; help = true })
+                        }
+                    } },
                 scrollBehavior = scroll,
             )
         },
@@ -254,7 +308,12 @@ fun Library(model: LibraryModel) {
             )
         },
     ) { pad ->
+        // a Box, not a Column: inside a ColumnScope the import cards' AnimatedVisibility would resolve to the scoped variant
         Box(Modifier.fillMaxSize().padding(pad)) {
+        if (searching) OutlinedTextField(query, { query = it }, singleLine = true,
+            placeholder = { Text(stringResource(R.string.x_search_hint)) }, leadingIcon = { Icon(Icons.Rounded.Search, null) },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp))
+        Box(Modifier.fillMaxSize().padding(top = if (searching) 72.dp else 0.dp)) {
             if (images.isEmpty() && !imp.active) EmptyState(onHelp = { help = true })
             if (view3d && images.isNotEmpty()) Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
                 .padding(start = 16.dp, end = 16.dp, bottom = 120.dp)) {
@@ -267,7 +326,9 @@ fun Library(model: LibraryModel) {
                 }
                 // imported firmwares first, then the containers made from them; remembered so the carousel is not
                 // handed a new list on every progress tick of a running import
-                val ordered = remember(images) { images.filter { it.baseId.isEmpty() } + images.filter { it.baseId.isNotEmpty() } }
+                val ordered = remember(images, query, sort, favorites, stats) {
+                    arrange(images.filter { it.baseId.isEmpty() }) + arrange(images.filter { it.baseId.isNotEmpty() })
+                }
                 Library3D(
                     ordered,
                     activeVmId,
@@ -293,8 +354,8 @@ fun Library(model: LibraryModel) {
                         ImportCard(imp, onCancel = model::cancelImport, onDismiss = model::dismissImport)
                     }
                 }
-                val systems = images.filter { it.baseId.isEmpty() }
-                val containers = images.filter { it.baseId.isNotEmpty() }
+                val systems = arrange(images.filter { it.baseId.isEmpty() })
+                val containers = arrange(images.filter { it.baseId.isNotEmpty() })
                 for ((title, list) in listOf(R.string.section_systems to systems, R.string.section_containers to containers)) {
                     if (list.isEmpty()) continue
                     item(key = "h$title", span = full) {
@@ -312,6 +373,10 @@ fun Library(model: LibraryModel) {
                             onSettings = { settingsFor = img },
                             onRename = { renameFor = img },
                             onDelete = { deleteFor = img },
+                            favorite = img.id in favorites,
+                            stats = stats[img.id],
+                            onFavorite = { toggleFavorite(img) },
+                            onShortcut = { shortcut(img) },
                         )
                     }
                 }
@@ -328,8 +393,8 @@ fun Library(model: LibraryModel) {
                     }
                 }
                 // two sections: imported firmwares ("systems") and the containers made from them
-                val systems = images.filter { it.baseId.isEmpty() }
-                val containers = images.filter { it.baseId.isNotEmpty() }
+                val systems = arrange(images.filter { it.baseId.isEmpty() })
+                val containers = arrange(images.filter { it.baseId.isNotEmpty() })
                 for ((title, list) in listOf(R.string.section_systems to systems, R.string.section_containers to containers)) {
                     if (list.isEmpty()) continue
                     item(key = "h$title") {
@@ -346,11 +411,16 @@ fun Library(model: LibraryModel) {
                             onDelete = { deleteFor = img },
                             baseName = images.firstOrNull { it.id == img.baseId }?.name,
                             active = activeVmId == img.id,
+                            favorite = img.id in favorites,
+                            stats = stats[img.id],
+                            onFavorite = { toggleFavorite(img) },
+                            onShortcut = { shortcut(img) },
                         )
                         }
                     }
                 }
             }
+        }
         }
     }
     } // AuroraBackground
@@ -569,7 +639,8 @@ private fun ImportCard(s: ImportState, onCancel: () -> Unit, onDismiss: () -> Un
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
-private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Unit, onRename: () -> Unit, onDelete: () -> Unit, baseName: String? = null, active: Boolean = false) {
+private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Unit, onRename: () -> Unit, onDelete: () -> Unit, baseName: String? = null, active: Boolean = false,
+                      favorite: Boolean = false, stats: app.aemu.core.PlayStats.Stats? = null, onFavorite: () -> Unit = {}, onShortcut: () -> Unit = {}) {
     val ctx = LocalContext.current
     val lowPowerLabel = stringResource(R.string.lpm_start)
     // AEmulator X: glass card, gradient release badge, gradient Start button
@@ -582,6 +653,13 @@ private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Un
                     Text(img.name, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     Text(img.displayVersion, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
+                // AEmulator X: favourite and home screen shortcut
+                IconButton(onClick = onFavorite) {
+                    Icon(if (favorite) Icons.Rounded.Star else Icons.Rounded.StarBorder,
+                        stringResource(if (favorite) R.string.x_fav_remove else R.string.x_fav_add),
+                        tint = if (favorite) XBrand.Magenta else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                IconButton(onClick = onShortcut) { Icon(Icons.Rounded.AddToHomeScreen, stringResource(R.string.x_shortcut)) }
             }
             Spacer(Modifier.height(10.dp))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -594,6 +672,9 @@ private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Un
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             if (img.lastBootMs > 0) Text(stringResource(R.string.last_boot, (img.lastBootMs / 1000).toInt()), style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (stats != null && stats.totalMs >= 1000) Text(stringResource(R.string.x_played, app.aemu.core.PlayStats.duration(stats.totalMs),
+                android.text.format.DateUtils.getRelativeTimeSpanString(stats.lastPlayedAt).toString()),
+                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             img.warnings.firstOrNull()?.let { Text("⚠ " + ImportWarnings.text(ctx, it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary) }
             Spacer(Modifier.height(12.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {

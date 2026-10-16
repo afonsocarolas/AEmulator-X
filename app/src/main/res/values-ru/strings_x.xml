@@ -56,4 +56,22 @@
     <string name="x_theme_emerald">Изумруд</string>
     <string name="x_theme_rose">Роза</string>
     <string name="x_theme_mono">Моно</string>
+    <!-- library tools, gallery, game buttons -->
+    <string name="x_search">Поиск</string>
+    <string name="x_search_hint">Поиск по названию, версии, оболочке или модели</string>
+    <string name="x_sort">Сортировка</string>
+    <string name="x_sort_name">По названию</string>
+    <string name="x_sort_version">По версии Android</string>
+    <string name="x_sort_recent">Недавно запущенные</string>
+    <string name="x_sort_added">Недавно добавленные</string>
+    <string name="x_fav_add">В избранное</string>
+    <string name="x_fav_remove">Убрать из избранного</string>
+    <string name="x_shortcut">На главный экран</string>
+    <string name="x_shortcut_unsupported">Ваш лаунчер не поддерживает ярлыки</string>
+    <string name="x_played">Сыграно %1$s · последний раз %2$s</string>
+    <string name="x_gallery">Скриншоты и записи</string>
+    <string name="x_gallery_empty">Пока нет скриншотов и записей экрана. Их можно сделать в меню ⋮ запущенной системы.</string>
+    <string name="x_gallery_share">Поделиться</string>
+    <string name="x_gallery_delete_q">Удалить этот файл?</string>
+    <string name="x_pad_buttons">Игровые кнопки</string>
 </resources>

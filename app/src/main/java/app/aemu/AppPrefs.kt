@@ -112,6 +112,15 @@ object AppPrefs {
     fun library3d(ctx: Context): Boolean = sp(ctx).getBoolean("library_3d", false)
     fun setLibrary3d(ctx: Context, v: Boolean) = sp(ctx).edit().putBoolean("library_3d", v).apply()
 
+    /** AEmulator X: favourite firmware ids (shown first in the library). */
+    fun favorites(ctx: Context): Set<String> = sp(ctx).getStringSet("favorites", emptySet())?.toSet() ?: emptySet()
+    fun setFavorite(ctx: Context, id: String, on: Boolean) =
+        sp(ctx).edit().putStringSet("favorites", favorites(ctx).let { if (on) it + id else it - id }).apply()
+
+    /** AEmulator X: library sort order (ui/LibrarySort.Sort id). */
+    fun librarySort(ctx: Context): String = sp(ctx).getString("library_sort", "name") ?: "name"
+    fun setLibrarySort(ctx: Context, id: String) = sp(ctx).edit().putString("library_sort", id).apply()
+
     /** AEmulator X: colour style id (ui/XStyle.kt XThemes); "system" keeps the accent/dynamic colours. */
     fun xTheme(ctx: Context): String = sp(ctx).getString("x_theme", "system") ?: "system"
     fun setXTheme(ctx: Context, id: String) = sp(ctx).edit().putString("x_theme", id).apply()
