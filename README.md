@@ -45,7 +45,7 @@ AEmulator X boots a real Android 2.3–7.x system image straight from a firmware
 
 - Android 8.0+ on a 64-bit ARM phone (arm64-v8a)
 - About 1–3 GB of free space per firmware
-- A recent Snapdragon / Dimensity / Tensor chip is recommended; AEmulator X also supports the MediaTek Helio G81 Ultra (MT6769 platform, Mali-G52 GPU; tested on a real device) and the HiSilicon Kirin 980 (Huawei P30 / P30 Pro, Mate 20; Mali-G76 GPU)
+- A recent Snapdragon / Dimensity / Tensor chip is recommended; AEmulator X also supports the MediaTek Helio G81 Ultra (MT6769 platform, Mali-G52 GPU; tested on a real device) and the HiSilicon Kirin 980 (Huawei P30 / P30 Pro, Mate 20; Mali-G76 GPU; tested on a real P30 Pro)
 
 ## ⚙️ How it works
 
