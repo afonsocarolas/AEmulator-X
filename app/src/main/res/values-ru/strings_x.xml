@@ -29,4 +29,11 @@
     <string name="x_lib_grid">Плитки</string>
     <string name="x_lib_3d">3D</string>
     <string name="x_lib_layout_sub">Как показывать библиотеку прошивок: списком карточек, квадратными плитками с последним экраном системы или 3D-телефонами, которые можно листать.</string>
+    <!-- 64-bit probe -->
+    <string name="x_probe_title">Эксперимент: 64-битная проба</string>
+    <string name="x_probe_run">Запустить пробу</string>
+    <string name="x_probe_running">Проверяем…</string>
+    <string name="x_probe_sub">Эта прошивка 64-битная, AEmulator пока не умеет её загружать. Проба пытается запустить её оболочку прямо на этом телефоне и сообщает результат. Ничего не меняет и ничего не загружает.</string>
+    <string name="x_probe_copy">Скопировать отчёт</string>
+    <string name="x_probe_copied">Отчёт скопирован</string>
 </resources>

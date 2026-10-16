@@ -29,4 +29,11 @@
     <string name="x_lib_grid">Grade</string>
     <string name="x_lib_3d">3D</string>
     <string name="x_lib_layout_sub">Como a biblioteca de firmwares é mostrada: lista de cartões, blocos quadrados com a última tela de cada sistema ou celulares 3D para deslizar.</string>
+    <!-- 64-bit probe -->
+    <string name="x_probe_title">Experimental: teste 64 bits</string>
+    <string name="x_probe_run">Executar o teste</string>
+    <string name="x_probe_running">Testando…</string>
+    <string name="x_probe_sub">Esta firmware é de 64 bits, que o AEmulator ainda não consegue iniciar. O teste tenta executar o shell dela diretamente neste celular e mostra o resultado. Não altera nem inicia nada.</string>
+    <string name="x_probe_copy">Copiar relatório</string>
+    <string name="x_probe_copied">Relatório copiado</string>
 </resources>

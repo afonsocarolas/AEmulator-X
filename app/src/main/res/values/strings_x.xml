@@ -30,4 +30,11 @@
     <string name="x_lib_grid">Square grid</string>
     <string name="x_lib_3d">3D</string>
     <string name="x_lib_layout_sub">How the firmware library is shown: a list of cards, square tiles with each system’s last screen, or 3D phones you swipe through.</string>
+    <!-- 64-bit probe -->
+    <string name="x_probe_title">Experimental: 64-bit probe</string>
+    <string name="x_probe_run">Run the probe</string>
+    <string name="x_probe_running">Probing…</string>
+    <string name="x_probe_sub">This firmware is 64-bit, which AEmulator cannot boot yet. The probe tries to run its shell directly on this phone and reports what happens. It changes nothing and boots nothing.</string>
+    <string name="x_probe_copy">Copy report</string>
+    <string name="x_probe_copied">Report copied</string>
 </resources>
