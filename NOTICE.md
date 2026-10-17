@@ -65,6 +65,8 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-17**: Relax mode (`app/src/main/java/app/aemu/ui/RelaxActivity.kt`, `app/src/main/java/app/aemu/core/OceanSound.kt`,
+  `MainActivity.kt`, `AndroidManifest.xml`; tests in `BreathingTest.kt`).
 - **2026-10-17**: AEmulator X9 (`0.0.0.2.13-x9`): full screen mode, Holo style, custom boot animation, built-in device skins.
 - **2026-10-17**: Holo style for the app (`XStyle.kt` `XTheme.holo`, `XSectionHeader`, `Theme.kt` HoloShapes,
   `MainActivity.kt`); custom boot animation (`app/src/main/java/app/aemu/core/BootAnimation.kt`, `GuestVm.kt`,

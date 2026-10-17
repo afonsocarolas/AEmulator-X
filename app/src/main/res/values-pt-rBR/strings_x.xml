@@ -106,4 +106,12 @@
     <string name="x_bootanim_custom">Minha animação</string>
     <string name="x_bootanim_pick">Escolher um bootanimation.zip…</string>
     <string name="x_bootanim_bad">Esse arquivo não é um bootanimation.zip (sem desc.txt)</string>
+    <!-- Relax mode -->
+    <string name="x_relax_title">Modo relaxar</string>
+    <string name="x_relax_in">Inspire</string>
+    <string name="x_relax_hold">Segure</string>
+    <string name="x_relax_out">Expire</string>
+    <string name="x_relax_done">Muito bem</string>
+    <string name="x_relax_sound">Som do mar</string>
+    <string name="x_relax_min">%1$d min</string>
 </resources>
