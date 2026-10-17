@@ -55,6 +55,8 @@ The Plus notice below, with its credits and history, is kept unchanged.
   - Screenshots and recordings gallery (`app/src/main/java/app/aemu/ui/GalleryActivity.kt`, `AndroidManifest.xml`,
     `res/xml/file_paths.xml`).
   - On-screen game buttons (`app/src/main/java/app/aemu/ui/GamePadOverlay.kt`, `VmActivity.kt`).
+- **2026-10-17**: AEmulator X8 (`0.0.0.2.13-x8`): the VNC server below (first pushed under x7), picture-in-picture,
+  Send to emulated phone and the home screen widget.
   - VNC server: RFB 3.3–3.8 with VNC authentication (own DES), changed-tile Raw updates, DesktopSize, any true-colour
     pixel format; pointer/keyboard into the guest (`app/src/main/java/app/aemu/core/VncServer.kt`, `VncDes.kt`,
     `VncKeys.kt`, `VmActivity.kt`; tests in `VncServerTest.kt`).
