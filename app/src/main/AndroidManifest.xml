@@ -75,6 +75,35 @@
         <activity android:name=".ui.RomCatalogActivity" android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
 
+        <!-- AEmulator X: quick-start home screen widget -->
+        <receiver
+            android:name=".ui.RecentWidget"
+            android:exported="true"
+            android:label="@string/x_widget_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_recent_info" />
+        </receiver>
+
+        <!-- AEmulator X: "Send to emulated phone" from Android's Share sheet -->
+        <activity
+            android:name=".ui.ShareActivity"
+            android:exported="true"
+            android:label="@string/x_send_label"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+
         <!-- AEmulator X: screenshots and screen recordings -->
         <activity android:name=".ui.GalleryActivity" android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
@@ -86,6 +115,7 @@
             android:launchMode="singleTask"
             android:process=":vm"
             android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
             android:screenOrientation="unspecified"
             android:theme="@style/Theme.AEmulator.Vm" />
 

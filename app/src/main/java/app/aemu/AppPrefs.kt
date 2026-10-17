@@ -10,6 +10,8 @@ import java.util.Locale
 /** Настройки самого приложения (не отдельной системы): язык, тема, умолчания для новых систем. */
 object AppPrefs {
     private const val FILE = "app"
+    /** name of the prefs file (shared_prefs/<name>.xml), for the VM process to read a setting fresh */
+    const val PREFS_NAME = FILE
 
     /** Языки интерфейса: код BCP-47 → самоназвание. Пустой код — как в системе. */
     val LANGUAGES = listOf(
@@ -111,6 +113,10 @@ object AppPrefs {
     /** Library shown as the 3D phone carousel instead of the card list. Off by default. */
     fun library3d(ctx: Context): Boolean = sp(ctx).getBoolean("library_3d", false)
     fun setLibrary3d(ctx: Context, v: Boolean) = sp(ctx).edit().putBoolean("library_3d", v).apply()
+
+    /** AEmulator X: leaving a running system shrinks it into a picture-in-picture window. */
+    fun pictureInPicture(ctx: Context): Boolean = sp(ctx).getBoolean("pip", true)
+    fun setPictureInPicture(ctx: Context, v: Boolean) = sp(ctx).edit().putBoolean("pip", v).apply()
 
     /** AEmulator X: favourite firmware ids (shown first in the library). */
     fun favorites(ctx: Context): Set<String> = sp(ctx).getStringSet("favorites", emptySet())?.toSet() ?: emptySet()

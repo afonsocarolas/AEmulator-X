@@ -58,6 +58,11 @@ The Plus notice below, with its credits and history, is kept unchanged.
   - VNC server: RFB 3.3–3.8 with VNC authentication (own DES), changed-tile Raw updates, DesktopSize, any true-colour
     pixel format; pointer/keyboard into the guest (`app/src/main/java/app/aemu/core/VncServer.kt`, `VncDes.kt`,
     `VncKeys.kt`, `VmActivity.kt`; tests in `VncServerTest.kt`).
+- **2026-10-17**: picture-in-picture for the VM screen (`AndroidManifest.xml`, `VmActivity.kt`, `AppPrefs.kt`,
+  `AppSettingsActivity.kt`); "Send to emulated phone" share target (`app/src/main/java/app/aemu/ui/ShareActivity.kt`,
+  `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
+  `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
+  `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
 
 ---
 

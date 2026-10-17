@@ -144,6 +144,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         model.refresh()
+        RecentWidget.refresh(this) // AEmulator X: favourites, names and play order may have changed
     }
 
     private fun handleView(i: Intent?) {

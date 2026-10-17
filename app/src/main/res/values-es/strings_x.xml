@@ -83,4 +83,15 @@
     <string name="x_vnc_stop">Detener servidor</string>
     <string name="x_vnc_pill">VNC · %1$d</string>
     <string name="x_vnc_failed">No se pudo iniciar el servidor VNC: %1$s</string>
+    <!-- picture-in-picture, send to emulated phone, widget -->
+    <string name="x_pip">Imagen en imagen</string>
+    <string name="x_pip_sub">Al salir de un sistema en marcha, se reduce a una pequeña ventana flotante.</string>
+    <string name="x_send_label">Enviar al teléfono emulado</string>
+    <string name="x_send_no_vm">Arranca un sistema en AEmulator X primero y vuelve a compartir.</string>
+    <string name="x_send_wait">Espera a que el sistema termine de arrancar y vuelve a compartir.</string>
+    <string name="x_send_start">Enviando %1$d archivo(s) al teléfono emulado…</string>
+    <string name="x_send_done">Listo: %1$d archivo(s) en Download, %2$d app(s) instalada(s), %3$d fallo(s)</string>
+    <string name="x_widget_title">AEmulator X</string>
+    <string name="x_widget_empty">Importa un firmware en AEmulator X</string>
+    <string name="x_widget_desc">Arranca tus sistemas favoritos y recientes</string>
 </resources>

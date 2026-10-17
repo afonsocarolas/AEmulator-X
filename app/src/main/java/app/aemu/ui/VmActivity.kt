@@ -394,6 +394,7 @@ class VmActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         if (!::vm.isInitialized) return
+        if (intent.action == ACTION_SEND_FILES) { receiveFiles(intent); return }
         val id = intent.getStringExtra(EXTRA_ID) ?: vm.img.id
         val charging = intent.getBooleanExtra(EXTRA_LOW_POWER, false)
         val recovery = intent.getBooleanExtra(EXTRA_RECOVERY, false)
@@ -426,8 +427,46 @@ class VmActivity : ComponentActivity() {
         thread { app.aemu.core.PlayStats.add(applicationContext, id, ms) }
     }
 
+    // ------------------------------------------------------------------ AEmulator X: picture-in-picture
+
+    /** the VM screen is a floating picture-in-picture window: overlays are hidden, play time keeps counting */
+    private var inPip by mutableStateOf(false)
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        enterPip()
+    }
+
+    private fun enterPip() {
+        if (!::vm.isInitialized || state != GuestVm.State.RUNNING || isInPictureInPictureMode) return
+        // the setting lives in the main process' prefs; read the file fresh, this process may hold an old copy
+        val on = runCatching {
+            java.io.File(applicationInfo.dataDir, "shared_prefs/${app.aemu.AppPrefs.PREFS_NAME}.xml").readText()
+                .let { !it.contains("name=\"pip\" value=\"false\"") }
+        }.getOrDefault(true)
+        if (!on || !packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_PICTURE_IN_PICTURE)) return
+        val g = guest
+        // Android only accepts ratios between 1:2.39 and 2.39:1
+        val w = g.w.coerceAtLeast(1); val h = g.h.coerceAtLeast(1)
+        val ratio = (w.toFloat() / h).coerceIn(1 / 2.39f, 2.39f)
+        val params = android.app.PictureInPictureParams.Builder()
+            .setAspectRatio(android.util.Rational((ratio * 1000).toInt(), 1000)).build()
+        runCatching { enterPictureInPictureMode(params) }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: android.content.res.Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        inPip = isInPictureInPictureMode
+        if (isInPictureInPictureMode) menuOpen = false
+    }
+
+    override fun onStop() {
+        countPlayTime() // also ends a picture-in-picture session
+        super.onStop()
+    }
+
     override fun onPause() {
-        countPlayTime()
+        if (!isInPictureInPictureMode) countPlayTime()
         captureThumbnail()
         orientationListener?.disable()
         heldNavKeys.releaseAll()
@@ -927,6 +966,44 @@ class VmActivity : ComponentActivity() {
         thread { shellSession().send(line) }
     }
 
+    /**
+     * AEmulator X "Send to emulated phone" (ShareActivity): every shared file is copied into the card's Download folder;
+     * APKs are installed with the guest's pm, other files are announced to its media scanner.
+     */
+    private fun receiveFiles(intent: Intent) {
+        val uris = buildList { intent.clipData?.let { c -> for (i in 0 until c.itemCount) c.getItemAt(i).uri?.let(::add) } }
+        if (uris.isEmpty()) return
+        val dir = app.aemu.core.Sdcard.hostDir(vm.paths)
+        if (dir == null) { toast(getString(R.string.m_failed)); return }
+        if (state != GuestVm.State.RUNNING) { toast(getString(R.string.x_send_wait)); return }
+        toast(getString(R.string.x_send_start, uris.size))
+        thread {
+            val down = java.io.File(dir, "Download").apply { mkdirs() }
+            var files = 0; var apps = 0; var failed = 0
+            for (u in uris) runCatching {
+                val raw = runCatching {
+                    contentResolver.query(u, arrayOf(android.provider.OpenableColumns.DISPLAY_NAME), null, null, null)
+                        ?.use { c -> if (c.moveToFirst()) c.getString(0) else null }
+                }.getOrNull() ?: u.lastPathSegment ?: "file"
+                val name = raw.replace(Regex("[/\\\\:*?\"<>|\\u0000-\\u001f]"), "_").take(120).ifBlank { "file" }
+                var dst = java.io.File(down, name); var n = 1
+                while (dst.exists()) dst = java.io.File(down, name.substringBeforeLast('.', name) + " ($n)" +
+                    (if ('.' in name) "." + name.substringAfterLast('.') else "")).also { n++ }
+                contentResolver.openInputStream(u)!!.use { i -> dst.outputStream().use { o -> i.copyTo(o) } }
+                val guestPath = vm.img.sdcardPath.trimEnd('/') + "/Download/" + dst.name
+                val apk = dst.name.endsWith(".apk", true) || contentResolver.getType(u) == "application/vnd.android.package-archive"
+                if (apk) {
+                    val out = runCatching { vm.guestShell("pm install -r " + q(guestPath), 300_000) }.getOrElse { it.toString() }
+                    if (out.contains("Success")) apps++ else { failed++; vm.log("send: pm install ${dst.name}: ${out.trim().take(200)}") }
+                } else {
+                    vm.guestShell("am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d " + q("file://$guestPath"), 30_000)
+                    files++
+                }
+            }.onFailure { failed++; vm.log("send: ${it.message}") }
+            toast(getString(R.string.x_send_done, files, apps, failed))
+        }
+    }
+
     // APK picked on the host: copied into the shared card folder, then installed by the guest's package manager
     private val pickApk = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri == null) return@registerForActivityResult
@@ -1186,6 +1263,8 @@ class VmActivity : ComponentActivity() {
         // как только гость начал рисовать — карточку убираем, остаётся маленький индикатор
         val drawing = frames > 30
         Box(Modifier.fillMaxSize()) {
+            // AEmulator X: in the picture-in-picture window only the firmware's screen is shown
+            if (inPip) return@Box
             if (!showLog) skinLayout?.keys?.forEach { (button, area) -> key(button, area) { SkinKeyZone(button, area) } }
             if (romNote.isNotBlank() && !vm.recoveryMode && !vm.lowPowerBoot && !showLog && !menu) {
                 Surface(shape = MaterialTheme.shapes.large,
@@ -1595,6 +1674,8 @@ class VmActivity : ComponentActivity() {
 
     companion object {
         const val EXTRA_ID = "id"
+        /** AEmulator X: files from ShareActivity (in the intent's ClipData, read permission granted) */
+        const val ACTION_SEND_FILES = "app.aemu.x.SEND_FILES"
         const val EXTRA_RECOVERY = "recovery"
         const val EXTRA_LOW_POWER = "low_power"
         fun start(ctx: Context, id: String, recovery: Boolean = false, lowPower: Boolean = false) {

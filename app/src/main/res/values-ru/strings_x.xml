@@ -83,4 +83,15 @@
     <string name="x_vnc_stop">Остановить сервер</string>
     <string name="x_vnc_pill">VNC · %1$d</string>
     <string name="x_vnc_failed">Не удалось запустить VNC-сервер: %1$s</string>
+    <!-- picture-in-picture, send to emulated phone, widget -->
+    <string name="x_pip">Картинка в картинке</string>
+    <string name="x_pip_sub">При выходе из запущенной системы она уменьшается до плавающего окна.</string>
+    <string name="x_send_label">Отправить в эмулятор</string>
+    <string name="x_send_no_vm">Сначала запустите систему в AEmulator X, затем поделитесь снова.</string>
+    <string name="x_send_wait">Дождитесь окончания загрузки системы и поделитесь снова.</string>
+    <string name="x_send_start">Отправка файлов (%1$d) в эмулятор…</string>
+    <string name="x_send_done">Готово: файлов в Download — %1$d, установлено приложений — %2$d, ошибок — %3$d</string>
+    <string name="x_widget_title">AEmulator X</string>
+    <string name="x_widget_empty">Импортируйте прошивку в AEmulator X</string>
+    <string name="x_widget_desc">Запуск избранных и недавних систем</string>
 </resources>
