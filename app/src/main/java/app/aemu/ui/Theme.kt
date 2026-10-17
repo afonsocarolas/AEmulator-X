@@ -56,6 +56,12 @@ private val AppShapes = Shapes(
     extraLarge = RoundedCornerShape(36.dp),
 )
 
+/** AEmulator X Holo style: Android 4.0 was almost square-cornered */
+private val HoloShapes = Shapes(
+    extraSmall = RoundedCornerShape(2.dp), small = RoundedCornerShape(2.dp), medium = RoundedCornerShape(2.dp),
+    large = RoundedCornerShape(2.dp), extraLarge = RoundedCornerShape(4.dp),
+)
+
 private val base = Typography()
 private val AppType = base.copy(
     displaySmall = base.displaySmall.copy(fontWeight = FontWeight.SemiBold),
@@ -119,7 +125,8 @@ fun AemuTheme(forceDark: Boolean? = null, content: @Composable () -> Unit) {
         onDispose { sp.unregisterOnSharedPreferenceChangeListener(l) }
     }
     rev.intValue
-    val dark = forceDark ?: when (app.aemu.AppPrefs.theme(ctx)) {
+    val holoX = XThemes.byId(app.aemu.AppPrefs.xTheme(ctx)).holo
+    val dark = forceDark ?: if (holoX) true else when (app.aemu.AppPrefs.theme(ctx)) {
         app.aemu.AppPrefs.THEME_LIGHT -> false
         app.aemu.AppPrefs.THEME_DARK -> true
         else -> isSystemInDarkTheme()
@@ -139,7 +146,7 @@ fun AemuTheme(forceDark: Boolean? = null, content: @Composable () -> Unit) {
     MaterialExpressiveTheme(
         colorScheme = scheme,
         motionScheme = MotionScheme.expressive(),
-        shapes = AppShapes,
+        shapes = if (xt.holo) HoloShapes else AppShapes,
         typography = AppType,
         content = content,
     )

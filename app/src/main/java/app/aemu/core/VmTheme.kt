@@ -102,6 +102,19 @@ object VmThemes {
             pressColor = 0xA633B5E5.toInt(), pressGlow = true, halo = true, builtIn = true),
         VmTheme("lollipop", "Lollipop 5.x", GlyphSet.LOLLIPOP, barColor = 0xFF000000.toInt(), iconColor = 0xFFFFFFFF.toInt(),
             pressColor = 0x40FFFFFF, pressGlow = true, builtIn = true),
+        // AEmulator X: device skins drawn in code (SkinArt); the picture is made on first use
+        VmTheme("skin-pebble", "Pebble White", GlyphSet.GINGERBREAD, barColor = 0xFF262626.toInt(), iconColor = 0xFFE6E6E6.toInt(),
+            frameColor = 0xFF101010.toInt(), frameImage = SkinArt.PEBBLE.file, skinScreen = SkinArt.PEBBLE.screen,
+            skinKeys = SkinArt.PEBBLE.keys, builtIn = true),
+        VmTheme("skin-slate", "Slate Black", GlyphSet.LOLLIPOP, barColor = 0xFF000000.toInt(), iconColor = 0xFFFFFFFF.toInt(),
+            pressColor = 0x40FFFFFF, pressGlow = true, frameColor = 0xFF0A0A0A.toInt(), frameImage = SkinArt.SLATE.file,
+            skinScreen = SkinArt.SLATE.screen, builtIn = true),
+        VmTheme("skin-slider", "Slider QWERTY", GlyphSet.GINGERBREAD, barColor = 0xFF262626.toInt(), iconColor = 0xFFE6E6E6.toInt(),
+            frameColor = 0xFF101010.toInt(), frameImage = SkinArt.SLIDER.file, skinScreen = SkinArt.SLIDER.screen,
+            skinKeys = SkinArt.SLIDER.keys, builtIn = true),
+        VmTheme("skin-tablet", "Tablet", GlyphSet.HOLO, barColor = 0xFF000000.toInt(), iconColor = 0xFFFFFFFF.toInt(),
+            pressColor = 0xA633B5E5.toInt(), pressGlow = true, halo = true, frameColor = 0xFF0A0A0A.toInt(),
+            frameImage = SkinArt.TABLET.file, skinScreen = SkinArt.TABLET.screen, builtIn = true),
     )
 
     /** Name to show: the two built-in looks that carry the app's own words are translated, everything else is as saved. */
@@ -159,7 +172,8 @@ object VmThemes {
         write(ctx, list)
         // pictures no theme uses any more
         val used = list.mapNotNull { it.frameImage }.toSet()
-        dir(ctx).listFiles()?.filter { it.name.endsWith(".img") && it.name !in used }?.forEach { it.delete() }
+        // built-in skin pictures (SkinArt) stay: they are shared and redrawn on demand
+        dir(ctx).listFiles()?.filter { it.name.endsWith(".img") && it.name !in used && !it.name.startsWith(SkinArt.PREFIX) }?.forEach { it.delete() }
         return theme
     }
 
@@ -167,7 +181,7 @@ object VmThemes {
         val list = custom(ctx)
         val gone = list.firstOrNull { it.id == id } ?: return
         write(ctx, list.filter { it.id != id })
-        gone.frameImage?.let { File(dir(ctx), it).delete() }
+        gone.frameImage?.takeIf { !it.startsWith(SkinArt.PREFIX) }?.let { File(dir(ctx), it).delete() }
         if (runCatching { String(choice(ctx).readFully()).trim() }.getOrNull() == id) select(ctx, "sunset")
     }
 
@@ -179,7 +193,11 @@ object VmThemes {
         return name
     }
 
-    fun imageFile(ctx: Context, t: VmTheme): File? = t.frameImage?.let { File(dir(ctx), it) }?.takeIf { it.isFile }
+    fun imageFile(ctx: Context, t: VmTheme): File? {
+        // AEmulator X built-in skins are drawn the first time they are needed (also for themes copied from them)
+        SkinArt.byFile(t.frameImage)?.let { spec -> return SkinArt.ensure(dir(ctx), spec) }
+        return t.frameImage?.let { File(dir(ctx), it) }?.takeIf { it.isFile }
+    }
 
     /** A shareable .aetheme file: the theme as JSON, its frame picture embedded. */
     fun export(ctx: Context, t: VmTheme): ByteArray {

@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -54,7 +56,9 @@ import kotlin.math.sin
  * An AEmulator X colour style: the three gradient colours ([a] → [b] → [c]) of the wordmark, badges, buttons and
  * aurora, plus the Material seed of the whole scheme ([seed] null = keep the system/dynamic/accent scheme).
  */
-data class XTheme(val id: String, val label: Int, val seed: Long?, val a: Long, val b: Long, val c: Long)
+data class XTheme(val id: String, val label: Int, val seed: Long?, val a: Long, val b: Long, val c: Long,
+                  /** Android 4.0 Holo look: always dark, flat panels with thin blue lines, square corners, no aurora */
+                  val holo: Boolean = false)
 
 object XThemes {
     val ALL = listOf(
@@ -65,6 +69,7 @@ object XThemes {
         XTheme("emerald", app.aemu.R.string.x_theme_emerald, 0xFF2E7D32, 0xFF00C853, 0xFF76FF03, 0xFFB9F6CA),
         XTheme("rose", app.aemu.R.string.x_theme_rose, 0xFFD81B60, 0xFFF50057, 0xFFFF6E6E, 0xFFFFCCBC),
         XTheme("mono", app.aemu.R.string.x_theme_mono, 0xFF616161, 0xFF424242, 0xFF9E9E9E, 0xFFFAFAFA),
+        XTheme("holo", app.aemu.R.string.x_theme_holo, 0xFF33B5E5, 0xFF0099CC, 0xFF33B5E5, 0xFF8AD5F0, holo = true),
     )
     fun byId(id: String?) = ALL.firstOrNull { it.id == id } ?: ALL[0]
 }
@@ -131,6 +136,16 @@ fun AuroraBackground(modifier: Modifier = Modifier, content: @Composable BoxScop
     )
     val blobAlpha = if (dark) 0.34f else 0.22f
     val blobs = listOf(scheme.primary, scheme.tertiary, XBrand.Magenta)
+    if (XBrand.theme.holo) {
+        Box(modifier.background(Color(0xFF0A0A0A))) {
+            Canvas(Modifier.fillMaxSize()) {
+                val r = size.width * 0.9f
+                drawCircle(Brush.radialGradient(listOf(Color(0x2633B5E5), Color.Transparent), Offset(size.width / 2, 0f), r), r, Offset(size.width / 2, 0f))
+            }
+            content()
+        }
+        return
+    }
     Box(modifier.background(scheme.background)) {
         Canvas(Modifier.fillMaxSize()) {
             val r = maxOf(size.width, size.height) * 0.62f
@@ -155,11 +170,27 @@ fun XWordmark(style: TextStyle = LocalTextStyle.current, color: Color = Color.Un
         Spacer(Modifier.width(6.dp))
         Text("X", style = style.copy(
             brush = XBrand.gradient,
-            fontWeight = FontWeight.Black,
+            fontWeight = if (XBrand.theme.holo) FontWeight.Light else FontWeight.Black,
             fontSize = if (style.fontSize.isSpecified) style.fontSize * 1.18f else 30.sp,
-            shadow = Shadow(XBrand.Magenta.copy(alpha = 0.55f), Offset(0f, 2f), 18f),
+            shadow = if (XBrand.theme.holo) null else Shadow(XBrand.Magenta.copy(alpha = 0.55f), Offset(0f, 2f), 18f),
         ))
     }
+}
+
+/**
+ * A library section title. Holo: upper-case Holo blue with a thin blue line under it (like "WI-FI NETWORKS" in
+ * Android 4.0 settings); otherwise the plain primary-coloured title.
+ */
+@Composable
+fun XSectionHeader(text: String, modifier: Modifier = Modifier) {
+    if (XBrand.theme.holo) {
+        androidx.compose.foundation.layout.Column(modifier.fillMaxWidth()) {
+            Text(text.uppercase(), color = Color(0xFF33B5E5),
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold, letterSpacing = 0.5.sp),
+                modifier = Modifier.padding(start = 8.dp, bottom = 4.dp))
+            Box(Modifier.fillMaxWidth().height(2.dp).background(Color(0xFF33B5E5)))
+        }
+    } else Text(text, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary, modifier = modifier.padding(start = 4.dp))
 }
 
 /** Frosted, slightly translucent surface with a thin gradient hairline. */
@@ -167,6 +198,10 @@ fun XWordmark(style: TextStyle = LocalTextStyle.current, color: Color = Color.Un
 fun Modifier.glass(shape: Shape = RoundedCornerShape(28.dp), strong: Boolean = false): Modifier {
     val scheme = MaterialTheme.colorScheme
     val dark = isXDark()
+    if (XBrand.theme.holo) {
+        val holoShape = RoundedCornerShape(2.dp)
+        return this.clip(holoShape).background(Color(0xFF1C1C1C)).border(1.dp, Color(0x5933B5E5), holoShape)
+    }
     val fill = scheme.surfaceContainer.copy(alpha = if (strong) 0.92f else if (dark) 0.72f else 0.80f)
     return this
         .clip(shape)
@@ -177,9 +212,10 @@ fun Modifier.glass(shape: Shape = RoundedCornerShape(28.dp), strong: Boolean = f
 /** Round badge with a gradient ring (release number on firmware cards). */
 @Composable
 fun XBadge(text: String, size: Dp = 52.dp) {
+    val shape = if (XBrand.theme.holo) RoundedCornerShape(2.dp) else CircleShape
     Box(
-        Modifier.size(size).clip(CircleShape).background(XBrand.sweep()).padding(2.5.dp)
-            .clip(CircleShape).background(MaterialTheme.colorScheme.surfaceContainerHighest),
+        Modifier.size(size).clip(shape).background(XBrand.sweep()).padding(2.5.dp)
+            .clip(shape).background(MaterialTheme.colorScheme.surfaceContainerHighest),
         contentAlignment = Alignment.Center,
     ) {
         Text(text, style = MaterialTheme.typography.titleMedium.copy(brush = XBrand.gradient, fontWeight = FontWeight.Black))

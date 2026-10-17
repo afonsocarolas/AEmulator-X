@@ -65,6 +65,11 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-17**: Holo style for the app (`XStyle.kt` `XTheme.holo`, `XSectionHeader`, `Theme.kt` HoloShapes,
+  `MainActivity.kt`); custom boot animation (`app/src/main/java/app/aemu/core/BootAnimation.kt`, `GuestVm.kt`,
+  `GuestImage.kt` `bootAnim`, `app/src/main/java/app/aemu/ui/BootAnimSection.kt`, `SettingsSheet.kt`); built-in
+  device skins drawn in code, original artwork without photos or logos (`app/src/main/java/app/aemu/core/SkinArt.kt`,
+  `VmTheme.kt`; tests in `SkinArtTest.kt`).
 - **2026-10-17**: full screen mode for the VM screen (`VmActivity.kt`: layout without bar, frame or skin; fit or
   stretch; Home/Recents menu items; remembered per firmware).
 

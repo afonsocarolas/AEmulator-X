@@ -210,6 +210,7 @@ fun SettingsSheet(img: GuestImage, onDismiss: () -> Unit, onSave: (VmSettings) -
 
             Spacer(Modifier.height(8.dp))
             BootSoundSection(img, s.bootSound) { s = s.copy(bootSound = it) } // AEmulator X2
+            BootAnimSection(img, s.bootAnim) { s = s.copy(bootAnim = it) } // AEmulator X
             Arm64ProbeSection(img) // AEmulator X: experimental, 64-bit firmware only
 
             Spacer(Modifier.height(8.dp))

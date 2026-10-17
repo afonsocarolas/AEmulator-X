@@ -360,8 +360,7 @@ fun Library(model: LibraryModel) {
                 for ((title, list) in listOf(R.string.section_systems to systems, R.string.section_containers to containers)) {
                     if (list.isEmpty()) continue
                     item(key = "h$title", span = full) {
-                        Text(stringResource(title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(start = 4.dp, top = 4.dp))
+                        XSectionHeader(stringResource(title), Modifier.padding(top = 4.dp))
                     }
                     items(list.size, key = { list[it].id }) { i ->
                         val img = list[i]
@@ -399,8 +398,7 @@ fun Library(model: LibraryModel) {
                 for ((title, list) in listOf(R.string.section_systems to systems, R.string.section_containers to containers)) {
                     if (list.isEmpty()) continue
                     item(key = "h$title") {
-                        Text(stringResource(title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(start = 4.dp, bottom = 12.dp))
+                        XSectionHeader(stringResource(title), Modifier.padding(bottom = 12.dp))
                     }
                     items(list, key = { it.id }) { img ->
                         Box(Modifier.padding(bottom = 12.dp)) {

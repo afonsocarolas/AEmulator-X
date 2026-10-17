@@ -474,6 +474,8 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
         if (File(paths.root, "system/.aemu-parked/system#lib#hw#audio_policy.default.so").isFile) swapAudioPolicy()
         GuestLog.clear(paths.root)
         val sd = Sdcard.setup(ctx, paths, img, ::log)
+        // AEmulator X: the chosen boot animation (or the firmware's own back)
+        BootAnimation.apply(paths, settings.bootAnim, settings.width, settings.height, img.baseId.isNotEmpty(), ::log)
 
         // 2. свойства
         val s = settings

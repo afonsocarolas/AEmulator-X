@@ -53,6 +53,8 @@ data class VmSettings(
     val mtMode: Int = 0,
     /** AEmulator X: game controller mapping, [GamepadMap.AUTO] / GAMEPAD / CLASSIC */
     val controllerMode: Int = GamepadMap.AUTO,
+    /** AEmulator X: boot animation, [BootAnimation.FIRMWARE] / X / CUSTOM */
+    val bootAnim: String = BootAnimation.FIRMWARE,
     /** старый движок для 2.x (GL через pbuffer, только GLES 1.x) — запасной вариант */
     val legacyEngine: Boolean = false,
     /** guest RAM budget in MB, 0 = automatic */
@@ -103,7 +105,7 @@ data class VmSettings(
         .put("trackball", trackball).put("trackballDpad", trackballDpad)
         .put("trackballStepDp", trackballStepDp.coerceIn(4, 48))
         .put("keepScreenOn", keepScreenOn).put("mtMode", mtMode).put("legacyEngine", legacyEngine)
-        .put("controllerMode", controllerMode)
+        .put("controllerMode", controllerMode).put("bootAnim", bootAnim)
         .put("vibration", vibration)
         .put("hostBattery", hostBattery)
         .put("camera", camera)
@@ -212,6 +214,7 @@ data class VmSettings(
                 disableGoogleApps = o.optBoolean("disableGoogleApps", false),
                 mtMode = o.optInt("mtMode", d.mtMode),
                 controllerMode = o.optInt("controllerMode", GamepadMap.AUTO).coerceIn(GamepadMap.AUTO, GamepadMap.CLASSIC),
+                bootAnim = o.optString("bootAnim", "").takeIf { it in setOf(BootAnimation.FIRMWARE, BootAnimation.X, BootAnimation.CUSTOM) } ?: "",
                 legacyEngine = o.optBoolean("legacyEngine", false),
                 ramMb = o.optInt("ramMb", 0),
                 radio = o.optBoolean("radio", true),

@@ -98,4 +98,13 @@
     <!-- full screen mode -->
     <string name="x_fullscreen">Full screen</string>
     <string name="x_stretch">Stretch to fill</string>
+    <!-- Holo style, boot animation -->
+    <string name="x_theme_holo">Holo</string>
+    <string name="x_bootanim_title">Boot animation</string>
+    <string name="x_bootanim_sub">Shown while this system starts (applied at the next boot)</string>
+    <string name="x_bootanim_firmware">Firmware default</string>
+    <string name="x_bootanim_x">AEmulator X</string>
+    <string name="x_bootanim_custom">My boot animation</string>
+    <string name="x_bootanim_pick">Pick a bootanimation.zip…</string>
+    <string name="x_bootanim_bad">That file is not a bootanimation.zip (no desc.txt inside)</string>
 </resources>
