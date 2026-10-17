@@ -94,4 +94,7 @@
     <string name="x_widget_title">AEmulator X</string>
     <string name="x_widget_empty">Импортируйте прошивку в AEmulator X</string>
     <string name="x_widget_desc">Запуск избранных и недавних систем</string>
+    <!-- full screen mode -->
+    <string name="x_fullscreen">Во весь экран</string>
+    <string name="x_stretch">Растянуть на весь экран</string>
 </resources>

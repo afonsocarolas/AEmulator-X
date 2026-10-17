@@ -95,4 +95,7 @@
     <string name="x_widget_title">AEmulator X</string>
     <string name="x_widget_empty">Import a firmware in AEmulator X</string>
     <string name="x_widget_desc">Start your favourite and recently played systems</string>
+    <!-- full screen mode -->
+    <string name="x_fullscreen">Full screen</string>
+    <string name="x_stretch">Stretch to fill</string>
 </resources>

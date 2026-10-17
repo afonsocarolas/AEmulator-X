@@ -40,6 +40,12 @@ import androidx.compose.material.icons.rounded.FiberManualRecord
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.SportsEsports
 import androidx.compose.material.icons.rounded.Cast
+import androidx.compose.material.icons.rounded.Fullscreen
+import androidx.compose.material.icons.rounded.FullscreenExit
+import androidx.compose.material.icons.rounded.AspectRatio
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.ViewAgenda
+import androidx.compose.ui.draw.alpha
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.mutableLongStateOf
@@ -171,6 +177,15 @@ class VmActivity : ComponentActivity() {
     private var state by mutableStateOf(GuestVm.State.STOPPED)
     private val logLines = mutableStateListOf<String>()
     private var controlsHeightPx = 0
+    /** AEmulator X full screen mode: no button bar, frame or skin; [stretch] fills the whole screen (per firmware) */
+    private var fullScreen by mutableStateOf(false)
+    private var stretch by mutableStateOf(false)
+    private fun setFullScreen(on: Boolean, stretchIt: Boolean = stretch) {
+        fullScreen = on; stretch = on && stretchIt
+        if (::vm.isInitialized) uiPrefs.edit().putBoolean("fullscreen_${vm.img.id}", fullScreen).putBoolean("stretch_${vm.img.id}", stretch).apply()
+        if (fullScreen) { frameView?.visibility = View.GONE; controlsHeightPx = 0 } else applyVmTheme() // restores the frame picture, if any
+        vmRoot?.post { updateGuestLayout?.invoke() }
+    }
     private var iconTurns by mutableStateOf(0)
     private var windowTurns by mutableStateOf(0)
     private var tablet = false
@@ -311,6 +326,21 @@ class VmActivity : ComponentActivity() {
             if (root.width <= 0 || root.height <= 0) return@layout
             val aw = root.width - root.paddingLeft - root.paddingRight
             val ah = root.height - root.paddingTop - root.paddingBottom
+            // AEmulator X full screen: no skin or frame, nothing reserved for the button bar
+            if (fullScreen) {
+                if (skinLayout != null) skinLayout = null
+                val fit = DisplayGeometry.fit(aw, ah, gw, gh, 0, controlsTurns, s.hostResolution)
+                val (w, h, left, top) = if (stretch) listOf(aw, ah, root.paddingLeft, root.paddingTop)
+                    else listOf(fit.width, fit.height, fit.left, fit.top)
+                val lp = box.layoutParams as FrameLayout.LayoutParams
+                box.rotation = 0f
+                if (lp.width != w || lp.height != h || lp.topMargin != top || lp.leftMargin != left || lp.gravity != (Gravity.LEFT or Gravity.TOP)) {
+                    lp.width = w; lp.height = h; lp.gravity = Gravity.LEFT or Gravity.TOP
+                    lp.leftMargin = left; lp.topMargin = top
+                    box.layoutParams = lp
+                }
+                return@layout
+            }
             val skin = vmTheme.skinScreen.takeIf { vmTheme.isSkin }
             val skinPic = skinSize
             val fv = frameView
@@ -364,6 +394,8 @@ class VmActivity : ComponentActivity() {
         vm.onLog { line -> runOnUiThread { logLines.add(line); if (logLines.size > 400) logLines.removeRange(0, logLines.size - 400) } }
         guest.start()
         loadMenuOffset()
+        // AEmulator X: full screen mode is remembered per firmware
+        if (uiPrefs.getBoolean("fullscreen_${vm.img.id}", false)) setFullScreen(true, uiPrefs.getBoolean("stretch_${vm.img.id}", false))
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -671,7 +703,7 @@ class VmActivity : ComponentActivity() {
                 }.getOrNull()
             }
             fv.setImageBitmap(bmp)
-            fv.visibility = if (bmp != null) View.VISIBLE else View.GONE
+            fv.visibility = if (bmp != null && !fullScreen) View.VISIBLE else View.GONE
             fv.scaleType = if (t.isSkin) android.widget.ImageView.ScaleType.FIT_XY else android.widget.ImageView.ScaleType.CENTER_CROP
             skinSize = if (t.isSkin && bmp != null) bmp.width to bmp.height else null
             root.post { updateGuestLayout?.invoke() }
@@ -1335,7 +1367,9 @@ class VmActivity : ComponentActivity() {
                     detectDragGestures(onDragEnd = { saveMenuOffset() }) { ch, d -> ch.consume(); menuOffset += d }
                 }) {
                 if (!vm.settings.hideMenuButton) {
-                    FilledTonalIconButton(onClick = { menu = true }, modifier = Modifier.size(40.dp)) {
+                    // full screen: a small, faint button, still reachable
+                    FilledTonalIconButton(onClick = { menu = true },
+                        modifier = Modifier.size(if (fullScreen) 32.dp else 40.dp).alpha(if (fullScreen) 0.35f else 1f)) {
                         Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.menu))
                     }
                 } else {
@@ -1386,6 +1420,21 @@ class VmActivity : ComponentActivity() {
                         leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
                         trailingIcon = { if (padVisible) Icon(Icons.Rounded.Check, null) },
                         onClick = { menu = false; padVisible = !padVisible; uiPrefs.edit().putBoolean("game_pad", padVisible).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_fullscreen)) },
+                        leadingIcon = { Icon(if (fullScreen) Icons.Rounded.FullscreenExit else Icons.Rounded.Fullscreen, null) },
+                        trailingIcon = { if (fullScreen) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; setFullScreen(!fullScreen) })
+                    if (fullScreen) {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.x_stretch)) },
+                            leadingIcon = { Icon(Icons.Rounded.AspectRatio, null) },
+                            trailingIcon = { if (stretch) Icon(Icons.Rounded.Check, null) },
+                            onClick = { menu = false; setFullScreen(true, !stretch) })
+                        // the button bar is hidden: its Home and Recents live here (Back is the phone's back gesture)
+                        DropdownMenuItem(text = { Text(stringResource(R.string.home)) }, leadingIcon = { Icon(Icons.Rounded.Home, null) },
+                            enabled = running, onClick = { menu = false; vm.input.press(vm.input.homeCode) })
+                        DropdownMenuItem(text = { Text(stringResource(R.string.recents)) }, leadingIcon = { Icon(Icons.Rounded.ViewAgenda, null) },
+                            enabled = running, onClick = { menu = false; vm.input.press(InputService.KEY_APPSELECT) })
+                    }
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_vnc_title)) },
                         leadingIcon = { Icon(Icons.Rounded.Cast, null) },
                         trailingIcon = { if (vncAddress != null) Icon(Icons.Rounded.Check, null) },
@@ -1447,15 +1496,16 @@ class VmActivity : ComponentActivity() {
                 DisplayGeometry.Edge.TOP -> Alignment.TopCenter
                 DisplayGeometry.Edge.BOTTOM -> Alignment.BottomCenter
             }
-            DisposableEffect(showStrip, vm.settings.trackball, showLog, stripTurns) {
+            DisposableEffect(showStrip, vm.settings.trackball, showLog, stripTurns, fullScreen) {
                 heldNavKeys.releaseAll()
                 box.post { updateGuestLayout?.invoke() }
-                if ((!showStrip && !vm.settings.trackball) || showLog) {
+                if ((!showStrip && !vm.settings.trackball) || showLog || fullScreen) {
                     controlsHeightPx = 0; box.post { updateGuestLayout?.invoke() }
                 }
                 onDispose { }
             }
-            if ((showStrip || vm.settings.trackball) && !showLog) {
+            // AEmulator X: full screen mode hides the button bar (Back = the phone's back gesture, Home/Recents in ⋮)
+            if ((showStrip || vm.settings.trackball) && !showLog && !fullScreen) {
                 Box(Modifier.align(stripAlignment).onSizeChanged { size ->
                     controlsHeightPx = if (sideways) size.width else size.height
                     box.post { updateGuestLayout?.invoke() }
