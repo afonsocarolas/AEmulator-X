@@ -65,7 +65,7 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
-- **2026-10-18**: new app icon, artwork by a friend of the developer (`docs/assets/icon-x.png`, `docs/assets/make-icon.sh`,
+- **2026-10-18**: AEmulator X11 (`0.0.0.2.13-x11`): new app icon, artwork by a friend of the developer (`docs/assets/icon-x.png`, `docs/assets/make-icon.sh`,
   `docs/assets/logo.png`, `res/mipmap-*/ic_launcher_fg.png` and `ic_launcher_mono.png`, `res/mipmap-anydpi-v26/ic_launcher.xml`,
   `res/values/colors.xml` `ic_bg`).
 - **2026-10-17**: AEmulator X10 (`0.0.0.2.13-x10`): Relax mode (`app/src/main/java/app/aemu/ui/RelaxActivity.kt`, `app/src/main/java/app/aemu/core/OceanSound.kt`,
