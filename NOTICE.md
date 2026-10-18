@@ -65,6 +65,8 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-18**: AEmulator X13 (`0.0.0.2.13-x13`): Time mode, day and night interface (`app/src/main/java/app/aemu/ui/TimeMode.kt`, `Theme.kt`,
+  `AppPrefs.kt` `THEME_TIME`, `AppSettingsActivity.kt`, `MainActivity.kt`, `res/values*/strings_x.xml`; tests in `TimeModeTest.kt`).
 - **2026-10-18**: AEmulator X12 (`0.0.0.2.13-x12`): Sleep mode (`app/src/main/java/app/aemu/ui/SleepActivity.kt`, `app/src/main/java/app/aemu/core/SleepSound.kt`,
   `MainActivity.kt`, `AndroidManifest.xml`, `res/values*/strings_x.xml`; tests in `SleepModeTest.kt`).
 - **2026-10-18**: AEmulator X11 (`0.0.0.2.13-x11`): new app icon, artwork by a friend of the developer (`docs/assets/icon-x.png`, `docs/assets/make-icon.sh`,

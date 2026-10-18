@@ -282,7 +282,8 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                     Row_(Icons.Rounded.Translate, stringResource(R.string.as_language), langName) { langDialog = true }
                     Text(stringResource(R.string.as_theme), style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))
-                    val options = listOf(R.string.as_theme_system, R.string.as_theme_light, R.string.as_theme_dark)
+                    // AEmulator X: "Time" = light in the day, dark at night (TimeMode)
+                    val options = listOf(R.string.as_theme_system, R.string.as_theme_light, R.string.as_theme_dark, R.string.x_theme_time)
                     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
                         options.forEachIndexed { i, res ->
                             ToggleButton(
@@ -302,6 +303,9 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                             }
                         }
                     }
+                    if (theme == AppPrefs.THEME_TIME) Text(stringResource(R.string.x_theme_time_hint),
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 6.dp))
                     ListItem(
                         headlineContent = { Text(stringResource(R.string.as_accent)) },
                         supportingContent = { Text(if (accent == 0) stringResource(R.string.as_accent_default)

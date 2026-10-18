@@ -67,6 +67,8 @@ object AppPrefs {
     const val THEME_SYSTEM = 0
     const val THEME_LIGHT = 1
     const val THEME_DARK = 2
+    /** AEmulator X: light in the day, dark at night, by the clock (ui/TimeMode.kt) */
+    const val THEME_TIME = 3
 
     private fun sp(ctx: Context) = ctx.applicationContext.getSharedPreferences(FILE, Context.MODE_PRIVATE)
 

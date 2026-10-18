@@ -123,4 +123,11 @@
     <string name="x_sleep_silence">Silence</string>
     <string name="x_sleep_breathe">Breathing</string>
     <string name="x_sleep_goodnight">Good night</string>
+    <!-- Time mode -->
+    <string name="x_theme_time">Time</string>
+    <string name="x_theme_time_hint">Light in the day (7:00–19:00), dark at night. Switches by itself.</string>
+    <string name="x_time_morning">Good morning</string>
+    <string name="x_time_afternoon">Good afternoon</string>
+    <string name="x_time_evening">Good evening</string>
+    <string name="x_time_night">Good night</string>
 </resources>

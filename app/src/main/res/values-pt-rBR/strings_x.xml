@@ -122,4 +122,11 @@
     <string name="x_sleep_silence">Silêncio</string>
     <string name="x_sleep_breathe">Respiração</string>
     <string name="x_sleep_goodnight">Boa noite</string>
+    <!-- Time mode -->
+    <string name="x_theme_time">Hora</string>
+    <string name="x_theme_time_hint">Clara de dia (7:00–19:00), escura à noite. Muda sozinha.</string>
+    <string name="x_time_morning">Bom dia</string>
+    <string name="x_time_afternoon">Boa tarde</string>
+    <string name="x_time_evening">Boa noite</string>
+    <string name="x_time_night">Boa noite</string>
 </resources>

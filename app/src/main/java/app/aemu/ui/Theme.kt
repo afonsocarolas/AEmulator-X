@@ -126,9 +126,13 @@ fun AemuTheme(forceDark: Boolean? = null, content: @Composable () -> Unit) {
     }
     rev.intValue
     val holoX = XThemes.byId(app.aemu.AppPrefs.xTheme(ctx)).holo
+    // AEmulator X: Time mode reads the clock only when chosen (the hour state ticks every 30 s)
+    val timeMode = app.aemu.AppPrefs.theme(ctx) == app.aemu.AppPrefs.THEME_TIME
+    val nightNow = if (timeMode) TimeMode.isNight(currentHour()) else false
     val dark = forceDark ?: if (holoX) true else when (app.aemu.AppPrefs.theme(ctx)) {
         app.aemu.AppPrefs.THEME_LIGHT -> false
         app.aemu.AppPrefs.THEME_DARK -> true
+        app.aemu.AppPrefs.THEME_TIME -> nightNow
         else -> isSystemInDarkTheme()
     }
     val accent = app.aemu.AppPrefs.accentColor(ctx)

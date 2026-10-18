@@ -122,4 +122,11 @@
     <string name="x_sleep_silence">Тишина</string>
     <string name="x_sleep_breathe">Дыхание</string>
     <string name="x_sleep_goodnight">Спокойной ночи</string>
+    <!-- Time mode -->
+    <string name="x_theme_time">Время</string>
+    <string name="x_theme_time_hint">Светлая днём (7:00–19:00), тёмная ночью. Переключается сама.</string>
+    <string name="x_time_morning">Доброе утро</string>
+    <string name="x_time_afternoon">Добрый день</string>
+    <string name="x_time_evening">Добрый вечер</string>
+    <string name="x_time_night">Доброй ночи</string>
 </resources>

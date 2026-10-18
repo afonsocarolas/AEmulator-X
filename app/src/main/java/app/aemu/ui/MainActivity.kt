@@ -264,6 +264,11 @@ fun Library(model: LibraryModel) {
         topBar = {
             LargeFlexibleTopAppBar(
                 title = { SunsetTitle() },
+                // AEmulator X: Time mode greets with a sun or a moon
+                subtitle = if (AppPrefs.theme(ctx) != AppPrefs.THEME_TIME) null else ({
+                    val hour = currentHour()
+                    Text("${TimeMode.icon(hour)}  ${stringResource(TimeMode.greeting(hour))}")
+                }),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = androidx.compose.ui.graphics.Color.Transparent,
                     scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.85f),
