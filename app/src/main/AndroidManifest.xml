@@ -109,6 +109,11 @@
             android:theme="@style/Theme.AEmulator.Vm"
             android:parentActivityName=".ui.MainActivity" />
 
+        <!-- AEmulator X: Sleep mode -->
+        <activity android:name=".ui.SleepActivity" android:exported="false"
+            android:theme="@style/Theme.AEmulator.Vm"
+            android:parentActivityName=".ui.MainActivity" />
+
         <!-- AEmulator X: screenshots and screen recordings -->
         <activity android:name=".ui.GalleryActivity" android:exported="false"
             android:parentActivityName=".ui.MainActivity" />

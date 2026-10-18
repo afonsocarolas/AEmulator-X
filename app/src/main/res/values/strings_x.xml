@@ -115,4 +115,12 @@
     <string name="x_relax_done">Well done</string>
     <string name="x_relax_sound">Ocean sound</string>
     <string name="x_relax_min">%1$d min</string>
+    <!-- Sleep mode -->
+    <string name="x_sleep_title">Sleep mode</string>
+    <string name="x_sleep_rain">Rain</string>
+    <string name="x_sleep_ocean">Ocean</string>
+    <string name="x_sleep_noise">Soft noise</string>
+    <string name="x_sleep_silence">Silence</string>
+    <string name="x_sleep_breathe">Breathing</string>
+    <string name="x_sleep_goodnight">Good night</string>
 </resources>

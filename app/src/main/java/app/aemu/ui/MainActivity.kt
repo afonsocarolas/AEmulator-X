@@ -111,6 +111,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Spa
+import androidx.compose.material.icons.rounded.Bedtime
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material.icons.rounded.PhotoLibrary
 import androidx.compose.material.icons.rounded.Check
@@ -297,6 +298,9 @@ fun Library(model: LibraryModel) {
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_relax_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.Spa, null) },
                                 onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, RelaxActivity::class.java)) })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_sleep_title)) },
+                                leadingIcon = { Icon(Icons.Rounded.Bedtime, null) },
+                                onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, SleepActivity::class.java)) })
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.help)) },
                                 leadingIcon = { Icon(Icons.Rounded.Info, null) }, onClick = { moreMenu = false; help = true })
                         }

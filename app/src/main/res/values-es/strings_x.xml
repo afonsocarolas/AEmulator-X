@@ -114,4 +114,12 @@
     <string name="x_relax_done">Muy bien</string>
     <string name="x_relax_sound">Sonido del mar</string>
     <string name="x_relax_min">%1$d min</string>
+    <!-- Sleep mode -->
+    <string name="x_sleep_title">Modo dormir</string>
+    <string name="x_sleep_rain">Lluvia</string>
+    <string name="x_sleep_ocean">Mar</string>
+    <string name="x_sleep_noise">Ruido suave</string>
+    <string name="x_sleep_silence">Silencio</string>
+    <string name="x_sleep_breathe">Respiración</string>
+    <string name="x_sleep_goodnight">Buenas noches</string>
 </resources>
