@@ -197,7 +197,6 @@
     <string name="warn_no_build_prop">system/build.prop وجود ندارد: نسخه Android از درخت سیستم استنباط شد.</string>
     <string name="warn_no_boot_img">boot.img در نرم‌افزار نیست: برنامه بوت و BOOTCLASSPATH حدس زده شدند.</string>
     <string name="warn_no_healthd">healthd در برنامه بوت نیست (/sbin/healthd وجود ندارد؛ ramdisk در ورود جا افتاده؟): system_server در BatteryService از کار می‌افتد.</string>
-    <string name="warn_arm64">نرم‌افزار ۶۴ بیتی: فقط ARM ۳۲ بیتی پشتیبانی می‌شود.</string>
     <string name="warn_not_arm">نرم‌افزار ARM نیست (%1$s) و اجرا نخواهد شد.</string>
     <string name="warn_experimental">Android ‏%1$s: پشتیبانی آزمایشی است (ART، SELinux).</string>
     <string name="import_default_name">نرم‌افزار (فریمور)</string>

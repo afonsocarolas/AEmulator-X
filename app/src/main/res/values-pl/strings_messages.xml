@@ -197,7 +197,7 @@
     <string name="warn_no_build_prop">Brak system/build.prop: wersję Androida wywnioskowano z drzewa systemu.</string>
     <string name="warn_no_boot_img">Brak boot.img w oprogramowaniu: plan rozruchu i BOOTCLASSPATH odgadnięto.</string>
     <string name="warn_no_healthd">Brak healthd w planie rozruchu (brak /sbin/healthd; ramdisku nie uwzględniono w imporcie?): system_server ulegnie awarii w BatteryService.</string>
-    <string name="warn_arm64">Oprogramowanie 64-bitowe: obsługiwany jest tylko 32-bitowy ARM.</string>
+    <string name="warn_arm64">Oprogramowanie 64-bitowe: działa na natywnym silniku arm64. Najlepiej przetestowany jest Android 6.0, pozostałe wersje są eksperymentalne.</string>
     <string name="warn_not_arm">Oprogramowanie nie jest dla ARM (%1$s) i nie uruchomi się.</string>
     <string name="warn_experimental">Android %1$s: obsługa jest eksperymentalna (ART, SELinux).</string>
     <string name="import_default_name">oprogramowanie</string>

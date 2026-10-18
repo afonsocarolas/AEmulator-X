@@ -99,6 +99,10 @@ object Links {
     const val SUNSET = "https://github.com/drel4/AEmulator-Sunset"
     const val UPSTREAM = "https://github.com/uxazu/AEmulator"
     const val ORIGINAL = "https://t.me/istratiit_ech"
+    // the original AEmulator (0.0.0.3 merged into X14)
+    const val SITE = "https://aemulator.gt.tc"
+    const val CHANNEL = "https://t.me/aemulatorofficial"
+    const val DONATE = "https://dalink.to/uxazu"
 }
 
 class AppSettingsActivity : ComponentActivity() {
@@ -110,13 +114,9 @@ class AppSettingsActivity : ComponentActivity() {
         setContent { AemuTheme { AppSettings(onBack = ::finish, onRestyle = ::restart) } }
     }
 
-    /** Язык и тема применяются пересозданием активностей (главный экран — через onResume). */
+    /** Язык применяется пересозданием активности для применения нового ContextWrapper с локалью. */
     private fun restart() {
-        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-        startActivity(Intent(this, AppSettingsActivity::class.java))
-        overridePendingTransition(0, 0)
-        finish()
-        overridePendingTransition(0, 0)
+        recreate()
     }
 }
 
@@ -288,7 +288,7 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                         options.forEachIndexed { i, res ->
                             ToggleButton(
                                 checked = theme == i,
-                                onCheckedChange = { theme = i; AppPrefs.setTheme(ctx, i); onRestyle() },
+                                onCheckedChange = { if (theme != i) { theme = i; AppPrefs.setTheme(ctx, i) } },
                                 shapes = when (i) {
                                     0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
                                     options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
@@ -320,7 +320,7 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                     )
                     if (Build.VERSION.SDK_INT >= 31 && accent == 0) {
                         Toggle(stringResource(R.string.as_dynamic), stringResource(R.string.as_dynamic_sub), dynamic) {
-                            dynamic = it; AppPrefs.setDynamicColor(ctx, it); onRestyle()
+                            dynamic = it; AppPrefs.setDynamicColor(ctx, it)
                         }
                     }
                 }
@@ -335,6 +335,7 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                     Toggle(stringResource(R.string.vs_nav), stringResource(R.string.vs_nav_sub), defaults.showNavBar) { set(defaults.copy(showNavBar = it)) }
                     NavigationSettings(defaults, ::set)
                     Toggle(stringResource(R.string.vs_awake), stringResource(R.string.vs_awake_sub), defaults.keepScreenOn) { set(defaults.copy(keepScreenOn = it)) }
+                    Toggle(stringResource(R.string.as_led), stringResource(R.string.as_led_sub), defaults.showLed) { set(defaults.copy(showLed = it)) }
                 }
             }
 

@@ -197,7 +197,7 @@
     <string name="warn_no_build_prop">沒有 system/build.prop：Android 版本是從系統目錄樹推斷而來。</string>
     <string name="warn_no_boot_img">韌體中沒有 boot.img：開機計畫與 BOOTCLASSPATH 是推測而來。</string>
     <string name="warn_no_healthd">開機計畫中沒有 healthd（沒有 /sbin/healthd；匯入時遺失了 ramdisk？）：system_server 會在 BatteryService 中終止。</string>
-    <string name="warn_arm64">64 位元韌體：僅支援 32 位元 ARM。</string>
+    <string name="warn_arm64">64 位元韌體：在原生 arm64 引擎上執行。Android 6.0 測試最完整，其他版本為實驗性支援。</string>
     <string name="warn_not_arm">韌體不是 ARM（%1$s），無法執行。</string>
     <string name="warn_experimental">Android %1$s：實驗性支援（ART、SELinux）。</string>
     <string name="import_default_name">韌體</string>

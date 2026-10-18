@@ -197,7 +197,6 @@
     <string name="warn_no_build_prop">Nincs system/build.prop: az Android verzióját a rendszerfából következtettük ki.</string>
     <string name="warn_no_boot_img">Nincs boot.img a firmware-ben: az indítási terv és a BOOTCLASSPATH találgatáson alapul.</string>
     <string name="warn_no_healthd">Nincs healthd az indítási tervben (nincs /sbin/healthd; hiányzik a ramdisk az importból?): a system_server a BatteryService-ben le fog állni.</string>
-    <string name="warn_arm64">64 bites firmware: csak a 32 bites ARM támogatott.</string>
     <string name="warn_not_arm">A firmware nem ARM (%1$s), ezért nem fog futni.</string>
     <string name="warn_experimental">Android %1$s: a támogatás kísérleti (ART, SELinux).</string>
     <string name="import_default_name">firmware</string>

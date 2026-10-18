@@ -197,7 +197,6 @@
     <string name="warn_no_build_prop">system/build.prop puuttuu: Android-versio pääteltiin järjestelmän hakemistopuusta.</string>
     <string name="warn_no_boot_img">Laiteohjelmistossa ei ole boot.img-tiedostoa: boot-suunnitelma ja BOOTCLASSPATH arvattiin.</string>
     <string name="warn_no_healthd">Boot-suunnitelmassa ei ole healthdia (ei /sbin/healthd; puuttuuko ramdisk tuonnista?): system_server kaatuu BatteryServiceen.</string>
-    <string name="warn_arm64">64-bittinen laiteohjelmisto: vain 32-bittistä ARMia tuetaan.</string>
     <string name="warn_not_arm">Laiteohjelmisto ei ole ARM (%1$s), eikä se toimi.</string>
     <string name="warn_experimental">Android %1$s: tuki on kokeellinen (ART, SELinux).</string>
     <string name="import_default_name">laiteohjelmisto</string>

@@ -28,6 +28,7 @@ class AudioOut(
     /** AEmulator X: gets every guest PCM chunk (16-bit stereo at [sampleRate]) while the screen recorder runs. */
     @Volatile var tap: ((ByteArray, Int) -> Unit)? = null
     val sampleRate: Int get() = rate
+    @Volatile var audioCaptureHook: ((ByteArray, Int, Int) -> Unit)? = null
 
     val fifo: File get() = File(paths.root, dev)
 
@@ -85,6 +86,7 @@ class AudioOut(
                     if (n == 0) continue
                     if (played == 0L) log("audio started")
                     tap?.let { runCatching { it(buf, n) } }
+                    audioCaptureHook?.invoke(buf, 0, n)
                     val t = track
                     if (t != null && !muted) {
                         var off = 0

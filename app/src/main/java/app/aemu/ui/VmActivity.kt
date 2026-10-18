@@ -308,7 +308,11 @@ class VmActivity : ComponentActivity() {
         }
         // 5.0+ renders through the standalone glserverd into fb0 (see GuestVm.glUp), shown like the software path
         val useBridge = vm.engine == Engine.KK && s.gpu && !vm.recoveryMode && !vm.nativeUi && vm.img.api < 21
-        surfaceView.visibility = if (useBridge) View.VISIBLE else View.GONE
+        // 0.0.0.3: the arm64 engine's GLES bridge shows SurfaceFlinger's frames in the same view, straight from the GPU;
+        // until the first of them (and with the software renderer) the screen is fb0 as before
+        val direct = vm.engine == Engine.N64 && vm.kernel.gpuBridge64 && s.gpu && !vm.recoveryMode
+        if (direct) { surfaceView.holder.setFixedSize(gw, gh); guest.direct = { app.aemu.core.GlHost.presented() } }
+        surfaceView.visibility = if (useBridge || direct) View.VISIBLE else View.GONE
         guest.passthrough = useBridge
         box.addView(surfaceView, FrameLayout.LayoutParams(-1, -1))
         box.addView(guest, FrameLayout.LayoutParams(-1, -1))
@@ -1291,7 +1295,7 @@ class VmActivity : ComponentActivity() {
                 guest.passthrough = false; guest.poke()
             }
         }
-        LaunchedEffect(Unit) { while (true) { if (vm.recoveryMode) guest.format = vm.recoveryFormat; seconds = vm.bootSeconds(); frames = if (vm.glInApp && !fbFallback) dev.lk.m7sense.GlBridge.frames() else guest.rings; delay(500) } }
+        LaunchedEffect(Unit) { while (true) { if (vm.recoveryMode) guest.format = vm.recoveryFormat else if (vm.engine == app.aemu.core.Engine.N64) guest.format = 1; seconds = vm.bootSeconds(); frames = if (vm.glInApp && !fbFallback) dev.lk.m7sense.GlBridge.frames() else guest.rings; delay(500) } }
         // как только гость начал рисовать — карточку убираем, остаётся маленький индикатор
         val drawing = frames > 30
         Box(Modifier.fillMaxSize()) {
@@ -1729,17 +1733,6 @@ class VmActivity : ComponentActivity() {
         const val EXTRA_RECOVERY = "recovery"
         const val EXTRA_LOW_POWER = "low_power"
         fun start(ctx: Context, id: String, recovery: Boolean = false, lowPower: Boolean = false) {
-            // AEmulator X: the engine only runs 32-bit ARM; a 64-bit firmware would only crash-loop (code 255/134)
-            val img = runCatching { app.aemu.core.ImageStore.get(ctx, id) }.getOrNull()
-            if (img != null && img.abi.startsWith("arm64")) {
-                if (ctx is android.app.Activity) android.app.AlertDialog.Builder(ctx)
-                    .setTitle(R.string.x_arm64_start_title)
-                    .setMessage(ctx.getString(R.string.x_arm64_start_text, img.name))
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show()
-                else Toast.makeText(ctx, ctx.getString(R.string.x_arm64_start_title), Toast.LENGTH_LONG).show()
-                return
-            }
             ctx.startActivity(Intent(ctx, VmActivity::class.java).putExtra(EXTRA_ID, id).putExtra(EXTRA_RECOVERY, recovery).putExtra(EXTRA_LOW_POWER, lowPower)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }

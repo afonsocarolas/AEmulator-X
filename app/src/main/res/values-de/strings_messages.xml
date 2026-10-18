@@ -197,7 +197,7 @@
     <string name="warn_no_build_prop">Keine system/build.prop: Die Android-Version wurde aus dem Systembaum abgeleitet.</string>
     <string name="warn_no_boot_img">Kein boot.img in der Firmware: Bootplan und BOOTCLASSPATH wurden geraten.</string>
     <string name="warn_no_healthd">Kein healthd im Bootplan (kein /sbin/healthd; fehlt die Ramdisk im Import?): system_server stürzt in BatteryService ab.</string>
-    <string name="warn_arm64">64-Bit-Firmware: Nur 32-Bit-ARM wird unterstützt.</string>
+    <string name="warn_arm64">64-Bit-Firmware: läuft auf der nativen arm64-Engine. Android 6.0 ist am besten getestet, andere Versionen sind experimentell.</string>
     <string name="warn_not_arm">Die Firmware ist nicht ARM (%1$s) und läuft nicht.</string>
     <string name="warn_experimental">Android %1$s: Die Unterstützung ist experimentell (ART, SELinux).</string>
     <string name="import_default_name">Firmware</string>

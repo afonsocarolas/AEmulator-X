@@ -60,7 +60,18 @@ object BootImage {
             return cpio(decompress(rd) ?: return null)
         }
         // Sony kernel.sin / fotakernel.sin (2010-2013 Xperia): an ELF whose segments are the kernel and the ramdisk
-        if (img.size > 64 && img[0] == 0x7f.toByte() && String(img, 1, 3, Charsets.ISO_8859_1) == "ELF") fromElf(img)?.let { return it }
+        if (img.size > 64 && img[0] == 0x7f.toByte() && String(img, 1, 3, Charsets.ISO_8859_1) == "ELF") {
+            fromElf(img)?.let { return it }
+            // 0.0.0.3: Sony 2012-2016 kernel.sin whose segments fromElf does not split: find the gzip cpio inside
+            for (i in 0 until img.size - 3) {
+                if (img[i] != 0x1f.toByte() || img[i + 1] != 0x8b.toByte() || img[i + 2] != 0x08.toByte()) continue
+                val inner = runCatching { gunzipLenient(img.copyOfRange(i, img.size)) }.getOrNull() ?: continue
+                if (inner.size > 6 && String(inner, 0, 6, Charsets.ISO_8859_1) == "070701") {
+                    val entries = runCatching { cpio(inner) }.getOrNull() ?: continue
+                    if (entries.any { it.name == "init.rc" }) return entries
+                }
+            }
+        }
         // иначе — zImage со встроенным initramfs
         return fromZImage(img) ?: fromAppendedRamdisk(img)
     }

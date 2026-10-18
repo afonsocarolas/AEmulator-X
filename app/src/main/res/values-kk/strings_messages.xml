@@ -197,7 +197,6 @@
     <string name="warn_no_build_prop">system/build.prop жоқ: Android нұсқасы жүйе ағашынан болжанды.</string>
     <string name="warn_no_boot_img">Микробағдарламада boot.img жоқ: жүктеу жоспары мен BOOTCLASSPATH болжанды.</string>
     <string name="warn_no_healthd">Жүктеу жоспарында healthd жоқ (/sbin/healthd жоқ; импортта ramdisk жетіспей ме?): system_server BatteryService ішінде құлайды.</string>
-    <string name="warn_arm64">64 биттік микробағдарлама: тек 32 биттік ARM қолдау табады.</string>
     <string name="warn_not_arm">Микробағдарлама ARM емес (%1$s) және жұмыс істемейді.</string>
     <string name="warn_experimental">Android %1$s: қолдау эксперименттік (ART, SELinux).</string>
     <string name="import_default_name">микробағдарлама</string>

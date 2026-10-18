@@ -197,7 +197,7 @@
     <string name="warn_no_build_prop">没有 system/build.prop：Android 版本是根据系统目录树推断的。</string>
     <string name="warn_no_boot_img">固件中没有 boot.img：启动方案和 BOOTCLASSPATH 是猜测的。</string>
     <string name="warn_no_healthd">启动方案中没有 healthd（没有 /sbin/healthd；导入时缺少 ramdisk？）：system_server 将在 BatteryService 中崩溃。</string>
-    <string name="warn_arm64">64 位固件：仅支持 32 位 ARM。</string>
+    <string name="warn_arm64">64 位固件：在原生 arm64 引擎上运行。Android 6.0 测试最充分，其他版本为实验性支持。</string>
     <string name="warn_not_arm">固件不是 ARM（%1$s），无法运行。</string>
     <string name="warn_experimental">Android %1$s：支持处于实验阶段（ART、SELinux）。</string>
     <string name="import_default_name">固件</string>

@@ -197,7 +197,6 @@
     <string name="warn_no_build_prop">system/build.prop မရှိပါ- Android ဗားရှင်းကို စနစ်ဖိုင်ပင်မှ ခန့်မှန်းခဲ့သည်။</string>
     <string name="warn_no_boot_img">ဖမ်းဝဲတွင် boot.img မရှိပါ- boot အစီအစဉ်နှင့် BOOTCLASSPATH ကို ခန့်မှန်းခဲ့သည်။</string>
     <string name="warn_no_healthd">boot အစီအစဉ်တွင် healthd မရှိပါ (/sbin/healthd မရှိ၊ တင်သွင်းမှုတွင် ramdisk ပျောက်နေသလား။)- system_server သည် BatteryService တွင် ပျက်ကျမည်။</string>
-    <string name="warn_arm64">64-bit ဖမ်းဝဲ- 32-bit ARM ကိုသာ ပံ့ပိုးသည်။</string>
     <string name="warn_not_arm">ဖမ်းဝဲသည် ARM မဟုတ်ပါ (%1$s)၊ ထို့ကြောင့် မလည်ပတ်ပါ။</string>
     <string name="warn_experimental">Android %1$s- ပံ့ပိုးမှုသည် စမ်းသပ်ဆဲဖြစ်သည် (ART၊ SELinux)။</string>
     <string name="import_default_name">ဖမ်းဝဲ</string>

@@ -189,6 +189,10 @@ class Importer(
                 takeRecovery(streamOf(src), recoveryLabel(name, h))
             role == FirmwareToolset.Role.RECOVERY && src.size < 64_000_000 && isLz4Frame(h) ->
                 takeRecovery(streamOf(src), recoveryLabel(name, h))
+            // 0.0.0.3: dynamic partitions (super.img, 10+) and EROFS system images (GSIs, arm64 firmware)
+            SuperImage.probe(src) || ErofsReader.probe(src) -> importImage(src, "system")
+            isLz4Frame(h) && role != FirmwareToolset.Role.RECOVERY ->
+                importCompressed(org.apache.commons.compress.compressors.lz4.FramedLZ4CompressorInputStream(streamOf(src)), name, depth)
             SparseSource.probe(src) -> importImage(SparseSource(listOf(src)), "system")
             Ext4Reader.probe(src) -> importImage(src, "system")
             MotoImage.probe(src) -> importImage(src, "system")
@@ -585,6 +589,10 @@ class Importer(
     }
 
     private fun isTar(h: ByteArray) = h.size > 262 && String(h, 257, 5, Charsets.ISO_8859_1) == "ustar"
+
+    /** gzip, xz, bzip2 */
+    private fun isCompressed(h: ByteArray) = h.size > 2 && (h[0] == 0x1f.toByte() && h[1] == 0x8b.toByte() ||
+        h[0] == 0xfd.toByte() && h[1] == '7'.code.toByte() || h[0] == 'B'.code.toByte() && h[1] == 'Z'.code.toByte() && h[2] == 'h'.code.toByte())
 
     private fun streamOf(src: RandomSource): InputStream = object : InputStream() {
         var pos = 0L
@@ -1366,7 +1374,9 @@ class Importer(
         }
     }
 
-    private fun importTarStream(s: InputStream, name: String, depth: Int) {
+    /** [under]: the tar itself as a random-access source, when [s] reads it from its first byte (a tar that is the
+     *  file being imported, not one inside a compressed stream or another archive) */
+    private fun importTarStream(s: InputStream, name: String, depth: Int, under: RandomSource? = null) {
         val tar = TarArchiveInputStream(s, "UTF-8")
         var fullRoot: Boolean? = null
         while (true) {
@@ -1405,7 +1415,6 @@ class Importer(
                         val src = ChannelSource(c)
                         importImage(if (SparseSource.probe(src)) SparseSource(listOf(src)) else src, "system")
                     }
-                    t.delete()
                 }
                 base.matches(Regex("(?i)(boot\\.img|boot_signed(\\.img)?|zImage|kernel)(\\.lz4)?")) && e.isFile && !inSystemDump(n) -> takeBoot(maybeLz4(tar, base).readBytes())
                 isRecoveryName(base) && e.isFile && e.size < 64_000_000 && !inSystemDump(n) -> takeRecovery(tar.nonClosing(), base)
@@ -1473,6 +1482,22 @@ class Importer(
         // Motorola signed images carry a signature header in front of the ext4 (see MotoImage)
         val src = MotoImage.unwrap(source)
         if (src !== source) log("image $mount: Motorola signature header skipped, ${src.size shr 20} MB filesystem")
+        // 0.0.0.3: super.img (dynamic partitions) and EROFS
+        if (SuperImage.probe(src)) {
+            val parts = SuperImage.partitions(src)
+            log("super.img: ${parts.keys.joinToString()}")
+            fun pick(n: String) = parts[n]?.takeIf { it.isNotEmpty() } ?: parts["${n}_a"]?.takeIf { it.isNotEmpty() }
+            importImage(ExtentSource(src, pick("system") ?: throw IOException("super.img without a system partition")), "system")
+            for (p in listOf("vendor", "product", "system_ext", "odm")) pick(p)?.let { e ->
+                runCatching { importImage(ExtentSource(src, e), if (p == "vendor" || p == "odm") p else "system/$p") }
+                    .onFailure { log("super.img: $p skipped: ${it.message}") }
+            }
+            for (p in parts.keys.map { it.removeSuffix("_a") }.filter { it.matches(SKIN_PARTITION) }.distinct()) pick(p)?.let { e ->
+                runCatching { importImage(ExtentSource(src, e), p) }.onFailure { log("super.img: $p skipped: ${it.message}") }
+            }
+            return
+        }
+        if (ErofsReader.probe(src)) { importTree(ErofsImage(src), mount, "EROFS"); return }
         if (UbiFsReader.probe(src)) { importUbifs(src, mount); return }
         if (Yaffs2Reader.probe(src)) { importYaffs2(src, mount); return }
         if (!Ext4Reader.probe(src)) { importOtherFilesystem(src, mount, keep = keepStockImage && mount == "system" && src === source); return }
@@ -1512,7 +1537,7 @@ class Importer(
                 log("image $mount: layout not kept (${it.message}); block-based OTAs cannot be applied to this VM")
             }
         }
-        if (mount == "system") gotSystem = true
+        if (mount == "system") { gotSystem = true; hoistSystemAsRoot() }
         log("image $mount: $n objects")
     }
 
@@ -1572,6 +1597,57 @@ class Importer(
             if (mount == "system") gotSystem = true
             log("$fsName $mount: $n objects")
         } finally { deleteTree(dir) }
+    }
+
+    // ---- 0.0.0.3: tree readers (EROFS) and whole-root system images
+
+    private fun importTree(tree: TreeSource, mount: String, kind: String) {
+        onProgress("Reading image $mount ($kind)", -1f)
+        var n = 0
+        tree.walk { path, isDir, link, mode, size, data ->
+            if (cancelled) throw IOException("cancelled")
+            val rel = "$mount/$path"
+            val f = File(root, rel)
+            if (!f.canonicalPath.startsWith(root.canonicalPath)) return@walk
+            when {
+                isDir -> f.mkdirs()
+                link != null -> symlinks.add(link to "/$rel")
+                data != null -> {
+                    f.parentFile?.mkdirs()
+                    data().use { i -> f.outputStream().buffered(1 shl 20).use { o -> i.copyTo(o, 1 shl 16) } }
+                    applyMode(f, mode and 0xfff)
+                    files++; bytes += size
+                }
+            }
+            if (++n % 150 == 0) onProgress("$mount: ${path.substringAfterLast('/')}", -1f)
+        }
+        if (mount == "system") { gotSystem = true; hoistSystemAsRoot() }
+        log("image $mount ($kind): $n objects")
+    }
+
+    /**
+     * A "system-as-root" image (every A/B device, and all of them from Android 10) holds the whole root directory, with
+     * the system partition's files in its /system. It was read under <root>/system like a plain system image, so it is
+     * moved one level up: <root>/system/system becomes <root>/system, and the links it brought (/bin, /etc, /product,
+     * /system_ext, /init...) land in the root where they belong.
+     */
+    private fun hoistSystemAsRoot() {
+        val outer = File(root, "system")
+        val inner = File(outer, "system")
+        if (!File(inner, "framework").isDirectory && !File(inner, "build.prop").isFile) return
+        val aside = File(root, ".system-as-root")
+        if (!outer.renameTo(aside)) { log("system-as-root: cannot move the tree"); return }
+        aside.listFiles()?.forEach { f ->
+            val dst = File(root, f.name)
+            if (dst.exists() && dst.isDirectory && f.isDirectory) { f.listFiles()?.forEach { c -> c.renameTo(File(dst, c.name)) }; f.delete() }
+            else f.renameTo(dst)
+        }
+        aside.delete()
+        for (i in symlinks.indices) {
+            val (target, link) = symlinks[i]
+            if (link.startsWith("/system/")) symlinks[i] = target to link.removePrefix("/system")
+        }
+        log("system-as-root image: the tree is taken as the root directory")
     }
 
     private fun importYaffs2(src: RandomSource, mount: String) {
@@ -1972,6 +2048,15 @@ class Importer(
 
     companion object {
         private val SKIP_NESTED = Regex("(?i).*(gapps|supersu|magisk|busybox|xposed|twrp|modem|csc).*")
+        /** 0.0.0.3: partition images other than system inside a tar (taken after system, which SYSTEM_IMAGE catches first) */
+        private val PART_IMAGE = Regex("(?i)(vendor|product|odm|prism|optics)\\.img(\\.ext4)?(\\.lz4)?")
+        /** 0.0.0.3: system partition images by name (ext4/sparse, Samsung RFS, YAFFS2 dumps, super.img of 10+, erofs, f2fs) */
+        private val SYSTEM_IMAGE = Regex("(?i)system(_[a-z0-9]+)?(\\.ext4|\\.erofs|\\.f2fs)?\\.img(\\.ext4)?|" +
+            "system_image\\.img|system\\.raw\\.img|factoryfs\\.(img|rfs)|" +
+            "system\\.(rfs|yaffs2?|ext4|erofs|f2fs)|super(\\.raw)?\\.img|system_[ab]\\.img")
+        /** 0.0.0.3: partitions a vendor's skin adds beside the AOSP ones, mounted at the root under their own name: Xiaomi
+         *  mi_ext (HyperOS apps and ro.mi.os.*), OPPO/realme/OnePlus my_*, vivo vgc */
+        private val SKIN_PARTITION = Regex("mi_ext|my_[a-z]+|vgc|prism|optics")
         /** Апплеты toolbox Android 2.2–6.0 (ссылка создаётся, только если апплет есть в бинарнике). */
         private val TOOLBOX_APPLETS = listOf(
             "cat", "chcon", "chmod", "chown", "clear", "cmp", "cp", "date", "dd", "df", "dmesg", "du", "getenforce",

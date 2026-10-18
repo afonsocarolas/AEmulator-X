@@ -197,7 +197,6 @@
     <string name="warn_no_build_prop">אין system/build.prop: גרסת Android הוסקה ממבנה המערכת.</string>
     <string name="warn_no_boot_img">אין boot.img בקושחה: תוכנית האתחול וה-BOOTCLASSPATH נוחשו.</string>
     <string name="warn_no_healthd">אין healthd בתוכנית האתחול (אין /sbin/healthd; ייתכן שה-ramdisk חסר בייבוא?): system_server יקרוס ב-BatteryService.</string>
-    <string name="warn_arm64">קושחה של 64 סיביות: נתמך רק ARM של 32 סיביות.</string>
     <string name="warn_not_arm">הקושחה אינה ARM (%1$s) ולא תרוץ.</string>
     <string name="warn_experimental">Android %1$s: התמיכה ניסיונית (ART, ‏SELinux).</string>
     <string name="import_default_name">קושחה</string>

@@ -197,7 +197,6 @@
     <string name="warn_no_build_prop">Ingen system/build.prop: Android-versjonen ble utledet fra systemtreet.</string>
     <string name="warn_no_boot_img">Ingen boot.img i fastvaren: oppstartsplanen og BOOTCLASSPATH ble gjettet.</string>
     <string name="warn_no_healthd">Ingen healthd i oppstartsplanen (ingen /sbin/healthd; mangler ramdisken i importen?): system_server vil dø i BatteryService.</string>
-    <string name="warn_arm64">64-biters fastvare: bare 32-biters ARM støttes.</string>
     <string name="warn_not_arm">Fastvaren er ikke ARM (%1$s) og vil ikke kjøre.</string>
     <string name="warn_experimental">Android %1$s: støtten er eksperimentell (ART, SELinux).</string>
     <string name="import_default_name">fastvare</string>

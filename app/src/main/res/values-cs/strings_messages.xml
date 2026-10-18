@@ -197,7 +197,6 @@
     <string name="warn_no_build_prop">Chybí system/build.prop: verze Androidu byla odvozena ze stromu systému.</string>
     <string name="warn_no_boot_img">Ve firmwaru chybí boot.img: plán spuštění a BOOTCLASSPATH byly odhadnuty.</string>
     <string name="warn_no_healthd">V plánu spuštění chybí healthd (není /sbin/healthd; chybí při importu ramdisk?): system_server spadne v BatteryService.</string>
-    <string name="warn_arm64">64bitový firmware: podporováno je pouze 32bitové ARM.</string>
     <string name="warn_not_arm">Firmware není ARM (%1$s) a nespustí se.</string>
     <string name="warn_experimental">Android %1$s: podpora je experimentální (ART, SELinux).</string>
     <string name="import_default_name">firmware</string>

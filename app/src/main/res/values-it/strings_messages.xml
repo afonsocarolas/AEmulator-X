@@ -197,7 +197,7 @@
     <string name="warn_no_build_prop">Nessun system/build.prop: la versione di Android è stata dedotta dall’albero di sistema.</string>
     <string name="warn_no_boot_img">Nessun boot.img nel firmware: il piano di avvio e BOOTCLASSPATH sono stati ipotizzati.</string>
     <string name="warn_no_healthd">Nessun healthd nel piano di avvio (nessun /sbin/healthd; ramdisk mancante nell’importazione?): system_server andrà in crash in BatteryService.</string>
-    <string name="warn_arm64">Firmware a 64 bit: è supportato solo ARM a 32 bit.</string>
+    <string name="warn_arm64">Firmware a 64 bit: funziona con il motore arm64 nativo. Android 6.0 è il più testato; le altre versioni sono sperimentali.</string>
     <string name="warn_not_arm">Il firmware non è ARM (%1$s) e non verrà eseguito.</string>
     <string name="warn_experimental">Android %1$s: il supporto è sperimentale (ART, SELinux).</string>
     <string name="import_default_name">firmware</string>

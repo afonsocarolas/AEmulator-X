@@ -127,6 +127,7 @@
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
             android:screenOrientation="unspecified"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.AEmulator.Vm" />
 
         <activity android:name=".ui.VmRestartActivity" android:exported="false" />

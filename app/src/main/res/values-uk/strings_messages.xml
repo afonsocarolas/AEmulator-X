@@ -197,7 +197,7 @@
     <string name="warn_no_build_prop">Немає system/build.prop: версію Android визначено за деревом системи.</string>
     <string name="warn_no_boot_img">У прошивці немає boot.img: план завантаження та BOOTCLASSPATH підібрано навмання.</string>
     <string name="warn_no_healthd">У плані завантаження немає healthd (немає /sbin/healthd; ramdisk не потрапив в імпорт?): system_server впаде в BatteryService.</string>
-    <string name="warn_arm64">64-бітна прошивка: підтримується лише 32-бітна ARM.</string>
+    <string name="warn_arm64">64-бітна прошивка: працює на нативному рушії arm64. Найкраще перевірений Android 6.0, інші версії експериментальні.</string>
     <string name="warn_not_arm">Прошивка не для ARM (%1$s) і не запуститься.</string>
     <string name="warn_experimental">Android %1$s: підтримка експериментальна (ART, SELinux).</string>
     <string name="import_default_name">прошивка</string>

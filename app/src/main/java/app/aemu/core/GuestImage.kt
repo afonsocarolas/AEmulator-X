@@ -50,6 +50,12 @@ data class VmSettings(
     val hostResolution: Boolean = false,
     val skipSetupWizard: Boolean = false,
     val disableGoogleApps: Boolean = false,
+    /** 0.0.0.3: buttons of the bar under the screen, in order: back home recents menu search volup voldown power dpad */
+    val navKeys: String = NAV_DEFAULT,
+    /** 0.0.0.3: size of the button bar: 0 compact, 1 large */
+    val navSize: Int = 0,
+    /** 0.0.0.3: the guest phone's notification LED drawn above its screen */
+    val showLed: Boolean = true,
     val mtMode: Int = 0,
     /** AEmulator X: game controller mapping, [GamepadMap.AUTO] / GAMEPAD / CLASSIC */
     val controllerMode: Int = GamepadMap.AUTO,
@@ -61,6 +67,8 @@ data class VmSettings(
     val ramMb: Int = 0,
     /** emulate the radio (RIL); off = tablet-like firmware without telephony */
     val radio: Boolean = true,
+    /** hardware 32-bit (AArch32 EL0) bypass without translator on supported CPUs */
+    val native32: Boolean = false,
     /** IMEI reported by the fake modem; blank = default sample IMEI */
     val imei: String = "",
     /** ro.serialno / ro.boot.serialno reported to the guest; blank = default sample serial */
@@ -102,6 +110,7 @@ data class VmSettings(
         .put("showFrame", showFrame).put("showNavBar", showNavBar)
         .put("hideMenuButton", hideMenuButton)
         .put("navButtons", NavControls.encode(NavControls.parse(navButtons)))
+        .put("navKeys", navKeys).put("navSize", navSize).put("showLed", showLed).put("native32", native32)
         .put("trackball", trackball).put("trackballDpad", trackballDpad)
         .put("trackballStepDp", trackballStepDp.coerceIn(4, 48))
         .put("keepScreenOn", keepScreenOn).put("mtMode", mtMode).put("legacyEngine", legacyEngine)
@@ -121,6 +130,9 @@ data class VmSettings(
         .put("wifiSignal", wifiSignal).put("wifiNeighbors", wifiNeighbors)
 
     companion object {
+        const val NAV_DEFAULT = "back,home,recents,menu"
+        val NAV_ALL = listOf("back", "home", "recents", "menu", "search", "voldown", "volup", "power", "dpad")
+
         /** Luhn-valid sample IMEI from the standard; the guest has no real modem */
         const val DEFAULT_IMEI = "490154203237518"
 
@@ -212,12 +224,16 @@ data class VmSettings(
                 hostResolution = o.optBoolean("hostResolution", false),
                 skipSetupWizard = o.optBoolean("skipSetupWizard", d.skipSetupWizard),
                 disableGoogleApps = o.optBoolean("disableGoogleApps", false),
+                navKeys = o.optString("navKeys", d.navKeys),
+                navSize = o.optInt("navSize", d.navSize),
+                showLed = o.optBoolean("showLed", d.showLed),
                 mtMode = o.optInt("mtMode", d.mtMode),
                 controllerMode = o.optInt("controllerMode", GamepadMap.AUTO).coerceIn(GamepadMap.AUTO, GamepadMap.CLASSIC),
                 bootAnim = o.optString("bootAnim", "").takeIf { it in setOf(BootAnimation.FIRMWARE, BootAnimation.X, BootAnimation.CUSTOM) } ?: "",
                 legacyEngine = o.optBoolean("legacyEngine", false),
                 ramMb = o.optInt("ramMb", 0),
                 radio = o.optBoolean("radio", true),
+                native32 = o.optBoolean("native32", false),
                 imei = o.optString("imei", ""),
                 serial = cleanSerial(o.optString("serial", "")),
                 kernel = cleanKernel(o.optString("kernel", "")),
@@ -254,9 +270,11 @@ data class GuestService(
     val restart: Boolean = false,
     /** вендорский демон: если упадёт — не страшно */
     val optional: Boolean = false,
+    /** not started at boot: the guest asks for it with ctl.start (a service outside init's started classes) */
+    val onDemand: Boolean = false,
 ) {
     fun toJson(): JSONObject = JSONObject()
-        .put("optional", optional)
+        .put("optional", optional).put("onDemand", onDemand)
         .put("name", name)
         .put("argv", JSONArray(argv))
         .put("sockets", JSONObject(sockets as Map<*, *>))
@@ -278,6 +296,7 @@ data class GuestService(
                 delayMs = o.optLong("delayMs", 0),
                 restart = o.optBoolean("restart", false),
                 optional = o.optBoolean("optional", false),
+                onDemand = o.optBoolean("onDemand", false),
             )
         }
     }
@@ -328,7 +347,11 @@ data class GuestImage(
     fun sensorsOff(s: VmSettings): Boolean = SensorHalApi.sensorsOff(s.disableSensors, api, skin, brand, model)
 
     /** Движок с учётом выбора пользователя. */
-    fun effective(): GuestImage = copy(engine = if (settings.legacyEngine && api < 14) Engine.GB else Engine.KK)
+    fun effective(): GuestImage = copy(engine = when {
+        abi == "arm64-v8a" -> Engine.N64
+        settings.legacyEngine && api < 14 -> Engine.GB
+        else -> Engine.KK
+    })
 
     fun toJson(): JSONObject = JSONObject()
         .put("id", id).put("name", name).put("release", release).put("api", api)

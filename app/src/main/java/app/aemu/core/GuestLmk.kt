@@ -152,6 +152,11 @@ class GuestLmk(private val root: File, private val lowRam: Boolean, private val 
             // makes ActivityManager respawn gms/launcher helpers every few seconds, which starves system_server and
             // crash-loops the Wear home app. Below KEEP_CACHED only a real shortage (avail < HARD_HOST_MB) justifies a kill.
             if (cached.size <= KEEP_CACHED && avail >= HARD_HOST_MB && !overBudget) continue
+            // 0.0.0.3: the count and the budget only matter when the phone runs short: with plenty free, killing a cached
+            // service just makes the activity manager start it again (MIUI keeps 11-14 of them: a kill every 5 s,
+            // providers gone under their clients, the CPU busy with restarts)
+            val tight = avail < minHost * 2
+            if (avail >= minHost && !(tight && (cached.size > maxCached || overBudget))) continue
             val sizes = cached.associateWith { rssMb(it) }
             // сначала самый неважный, среди равных — самый большой
             val victim = cached.maxWithOrNull(compareBy<Int> { adj[it] ?: 0 }.thenBy { sizes[it] ?: 0 }) ?: continue

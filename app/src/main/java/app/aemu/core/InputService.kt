@@ -46,6 +46,8 @@ class InputService(private val paths: VmPaths, private val log: (String) -> Unit
     @Volatile var mtMode = 0
     /** MMI/FTM: minui and the touch probe of one process each keep their own event0 descriptor, so one pid may own several clients. */
     @Volatile var multiPerPid = false
+    /** events for a 64-bit guest (native arm64 engine) */
+    @Volatile var wide = false
     @Volatile var sent = 0L
         private set
     val connected: Int get() = clients.size
@@ -383,6 +385,37 @@ class InputService(private val paths: VmPaths, private val log: (String) -> Unit
         }.start()
     }
 
+    fun home(down: Boolean) {
+        // One key only: 102 and 172 both map to HOME (TreeFixer), and the second down while the first is held reads
+        // as a key repeat, i.e. a long press: TouchWiz 4 opened recents on every tap of Home
+        key(KEY_HOME, down)
+    }
+
+    /**
+     * Recent apps. Handles AOSP (APP_SWITCH 580/187), MIUI (Menu on hardware keys),
+     * TouchWiz (Galaxy S5 recents key 254 / S3-S4 long Home chord), HTC Sense, and Sony Xperia.
+     */
+    fun recents(api: Int, skin: String) {
+        Thread {
+            when {
+                skin.contains("MIUI", true) && api < 21 -> {
+                    key(KEY_MENU, true); Thread.sleep(80); key(KEY_MENU, false)
+                }
+                skin.contains("TouchWiz", true) && api in 14..18 -> {
+                    home(true); Thread.sleep(600); home(false)
+                }
+                api >= 11 -> {
+                    // One key only: 580, 187 and 254 all map to APP_SWITCH (TreeFixer), and each press toggles
+                    // recents, so sending all three opened it and closed it again at once
+                    key(KEY_APPSELECT, true); Thread.sleep(80); key(KEY_APPSELECT, false)
+                }
+                else -> {
+                    home(true); Thread.sleep(600); home(false)
+                }
+            }
+        }.start()
+    }
+
     fun tap(x: Int, y: Int) {
         touch(listOf(P(1, x, y)), true)
         Thread.sleep(60)
@@ -423,7 +456,12 @@ class InputService(private val paths: VmPaths, private val log: (String) -> Unit
         }
         record(a)
         var prune = false
-        for (c in clients) { c.post(a); if (c.dead) prune = true }
+        // 0.0.0.3: a 64-bit guest reads struct input_event with a 16-byte timeval
+        val w = if (!wide) a else ByteArray(a.size / EV * 24).also { o ->
+            val src = ByteBuffer.wrap(a).order(ByteOrder.LITTLE_ENDIAN); val dst = ByteBuffer.wrap(o).order(ByteOrder.LITTLE_ENDIAN)
+            repeat(a.size / EV) { dst.putLong(src.int.toLong()); dst.putLong(src.int.toLong()); dst.putShort(src.short); dst.putShort(src.short); dst.putInt(src.int) }
+        }
+        for (c in clients) { c.post(w); if (c.dead) prune = true }
         if (prune) clients.removeAll { it.dead }
         sent += a.size / EV
     }
@@ -474,6 +512,9 @@ class InputService(private val paths: VmPaths, private val log: (String) -> Unit
         const val KEY_APPSELECT = 580
         const val KEY_ENTER = 28
         const val KEY_UP = 103
+        const val KEY_LEFT = 105
+        const val KEY_RIGHT = 106
         const val KEY_DOWN = 108
+        const val KEY_CENTER = 232
     }
 }
