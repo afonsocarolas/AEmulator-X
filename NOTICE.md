@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-18**: AEmulator X14 (`0.0.0.2.13-x14`): merged [uxazu/AEmulator](https://github.com/uxazu/AEmulator) `0.0.0.3` (GPL-3.0):
+  its native arm64 engine (`Kernel64.kt`, `WebView64.kt`, `EngineAssets.kt`, `CameraFeed.kt`, `Lights.kt`, `Sensors.kt`, `AudioIn.kt`,
+  `assets/engines/n64-*`, `jniLibs/arm64-v8a/libaemu64_*`, `libbinderd64_*`, `native/guest64`), import formats (`Formats.kt`,
+  `ErofsImage.kt`) and fixes; for 32-bit firmware the X/Plus code is kept wherever the two clashed (merge commit 3665110).
 - **2026-10-18**: AEmulator X13 (`0.0.0.2.13-x13`): Time mode, day and night interface (`app/src/main/java/app/aemu/ui/TimeMode.kt`, `Theme.kt`,
   `AppPrefs.kt` `THEME_TIME`, `AppSettingsActivity.kt`, `MainActivity.kt`, `res/values*/strings_x.xml`; tests in `TimeModeTest.kt`).
 - **2026-10-18**: AEmulator X12 (`0.0.0.2.13-x12`): Sleep mode (`app/src/main/java/app/aemu/ui/SleepActivity.kt`, `app/src/main/java/app/aemu/core/SleepSound.kt`,
