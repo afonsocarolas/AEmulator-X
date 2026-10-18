@@ -2,5 +2,5 @@
 <resources>
     <!-- Modified for AEmulator Sunset on 2026-09-30; for AEmulator Plus on 2026-10-04 (logo colour); for AEmulator X on 2026-10-15 (X palette). -->
     <color name="bg">#FFFBF8FF</color>
-    <color name="ic_bg">#FF6A3DF0</color>
+    <color name="ic_bg">#FF5637CF</color>
 </resources>

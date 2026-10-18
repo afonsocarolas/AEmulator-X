@@ -6,6 +6,8 @@
 
 **A fork of [AEmulator Plus](https://github.com/somerandomusernam2/AEmulator-Plus) with a cooler UI and screen recording.**
 
+<sub>App icon designed by a friend of the developer 💜</sub>
+
 </div>
 
 ---
