@@ -525,8 +525,10 @@ internal fun rememberThumbnail(img: GuestImage, refresh: Int): ImageBitmap? {
     val thumb by produceState<ImageBitmap?>(null, img.id, refresh) {
         value = withContext(Dispatchers.IO) {
             runCatching {
-                val f = File(VmPaths(ctx, img.id).dir, Screenshot.THUMB)
-                if (f.isFile) BitmapFactory.decodeFile(f.path)?.asImageBitmap() else null
+                // AEmulator X: the home screen after boot, else the screen it was left on
+                val dir = VmPaths(ctx, img.id).dir
+                val f = listOf(Screenshot.HOME, Screenshot.THUMB).map { File(dir, it) }.firstOrNull { it.isFile }
+                f?.let { BitmapFactory.decodeFile(it.path)?.asImageBitmap() }
             }.getOrNull()
         } ?: value
     }

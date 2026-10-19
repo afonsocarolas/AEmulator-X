@@ -47,6 +47,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.ui.draw.alpha
 import androidx.compose.material.icons.rounded.Stop
+import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.material.icons.rounded.Settings
@@ -592,6 +593,10 @@ class VmActivity : ComponentActivity() {
 
     /** on-screen game buttons shown (menu toggle, remembered in vm_ui prefs) */
     private var padVisible by mutableStateOf(false)
+    /** AEmulator X: FPS / CPU / RAM box over the screen (⋮ › Performance overlay), remembered like the game buttons */
+    private var perfVisible by mutableStateOf(false)
+    /** AEmulator X: the boot (bootDoneAt) whose home screen is already the tile picture */
+    private var homeShotFor = 0L
 
     private val padAxes by lazy { app.aemu.core.GamepadMap.Axes { code, down -> vm.input.key(code, down) } }
 
@@ -723,7 +728,8 @@ class VmActivity : ComponentActivity() {
     }
 
     /** The screen as it is now, for the phone of this firmware in the 3D library (only once the system has booted). */
-    private fun captureThumbnail() {
+    private fun captureThumbnail(home: Boolean = false) {
+        val name = if (home) app.aemu.core.Screenshot.HOME else app.aemu.core.Screenshot.THUMB
         if (!::vm.isInitialized || vm.recoveryMode || vm.bootDoneAt == 0L) return
         val g = guest
         val dir = app.aemu.core.VmPaths(this, vm.img.id).dir
@@ -734,7 +740,7 @@ class VmActivity : ComponentActivity() {
             runCatching {
                 android.view.PixelCopy.request(surfaceView, bmp, { res ->
                     thread {
-                        if (res == android.view.PixelCopy.SUCCESS && !app.aemu.core.Screenshot.isBlank(bmp)) app.aemu.core.Screenshot.saveThumbnail(dir, bmp)
+                        if (res == android.view.PixelCopy.SUCCESS && !app.aemu.core.Screenshot.isBlank(bmp)) app.aemu.core.Screenshot.saveThumbnail(dir, bmp, name)
                         bmp.recycle()
                     }
                 }, android.os.Handler(android.os.Looper.getMainLooper()))
@@ -742,7 +748,7 @@ class VmActivity : ComponentActivity() {
             return
         }
         val fb = g.fb; val fmt = g.format; val pages = g.pages; val page = g.shownPage
-        thread { runCatching { app.aemu.core.Screenshot.thumbnailFromFb(dir, fb, g.w, g.h, fmt, pages, page) } }
+        thread { runCatching { app.aemu.core.Screenshot.thumbnailFromFb(dir, fb, g.w, g.h, fmt, pages, page, name) } }
     }
 
     /** raw fb0 → PNG in /sdcard/Pictures/AEmulator (see core/Screenshot.kt) */
@@ -1359,6 +1365,23 @@ class VmActivity : ComponentActivity() {
                 app.aemu.core.GamepadMap.key(keyCode, padMode())?.let { code -> vm.input.key(code, down) }
             })
 
+            // AEmulator X: performance overlay; tap it to hide
+            LaunchedEffect(Unit) { perfVisible = uiPrefs.getBoolean("perf_overlay", false) }
+            if (perfVisible && !showLog && state != GuestVm.State.STOPPED) PerfOverlay({ frames },
+                Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(top = 8.dp, end = 8.dp)
+                    .clickable { perfVisible = false; uiPrefs.edit().putBoolean("perf_overlay", false).apply() })
+
+            // AEmulator X: about 15 s after each boot the home screen becomes the library tile's picture
+            LaunchedEffect(Unit) {
+                while (true) {
+                    val done = vm.bootDoneAt
+                    if (done != 0L && homeShotFor != done && System.currentTimeMillis() - done > 15_000 && !inPip && !vm.recoveryMode) {
+                        homeShotFor = done; captureThumbnail(home = true)
+                    }
+                    delay(2000)
+                }
+            }
+
             // журнал
             AnimatedVisibility(visible = showLog, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.fillMaxSize()) {
                 LogPanel(onClose = { showLog = false })
@@ -1424,6 +1447,10 @@ class VmActivity : ComponentActivity() {
                         leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
                         trailingIcon = { if (padVisible) Icon(Icons.Rounded.Check, null) },
                         onClick = { menu = false; padVisible = !padVisible; uiPrefs.edit().putBoolean("game_pad", padVisible).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_perf)) },
+                        leadingIcon = { Icon(Icons.Rounded.Speed, null) },
+                        trailingIcon = { if (perfVisible) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; perfVisible = !perfVisible; uiPrefs.edit().putBoolean("perf_overlay", perfVisible).apply() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_fullscreen)) },
                         leadingIcon = { Icon(if (fullScreen) Icons.Rounded.FullscreenExit else Icons.Rounded.Fullscreen, null) },
                         trailingIcon = { if (fullScreen) Icon(Icons.Rounded.Check, null) },
@@ -1735,6 +1762,35 @@ class VmActivity : ComponentActivity() {
         fun start(ctx: Context, id: String, recovery: Boolean = false, lowPower: Boolean = false) {
             ctx.startActivity(Intent(ctx, VmActivity::class.java).putExtra(EXTRA_ID, id).putExtra(EXTRA_RECOVERY, recovery).putExtra(EXTRA_LOW_POWER, lowPower)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }
+    }
+}
+
+/** AEmulator X: FPS of the guest screen, CPU share of the phone and memory of AEmulator X with the running system. */
+@Composable
+private fun PerfOverlay(frames: () -> Long, modifier: Modifier = Modifier) {
+    val meter = remember { app.aemu.core.PerfStats.Meter(android.os.Process.myUid()) }
+    var sample by remember { mutableStateOf<app.aemu.core.PerfStats.Sample?>(null) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            val f = frames()
+            sample = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { meter.sample(f) } ?: sample
+            delay(1000)
+        }
+    }
+    fun level(v: Int, warn: Int, bad: Int, inverse: Boolean = false): Color {
+        val badHit = if (inverse) v < bad else v >= bad
+        val warnHit = if (inverse) v < warn else v >= warn
+        return when { badHit -> Color(0xFFFF8A80); warnHit -> Color(0xFFFFD180); else -> Color(0xFFB9F6CA) }
+    }
+    Surface(shape = MaterialTheme.shapes.small, color = Color.Black.copy(alpha = 0.6f), contentColor = Color.White, modifier = modifier) {
+        val s = sample
+        Column(Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
+            Text(if (s == null) "FPS …" else "FPS ${s.fps}", style = MaterialTheme.typography.labelMedium,
+                color = if (s == null) Color.White else level(s.fps, 40, 20, inverse = true))
+            Text(if (s == null) "CPU …" else "CPU ${s.cpuPercent}%", style = MaterialTheme.typography.labelMedium,
+                color = if (s == null) Color.White else level(s.cpuPercent, 60, 85))
+            Text(if (s == null) "RAM …" else "RAM ${s.ramMb} MB", style = MaterialTheme.typography.labelMedium)
         }
     }
 }

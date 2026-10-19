@@ -69,6 +69,8 @@ object XThemes {
         XTheme("emerald", app.aemu.R.string.x_theme_emerald, 0xFF2E7D32, 0xFF00C853, 0xFF76FF03, 0xFFB9F6CA),
         XTheme("rose", app.aemu.R.string.x_theme_rose, 0xFFD81B60, 0xFFF50057, 0xFFFF6E6E, 0xFFFFCCBC),
         XTheme("mono", app.aemu.R.string.x_theme_mono, 0xFF616161, 0xFF424242, 0xFF9E9E9E, 0xFFFAFAFA),
+        // AEmulator X: Christmas red, green and gold; snow falls behind the library (Snow.kt)
+        XTheme("christmas", app.aemu.R.string.x_theme_christmas, 0xFFC62828, 0xFFD32F2F, 0xFF2E7D32, 0xFFFFD54F),
         XTheme("holo", app.aemu.R.string.x_theme_holo, 0xFF33B5E5, 0xFF0099CC, 0xFF33B5E5, 0xFF8AD5F0, holo = true),
     )
     fun byId(id: String?) = ALL.firstOrNull { it.id == id } ?: ALL[0]
@@ -142,6 +144,7 @@ fun AuroraBackground(modifier: Modifier = Modifier, content: @Composable BoxScop
                 val r = size.width * 0.9f
                 drawCircle(Brush.radialGradient(listOf(Color(0x2633B5E5), Color.Transparent), Offset(size.width / 2, 0f), r), r, Offset(size.width / 2, 0f))
             }
+            LibrarySnow(Modifier.fillMaxSize())
             content()
         }
         return
@@ -158,6 +161,7 @@ fun AuroraBackground(modifier: Modifier = Modifier, content: @Composable BoxScop
                 drawCircle(Brush.radialGradient(listOf(c.copy(alpha = blobAlpha), Color.Transparent), center, r), r, center)
             }
         }
+        LibrarySnow(Modifier.fillMaxSize())
         content()
     }
 }

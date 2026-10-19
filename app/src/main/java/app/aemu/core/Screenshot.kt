@@ -89,16 +89,18 @@ object Screenshot {
 
     /** File name of the library thumbnail in the image's folder (VmPaths.dir). */
     const val THUMB = "thumb.jpg"
+    /** AEmulator X: the home screen shortly after boot; the library prefers it to the last screen */
+    const val HOME = "home.jpg"
     private const val THUMB_WIDTH = 270
 
     /** Small JPEG of the guest screen for the 3D library (Super Plus); written atomically, never shown elsewhere. */
-    fun saveThumbnail(dir: File, bmp: Bitmap): Boolean = runCatching {
+    fun saveThumbnail(dir: File, bmp: Bitmap, name: String = THUMB): Boolean = runCatching {
         val h = (THUMB_WIDTH.toLong() * bmp.height / bmp.width.coerceAtLeast(1)).toInt().coerceIn(1, THUMB_WIDTH * 3)
         val small = if (bmp.width == THUMB_WIDTH && bmp.height == h) bmp else Bitmap.createScaledBitmap(bmp, THUMB_WIDTH, h, true)
-        val tmp = File(dir, "$THUMB.tmp")
+        val tmp = File(dir, "$name.tmp")
         tmp.outputStream().use { small.compress(Bitmap.CompressFormat.JPEG, 85, it) }
         if (small !== bmp) small.recycle()
-        tmp.renameTo(File(dir, THUMB))
+        tmp.renameTo(File(dir, name))
     }.getOrDefault(false)
 
     /** An all-black frame (screen off, nothing drawn yet) is not worth keeping. */
@@ -106,10 +108,10 @@ object Screenshot {
         (0 until 16).all { i -> bmp.getPixel(bmp.width * (i % 4 + 1) / 5, bmp.height * (i / 4 + 1) / 5) and 0xffffff == 0 }
 
     /** Thumbnail straight from the guest framebuffer (same formats as [take]). Blocking. */
-    fun thumbnailFromFb(dir: File, fb: File?, w: Int, h: Int, format: Int, pages: Int, page: Int): Boolean {
+    fun thumbnailFromFb(dir: File, fb: File?, w: Int, h: Int, format: Int, pages: Int, page: Int, name: String = THUMB): Boolean {
         if (fb == null || !fb.isFile || w <= 0 || h <= 0) return false
         val bmp = runCatching { rawToBitmap(fb, w, h, format, if (format == 0) 2 else 4, if (pages == 2) page else 0) }.getOrNull() ?: return false
-        val ok = !isBlank(bmp) && saveThumbnail(dir, bmp)
+        val ok = !isBlank(bmp) && saveThumbnail(dir, bmp, name)
         bmp.recycle()
         return ok
     }

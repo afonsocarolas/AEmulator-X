@@ -129,4 +129,9 @@
     <string name="x_time_afternoon">Добрый день</string>
     <string name="x_time_evening">Добрый вечер</string>
     <string name="x_time_night">Доброй ночи</string>
+    <!-- Christmas theme, performance overlay -->
+    <string name="x_theme_christmas">Рождество</string>
+    <string name="x_snow">Снег в декабре</string>
+    <string name="x_snow_sub">Весь декабрь за библиотекой и в режиме сна тихо падает снег, с любой темой</string>
+    <string name="x_perf">Показатели производительности</string>
 </resources>

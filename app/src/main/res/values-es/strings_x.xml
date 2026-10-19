@@ -129,4 +129,9 @@
     <string name="x_time_afternoon">Buenas tardes</string>
     <string name="x_time_evening">Buenas tardes</string>
     <string name="x_time_night">Buenas noches</string>
+    <!-- Christmas theme, performance overlay -->
+    <string name="x_theme_christmas">Navidad</string>
+    <string name="x_snow">Nieve en diciembre</string>
+    <string name="x_snow_sub">Cae nieve suave detrás de la biblioteca y en el modo dormir durante todo diciembre, con cualquier tema</string>
+    <string name="x_perf">Panel de rendimiento</string>
 </resources>

@@ -160,6 +160,10 @@ private fun Sleep(onClose: () -> Unit, onEnded: () -> Unit) {
             drawCircle(Color(0xFFFFE0B2).copy(alpha = 0.55f * sky), mr, moon)
             drawCircle(Color(0xFF070B1A), mr * 0.95f, Offset(moon.x + mr * 0.45f, moon.y - mr * 0.2f))
         }
+        // AEmulator X: soft warm snow in December (App settings › Snow in December); fades with the sky
+        val ctx = androidx.compose.ui.platform.LocalContext.current
+        if (sky > 0.05f && Snowfall.isDecember() && app.aemu.AppPrefs.decemberSnow(ctx))
+            SnowLayer(Modifier.fillMaxSize(), count = 40, tint = Color(0xFFFFE0B2).copy(alpha = 0.6f * sky))
         Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(now)),
                 color = Amber.copy(alpha = 0.45f * sky), fontSize = 52.sp, fontWeight = FontWeight.Light)

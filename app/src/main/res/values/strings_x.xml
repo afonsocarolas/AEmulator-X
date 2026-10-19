@@ -130,4 +130,9 @@
     <string name="x_time_afternoon">Good afternoon</string>
     <string name="x_time_evening">Good evening</string>
     <string name="x_time_night">Good night</string>
+    <!-- Christmas theme, performance overlay -->
+    <string name="x_theme_christmas">Christmas</string>
+    <string name="x_snow">Snow in December</string>
+    <string name="x_snow_sub">Gentle snow falls behind the library and in Sleep mode all December, with any theme</string>
+    <string name="x_perf">Performance overlay</string>
 </resources>

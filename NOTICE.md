@@ -65,6 +65,9 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-19**: AEmulator X15 (`0.0.0.2.13-x15`): Christmas theme and December snow (`app/src/main/java/app/aemu/ui/Snow.kt`, `XStyle.kt`,
+  `AppPrefs.kt`, `AppSettingsActivity.kt`, `SleepActivity.kt`), performance overlay (`app/src/main/java/app/aemu/core/PerfStats.kt`,
+  `VmActivity.kt`), home-screen tile pictures (`Screenshot.kt` `HOME`, `Library3D.kt`, `VmActivity.kt`); tests in `PerfStatsTest.kt`, `SnowfallTest.kt`.
 - **2026-10-18**: AEmulator X14 (`0.0.0.2.13-x14`): merged [uxazu/AEmulator](https://github.com/uxazu/AEmulator) `0.0.0.3` (GPL-3.0):
   its native arm64 engine (`Kernel64.kt`, `WebView64.kt`, `EngineAssets.kt`, `CameraFeed.kt`, `Lights.kt`, `Sensors.kt`, `AudioIn.kt`,
   `assets/engines/n64-*`, `jniLibs/arm64-v8a/libaemu64_*`, `libbinderd64_*`, `native/guest64`), import formats (`Formats.kt`,

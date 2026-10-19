@@ -243,6 +243,8 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
             item {
                 Section(stringResource(R.string.as_appearance)) {
                     XThemePicker(xTheme) { xTheme = it; AppPrefs.setXTheme(ctx, it); onRestyle() }
+                    var snow by remember { mutableStateOf(AppPrefs.decemberSnow(ctx)) }
+                    Toggle(stringResource(R.string.x_snow), stringResource(R.string.x_snow_sub), snow) { snow = it; AppPrefs.setDecemberSnow(ctx, it); onRestyle() }
                     Toggle(stringResource(R.string.x_pip), stringResource(R.string.x_pip_sub), pip) { pip = it; AppPrefs.setPictureInPicture(ctx, it) }
                     // AEmulator X: List / Square grid / 3D instead of the 3D on/off switch
                     Text(stringResource(R.string.x_lib_layout), style = MaterialTheme.typography.labelLarge,
