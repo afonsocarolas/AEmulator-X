@@ -134,4 +134,5 @@
     <string name="x_snow">Neve em dezembro</string>
     <string name="x_snow_sub">Neve suave cai atrás da biblioteca e no modo dormir durante todo o mês de dezembro, com qualquer tema</string>
     <string name="x_perf">Painel de desempenho</string>
+    <string name="x_native32_no_hw">Seu chip (%1$s) não tem hardware de 32 bits, então isto não pode ser ativado. Firmwares de 32 bits rodam pelo QEMU; as de 64 bits rodam nativamente.</string>
 </resources>

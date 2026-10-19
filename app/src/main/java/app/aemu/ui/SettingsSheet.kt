@@ -130,7 +130,12 @@ fun SettingsSheet(img: GuestImage, onDismiss: () -> Unit, onSave: (VmSettings) -
             val has32 = CpuInfo.hasAArch32
             Toggle(
                 stringResource(R.string.vs_native32),
-                if (has32) stringResource(R.string.vs_native32_sub) else stringResource(R.string.vs_native32_unsupported),
+                // AEmulator X: a chip without 32-bit hardware is said plainly; any other failure shows the test result
+                when {
+                    has32 -> stringResource(R.string.vs_native32_sub)
+                    CpuInfo.noArm32Hardware -> stringResource(R.string.x_native32_no_hw, chipName())
+                    else -> stringResource(R.string.vs_native32_unsupported) + "\n(test: ${CpuInfo.probeResult}; ${chipName()})"
+                },
                 s.native32 && has32
             ) { if (has32) s = s.copy(native32 = it) }
             val ramIdx = RAM_STEPS.indexOf(s.ramMb).coerceAtLeast(0)
@@ -555,3 +560,8 @@ private fun recoveryStatus(ctx: android.content.Context, paths: app.aemu.core.Vm
         else -> ctx.getString(R.string.vs_recovery_stock)
     }
 }
+
+/** AEmulator X: the host chip as Android names it (SoC model on 12+, else the board's hardware name). */
+private fun chipName(): String =
+    if (android.os.Build.VERSION.SDK_INT >= 31) android.os.Build.SOC_MODEL.takeIf { it.isNotBlank() && it != "unknown" } ?: android.os.Build.HARDWARE
+    else android.os.Build.HARDWARE

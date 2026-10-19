@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-19**: AEmulator X16 (`0.0.0.2.13-x16`): Android 1.x–2.x boot fix after the 0.0.0.3 merge (`TreeFixer.kt` camera swap off for
+  32-bit firmware and undone, X13's `engines/kk/libGLES.so`, `libGLES_split.so`, `libashmemshim.so` and `engines/gb/libashmemshim.so` back,
+  0.0.0.3's GL builds kept as `engines/kk/*.n64.so` for the arm64 engine, `GuestRunner.kt`); AArch32 detection by a test program and a clear
+  message (`CpuInfo.kt`, `SettingsSheet.kt`; tests in `CpuInfoProbeTest.kt`).
 - **2026-10-19**: AEmulator X15 (`0.0.0.2.13-x15`): Christmas theme and December snow (`app/src/main/java/app/aemu/ui/Snow.kt`, `XStyle.kt`,
   `AppPrefs.kt`, `AppSettingsActivity.kt`, `SleepActivity.kt`), performance overlay (`app/src/main/java/app/aemu/core/PerfStats.kt`,
   `VmActivity.kt`), home-screen tile pictures (`Screenshot.kt` `HOME`, `Library3D.kt`, `VmActivity.kt`); tests in `PerfStatsTest.kt`, `SnowfallTest.kt`.

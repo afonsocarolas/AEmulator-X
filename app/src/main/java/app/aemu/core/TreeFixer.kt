@@ -675,7 +675,8 @@ class TreeFixer(
         // sends the toolkit's drawing on to that renderer; without the GPU option it is not there at all
         kernel.gpuBridge32?.let { name ->
             val on = img.settings.gpu && File(root, "system/bin/app_process32").isFile
-            for ((asset, to) in listOf((if (kernel.gpuBridge32Open) "libGLES_aemu.so" else "libGLES_route.so") to name, "libGLES_split.so" to "libGLES_split.so", "libGLES.so" to "libGLES_bridge.so")) {
+            for ((asset, to) in listOf((if (kernel.gpuBridge32Open) "libGLES_aemu.so" else "libGLES_route.so") to name, "libGLES_split.n64.so" to "libGLES_split.so", "libGLES.n64.so" to "libGLES_bridge.so")) {
+                // (X14.1: the *.n64.so files are 0.0.0.3's builds for the arm64 engine; 32-bit firmware keeps X13's libGLES.so / libGLES_split.so)
                 val f = File(root, "system/lib/egl/$to")
                 if (on) runCatching {
                     val len = EngineAssets.size(ctx, "engines/kk/$asset")
@@ -1238,8 +1239,17 @@ class TreeFixer(
                 }
             }
         }
+        // X14.1: 0.0.0.3's empty camera HAL (below) also hit Android 1.x (api <= 10 matched API 2): the G1's mediaserver could
+        // not load it, died with 255, and system_server and zygote (137) went with it. 32-bit firmware boots as in X13, so
+        // the swap is off, and a firmware that already got it has its own libcamera.so back.
+        val emptyCam = runCatching { EngineAssets.size(ctx, "engines/common/libcamera.none.so") }.getOrDefault(-1L)
+        if (!stamp.isFile && parkedCam.isFile && cam.isFile && cam.length() == emptyCam) runCatching {
+            cam.delete()
+            if (parkedCam.renameTo(cam)) log("camera: the firmware's own libcamera.so is back")
+        }
         // 2.3, Qualcomm: the camera HAL needs the modem (ONCRPC) and quits mediaserver without it — a HAL with no cameras
-        if (img.api <= 10 && !htc && cam.isFile && !parkedCam.exists() && cam.length() > 4096) {
+        // (0.0.0.3; not used for 32-bit firmware in AEmulator X, see above)
+        if (false && img.api <= 10 && !htc && cam.isFile && !parkedCam.exists() && cam.length() > 4096) {
             val text = runCatching { String(cam.readBytes(), Charsets.ISO_8859_1) }.getOrDefault("")
             if (listOf("libcald", "liboemcamera", "oncrpc").any { text.contains(it) }) runCatching {
                 File(root, "system/.aemu-parked").mkdirs()

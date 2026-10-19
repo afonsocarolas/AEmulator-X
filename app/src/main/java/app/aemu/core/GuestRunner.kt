@@ -157,10 +157,6 @@ class GuestRunner(
             e.putIfAbsent("EMULATED_STORAGE_SOURCE", "/mnt/shell/emulated")
             e.putIfAbsent("EMULATED_STORAGE_TARGET", "/storage/emulated")
         }
-        // libaemushim: the precompiled code under /system is read-only like on the real mount
-        e["AEMU_RO_SYSTEM"] = "1"
-        // libaemushim serves /proc/meminfo scaled to this budget instead of the phone's own memory
-        e["AEMU_RAM_KB"] = (guestRamMb(img.api, s.ramMb) * 1024L).toString()
         e["HOME"] = "/data"
         e["TMPDIR"] = "/data/local/tmp"
         e["ASHMEM_SHIM_DIR"] = "/data/local/tmp"

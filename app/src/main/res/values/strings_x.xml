@@ -135,4 +135,5 @@
     <string name="x_snow">Snow in December</string>
     <string name="x_snow_sub">Gentle snow falls behind the library and in Sleep mode all December, with any theme</string>
     <string name="x_perf">Performance overlay</string>
+    <string name="x_native32_no_hw">Your chip (%1$s) has no 32-bit hardware, so this cannot be turned on. 32-bit firmware runs through QEMU; 64-bit firmware runs natively.</string>
 </resources>
