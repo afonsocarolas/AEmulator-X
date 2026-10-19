@@ -173,8 +173,12 @@ class InputService(private val paths: VmPaths, private val log: (String) -> Unit
         clients.clear()
     }
 
+    /** AEmulator X: sees every touch while a macro is being recorded (VmActivity) */
+    @Volatile var touchTap: ((List<P>) -> Unit)? = null
+
     @Synchronized
     fun touch(now: List<P>, force: Boolean = false) {
+        touchTap?.invoke(now)
         val gap = if (rateHz > 0) 1000L / rateHz else 0L
         val ids = now.map { it.id }
         val t = SystemClock.uptimeMillis()

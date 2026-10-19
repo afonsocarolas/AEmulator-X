@@ -25,6 +25,7 @@ object PlayStats {
         val old = runCatching { parse(f.readText()) }.getOrDefault(Stats())
         val tmp = File(f.path + ".tmp")
         runCatching { tmp.writeText(format(Stats(old.totalMs + ms, now))); tmp.renameTo(f) }
+        PlayDays.add(ctx, ms, now)   // AEmulator X19: per day, for the statistics screen
     }
 
     internal fun parse(text: String): Stats {

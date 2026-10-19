@@ -19,6 +19,12 @@ AEmulator X boots a real Android 2.3–7.x system image straight from a firmware
 - **🎬 Screen recording**: ⋮ menu → **Record screen**. Records the guest screen as H.264 video with the guest's own sound (AAC), 30 fps, sharp even on old 320×480 screens (scaled to 640–1280 px). A pulsing **REC** pill shows the time; tap it (or ⋮ → **Stop recording**) to save to `Movies/AEmulator/<time>-<VM>.mp4`. Works in both GPU-bridge and framebuffer modes, and in recovery. Only the guest screen is recorded, not the host's bars or menus.
 - **🌌 Cooler UI**: an electric violet / magenta / cyan palette with a deep near-black dark mode, an animated aurora background behind the library, a glowing gradient **X** wordmark, and glass firmware cards with gradient release badges and Start buttons.
 - **🔔 Boot sound picker** (X2): VM settings → **Boot sound**. Choose the firmware's own sound, silence, one of three original AEmulator X sounds (X Chime, Retro 8-bit, Rise), any sound file found inside the firmware (PowerOn.wav, UI/notification/ringtone sounds…), or your own audio file. Every option has a ▶ preview. A chosen sound replaces the firmware's boot sound: the system stays muted until it has booted.
+- **📊 Statistics** (X19): library ⋮ › **Statistics**: total play time, days in a row, best streak, the last 7 days, most played firmwares and play time per Android version.
+- **🖼️ Library wallpaper** (X19): App settings › Appearance › **Library wallpaper**: your own picture behind the library.
+- **🎨 Screen filters** (X19): a running system's ⋮ › **Screen filter**: Retro CRT, Game Boy green, Sepia, Warm night or Black & white (Phone GPU off), per firmware.
+- **🖐️ Touch macros** (X19): ⋮ › **Record touch macro**, then **Play macro** once or in a loop.
+- **🎞️ GIF recording** (X19): ⋮ › **Record GIF (8 s)** saves a short looping GIF next to the screenshots.
+- **📋 Copy from emulated phone** (X19): ⋮ › **Copy from emulated phone** puts the guest's clipboard on your device (best effort on very new Android versions).
 - **🏆 Achievements** (X18): the trophy button in the library opens 13 badges (First boot, Time traveler, Every era, 64-bit power, Marathon…) with progress bars; new ones are announced when you come back to the library.
 - **📱 QR code for browser play** (X18): the Play in a browser dialog shows a QR code of the address to scan with another phone.
 - **🕹️ Game mode** (X18): a running system's ⋮ › **Game mode** turns on full screen, the game buttons and keep-screen-on in one go, and puts everything back when you leave.

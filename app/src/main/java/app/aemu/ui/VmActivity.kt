@@ -48,6 +48,9 @@ import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.ui.draw.alpha
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material.icons.rounded.Speed
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Gif
+import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.material.icons.rounded.Vibration
@@ -323,9 +326,12 @@ class VmActivity : ComponentActivity() {
         box.addView(guest, FrameLayout.LayoutParams(-1, -1))
         // AEmulator X: retro CRT layer (scanlines, shadow mask, dark corners); off unless chosen, on for 1.x-2.x
         crtView = CrtOverlayView(this).also { box.addView(it, FrameLayout.LayoutParams(-1, -1)) }
-        crtOn = uiPrefs.getBoolean("crt_" + vm.img.id, vm.img.api <= 10)
-        crtView?.visibility = if (crtOn) View.VISIBLE else View.GONE
+        // (X17 kept an on/off for the CRT look; X19 has several filters, the old choice still counts)
+        val savedFilter = ScreenFilter.of(uiPrefs.getString("filter_" + vm.img.id, null))
+            ?: if (uiPrefs.getBoolean("crt_" + vm.img.id, vm.img.api <= 10)) ScreenFilter.CRT else ScreenFilter.NONE
+        box.post { applyFilter(savedFilter, remember = false) }
         shakeOn = uiPrefs.getBoolean("shake_shot", false)
+        hasMacro = app.aemu.core.TouchMacro.file(vm.paths).isFile
         // the theme's frame picture, behind the guest screen
         frameView = android.widget.ImageView(this).apply { scaleType = android.widget.ImageView.ScaleType.CENTER_CROP }
         root.addView(frameView, FrameLayout.LayoutParams(-1, -1))
@@ -611,7 +617,16 @@ class VmActivity : ComponentActivity() {
     private var beforeGame: Triple<Boolean, Boolean, Boolean>? = null
     /** AEmulator X: retro CRT layer over the screen (per firmware; on by default for Android 1.x-2.x) */
     private var crtView: CrtOverlayView? = null
-    private var crtOn by mutableStateOf(false)
+    private var screenFilter by mutableStateOf(ScreenFilter.NONE)
+    private var filterDialog by mutableStateOf(false)
+    /** AEmulator X: touch macro (record / replay), GIF recording */
+    @Volatile private var macroRec: app.aemu.core.TouchMacro.Recorder? = null
+    private var macroRecording by mutableStateOf(false)
+    @Volatile private var macroStop = false
+    private var macroPlaying by mutableStateOf(false)
+    private var hasMacro by mutableStateOf(false)
+    @Volatile private var gif: app.aemu.core.GifRecorder? = null
+    private var gifOn by mutableStateOf(false)
     /** AEmulator X: shake the phone for a screenshot (⋮ menu, remembered) */
     private var shakeOn by mutableStateOf(false)
     private val shake = app.aemu.core.ShakeDetector()
@@ -663,6 +678,8 @@ class VmActivity : ComponentActivity() {
         heldNavKeys.releaseAll()
         stopVnc()
         stopWeb()
+        macroStop = true
+        gif = null
         finishRecordingBlocking()
         if (::guest.isInitialized) guest.stop()
         shellRx?.let { runCatching { unregisterReceiver(it) } }
@@ -918,11 +935,145 @@ class VmActivity : ComponentActivity() {
         }
     }
 
-    private fun setCrt(on: Boolean) {
-        crtOn = on
-        crtView?.visibility = if (on) View.VISIBLE else View.GONE
-        if (::vm.isInitialized) uiPrefs.edit().putBoolean("crt_" + vm.img.id, on).apply()
-        if (on) app.aemu.core.Achievements.bump(this, app.aemu.core.Achievements.RETRO)
+    /** Puts [f] on the screen; black & white converts the pixels, which needs the app to draw them (Phone GPU off). */
+    private fun applyFilter(f: ScreenFilter, remember: Boolean = true) {
+        var use = f
+        if (f == ScreenFilter.BW && ::guest.isInitialized && guest.passthrough) { toast(getString(R.string.x_filter_bw_gpu)); use = ScreenFilter.NONE }
+        screenFilter = use
+        crtView?.filter = use
+        if (::box.isInitialized) {
+            if (use == ScreenFilter.BW) box.setLayerType(View.LAYER_TYPE_HARDWARE, CrtOverlayView.bwPaint())
+            else box.setLayerType(View.LAYER_TYPE_NONE, null)
+        }
+        if (remember && ::vm.isInitialized) uiPrefs.edit().putString("filter_" + vm.img.id, use.id).apply()
+        if (remember && use == ScreenFilter.CRT) app.aemu.core.Achievements.bump(this, app.aemu.core.Achievements.RETRO)
+    }
+
+    @Composable
+    private fun FilterDialog() {
+        val names = listOf(ScreenFilter.NONE to R.string.x_filter_none, ScreenFilter.CRT to R.string.x_filter_crt,
+            ScreenFilter.GAMEBOY to R.string.x_filter_gameboy, ScreenFilter.SEPIA to R.string.x_filter_sepia,
+            ScreenFilter.NIGHT to R.string.x_filter_night, ScreenFilter.BW to R.string.x_filter_bw)
+        AlertDialog(
+            onDismissRequest = { filterDialog = false },
+            icon = { Icon(Icons.Rounded.Tv, null) },
+            title = { Text(stringResource(R.string.x_filter)) },
+            text = {
+                Column {
+                    for ((f, res) in names) Row(Modifier.fillMaxWidth().clickable { filterDialog = false; applyFilter(f) }.padding(vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        androidx.compose.material3.RadioButton(selected = screenFilter == f, onClick = { filterDialog = false; applyFilter(f) })
+                        Text(stringResource(res))
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { filterDialog = false }) { Text(stringResource(R.string.close)) } },
+        )
+    }
+
+    // ---- touch macro
+
+    private fun startMacroRecording() {
+        if (!::vm.isInitialized || macroPlaying) return
+        val rec = app.aemu.core.TouchMacro.Recorder()
+        macroRec = rec; macroRecording = true
+        vm.input.touchTap = { pts -> rec.add(pts) }
+        toast(getString(R.string.x_macro_recording))
+    }
+
+    private fun stopMacroRecording() {
+        val rec = macroRec ?: return
+        macroRec = null; macroRecording = false
+        if (::vm.isInitialized) vm.input.touchTap = null
+        val m = rec.finish()
+        if (m.isEmpty()) { toast(getString(R.string.x_macro_none)); return }
+        runCatching { app.aemu.core.TouchMacro.file(vm.paths).writeText(m.format()) }
+        hasMacro = true
+        toast(getString(R.string.x_macro_saved, "%.1f s".format(m.durationMs / 1000.0)))
+    }
+
+    private fun playMacro(loop: Boolean) {
+        if (!::vm.isInitialized || macroPlaying || macroRecording) return
+        val m = app.aemu.core.TouchMacro.load(vm.paths) ?: return
+        macroStop = false; macroPlaying = true
+        thread(name = "aemu-macro") {
+            try {
+                do { m.play({ pts -> vm.input.touch(pts, true) }, { macroStop }); if (loop && !macroStop) Thread.sleep(300) } while (loop && !macroStop)
+            } catch (_: InterruptedException) {
+            } finally { runOnUiThread { macroPlaying = false } }
+        }
+    }
+
+    // ---- GIF recording
+
+    private fun startGif() {
+        if (gif != null) return
+        val g = app.aemu.core.GifRecorder()
+        gif = g; gifOn = true
+        thread(name = "aemu-gif") {
+            val copyThread = android.os.HandlerThread("aemu-gif-copy").apply { start() }
+            val handler = android.os.Handler(copyThread.looper)
+            var buf: android.graphics.Bitmap? = null
+            var fbGrab: app.aemu.core.ScreenRecorder.FbGrabber? = null
+            try {
+                while (gif === g && !g.full) {
+                    val started = android.os.SystemClock.uptimeMillis()
+                    val gs = guest
+                    val w = gs.w; val h = gs.h
+                    if (w > 0 && h > 0) {
+                        if (gs.passthrough && surfaceView.width > 0 && surfaceView.holder.surface.isValid) {
+                            val b = buf?.takeIf { it.width == w && it.height == h }
+                                ?: android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888).also { buf = it }
+                            val done = java.util.concurrent.CountDownLatch(1)
+                            val ok = java.util.concurrent.atomic.AtomicBoolean(false)
+                            runCatching { android.view.PixelCopy.request(surfaceView, b, { r -> ok.set(r == android.view.PixelCopy.SUCCESS); done.countDown() }, handler) }
+                                .onFailure { done.countDown() }
+                            if (done.await(250, java.util.concurrent.TimeUnit.MILLISECONDS)) { if (ok.get()) g.add(b) } else buf = null
+                        } else {
+                            val fg = fbGrab?.takeIf { it.bitmap.width == w && it.bitmap.height == h }
+                                ?: app.aemu.core.ScreenRecorder.FbGrabber(w, h).also { fbGrab = it }
+                            if (fg.grab(gs.fb, if (vm.recoveryMode) vm.recoveryFormat else gs.format, gs.pages, gs.shownPage)) g.add(fg.bitmap)
+                        }
+                    }
+                    val rest = 1000L / app.aemu.core.GifRecorder.FPS - (android.os.SystemClock.uptimeMillis() - started)
+                    if (rest > 0) Thread.sleep(rest)
+                }
+            } catch (_: InterruptedException) {
+            } finally { copyThread.quitSafely() }
+            if (gif === g) finishGif(g)
+        }
+    }
+
+    private fun stopGif() { gif?.let { finishGif(it) } }
+
+    private fun finishGif(g: app.aemu.core.GifRecorder) {
+        if (gif !== g) return
+        gif = null
+        runOnUiThread { gifOn = false; toast(getString(R.string.x_gif_saving)) }
+        thread(name = "aemu-gif-encode") {
+            val bytes = runCatching { g.encode() }.getOrNull()
+            val name = java.text.SimpleDateFormat("yyyyMMdd-HHmmss", java.util.Locale.US).format(java.util.Date()) + "-" + vm.img.id + ".gif"
+            val saved = bytes?.let { app.aemu.core.Screenshot.savePicture(this, it, name, "image/gif") }
+            if (saved != null) app.aemu.core.Achievements.bump(this, app.aemu.core.Achievements.RECORD)
+            runOnUiThread { toast(if (saved != null) getString(R.string.x_gif_saved, saved) else getString(R.string.x_gif_failed)) }
+        }
+    }
+
+    // ---- clipboard from the guest
+
+    private fun copyFromGuest() {
+        if (!::vm.isInitialized) return
+        thread(name = "aemu-clip") {
+            val out = runCatching { vm.guestShell(app.aemu.core.GuestClipboard.command(vm.img.api), 15_000) }.getOrDefault("")
+            val text = app.aemu.core.GuestClipboard.text(out)
+            runOnUiThread {
+                if (text.isNullOrEmpty()) toast(getString(R.string.x_copy_guest_fail))
+                else {
+                    getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("AEmulator X", text))
+                    toast(getString(R.string.x_copy_guest_ok, text.take(40)))
+                }
+            }
+        }
     }
 
     private fun setShakeListening(on: Boolean) {
@@ -1541,6 +1692,7 @@ class VmActivity : ComponentActivity() {
             }
             if (vncDialog) VncInfoDialog()
             if (webDialog) WebPlayDialog()
+            if (filterDialog) FilterDialog()
 
             // AEmulator X: on-screen game buttons, through the same mapping as a real controller
             LaunchedEffect(Unit) { padVisible = uiPrefs.getBoolean("game_pad", false) }
@@ -1639,10 +1791,31 @@ class VmActivity : ComponentActivity() {
                         trailingIcon = { if (gameMode) Icon(Icons.Rounded.Check, null) },
                         enabled = running || gameMode,
                         onClick = { menu = false; switchGameMode(!gameMode) })
-                    DropdownMenuItem(text = { Text(stringResource(R.string.x_crt)) },
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_filter)) },
                         leadingIcon = { Icon(Icons.Rounded.Tv, null) },
-                        trailingIcon = { if (crtOn) Icon(Icons.Rounded.Check, null) },
-                        onClick = { menu = false; setCrt(!crtOn) })
+                        trailingIcon = { if (screenFilter != ScreenFilter.NONE) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; filterDialog = true })
+                    DropdownMenuItem(text = { Text(stringResource(if (macroRecording) R.string.x_macro_stop_rec else R.string.x_macro_record)) },
+                        leadingIcon = { Icon(if (macroRecording) Icons.Rounded.Stop else Icons.Rounded.FiberManualRecord, null) },
+                        enabled = (running && !macroPlaying) || macroRecording,
+                        onClick = { menu = false; if (macroRecording) stopMacroRecording() else startMacroRecording() })
+                    if (hasMacro && !macroRecording) {
+                        if (macroPlaying) DropdownMenuItem(text = { Text(stringResource(R.string.x_macro_stop)) },
+                            leadingIcon = { Icon(Icons.Rounded.Stop, null) }, onClick = { menu = false; macroStop = true })
+                        else {
+                            DropdownMenuItem(text = { Text(stringResource(R.string.x_macro_play)) }, leadingIcon = { Icon(Icons.Rounded.PlayArrow, null) },
+                                enabled = running, onClick = { menu = false; playMacro(loop = false) })
+                            DropdownMenuItem(text = { Text(stringResource(R.string.x_macro_loop)) }, leadingIcon = { Icon(Icons.Rounded.Repeat, null) },
+                                enabled = running, onClick = { menu = false; playMacro(loop = true) })
+                        }
+                    }
+                    DropdownMenuItem(text = { Text(stringResource(if (gifOn) R.string.x_gif_stop else R.string.x_gif_start)) },
+                        leadingIcon = { Icon(Icons.Rounded.Gif, null) },
+                        enabled = running || gifOn,
+                        onClick = { menu = false; if (gifOn) stopGif() else startGif() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_copy_guest)) },
+                        leadingIcon = { Icon(Icons.Rounded.ContentCopy, null) },
+                        enabled = running, onClick = { menu = false; copyFromGuest() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_shake)) },
                         leadingIcon = { Icon(Icons.Rounded.Vibration, null) },
                         trailingIcon = { if (shakeOn) Icon(Icons.Rounded.Check, null) },

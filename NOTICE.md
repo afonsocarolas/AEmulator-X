@@ -65,6 +65,12 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-19**: AEmulator X19 (`0.0.0.2.13-x19`): statistics (`app/src/main/java/app/aemu/ui/StatsDialog.kt`,
+  `app/src/main/java/app/aemu/core/PlayDays.kt`, `PlayStats.kt`), library wallpaper (`app/src/main/java/app/aemu/ui/LibraryWallpaper.kt`,
+  `XStyle.kt`, `AppSettingsActivity.kt`), screen filters (`CrtOverlay.kt`), touch macros (`app/src/main/java/app/aemu/core/TouchMacro.kt`,
+  `InputService.kt`), GIF recording (`app/src/main/java/app/aemu/core/GifRecorder.kt`, using Square gifencoder 0.10.1, Apache License 2.0;
+  `Screenshot.kt`), clipboard from the guest (`app/src/main/java/app/aemu/core/GuestClipboard.kt`), `VmActivity.kt`, `MainActivity.kt`;
+  tests in `X19FeaturesTest.kt`.
 - **2026-10-19**: AEmulator X18 (`0.0.0.2.13-x18`): achievements (`app/src/main/java/app/aemu/core/Achievements.kt`,
   `app/src/main/java/app/aemu/ui/AchievementsDialog.kt`, `MainActivity.kt`), QR code of the browser play address
   (`app/src/main/java/app/aemu/core/QrCode.kt`, using ZXing core 3.5.3, Apache License 2.0), Game mode (`VmActivity.kt`);

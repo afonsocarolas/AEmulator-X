@@ -112,6 +112,7 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Spa
 import androidx.compose.material.icons.rounded.EmojiEvents
+import androidx.compose.material.icons.rounded.BarChart
 import androidx.compose.material.icons.rounded.Bedtime
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material.icons.rounded.PhotoLibrary
@@ -196,6 +197,8 @@ fun Library(model: LibraryModel) {
     var searching by remember { mutableStateOf(false) }
     // AEmulator X: achievements; new ones are announced when the library comes back into view
     var showAchievements by remember { mutableStateOf(false) }
+    var showStats by remember { mutableStateOf(false) }
+    if (showStats) StatsDialog(onDismiss = { showStats = false })
     var newBadges by remember { mutableStateOf<List<app.aemu.core.Achievements.Badge>>(emptyList()) }
     LaunchedEffect(gridRefresh) {
         val fresh = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { runCatching { app.aemu.core.Achievements.newlyUnlocked(ctx) }.getOrDefault(emptyList()) }
@@ -331,6 +334,9 @@ fun Library(model: LibraryModel) {
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_sleep_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.Bedtime, null) },
                                 onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, SleepActivity::class.java)) })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.st_title)) },
+                                leadingIcon = { Icon(Icons.Rounded.BarChart, null) },
+                                onClick = { moreMenu = false; showStats = true })
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.help)) },
                                 leadingIcon = { Icon(Icons.Rounded.Info, null) }, onClick = { moreMenu = false; help = true })
                         }

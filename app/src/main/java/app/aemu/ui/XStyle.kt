@@ -150,7 +150,9 @@ fun AuroraBackground(modifier: Modifier = Modifier, content: @Composable BoxScop
         return
     }
     Box(modifier.background(scheme.background)) {
-        Canvas(Modifier.fillMaxSize()) {
+        // AEmulator X: the user's own picture replaces the drifting colours (App settings › Library wallpaper)
+        val wallpaper = WallpaperLayer(dark)
+        if (!wallpaper) Canvas(Modifier.fillMaxSize()) {
             val r = maxOf(size.width, size.height) * 0.62f
             blobs.forEachIndexed { i, c ->
                 val ph = t + i * 2.1f

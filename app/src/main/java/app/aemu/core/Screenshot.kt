@@ -165,7 +165,10 @@ object Screenshot {
         return png.copyOfRange(0, ihdrEnd) + chunk + png.copyOfRange(ihdrEnd, png.size)
     }
 
-    private fun save(ctx: Context, png: ByteArray, name: String): String? {
+    /** AEmulator X: any picture (GIF recordings) into the same folder as the screenshots. */
+    fun savePicture(ctx: Context, bytes: ByteArray, name: String, mime: String): String? = save(ctx, bytes, name, mime)
+
+    private fun save(ctx: Context, png: ByteArray, name: String, mime: String = "image/png"): String? {
         val shown = "/sdcard/$PHONE_REL/$name"
         val dir = phoneDir()
         val dst = File(dir, name)
@@ -175,7 +178,7 @@ object Screenshot {
             if (dst.length() != png.size.toLong()) error("short write")
         }.isSuccess
         if (direct) {
-            MediaScannerConnection.scanFile(ctx, arrayOf(dst.absolutePath), arrayOf("image/png"), null)
+            MediaScannerConnection.scanFile(ctx, arrayOf(dst.absolutePath), arrayOf(mime), null)
             return shown
         }
         dst.delete()
@@ -183,7 +186,7 @@ object Screenshot {
         if (Build.VERSION.SDK_INT >= 29) {
             val cv = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-                put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+                put(MediaStore.MediaColumns.MIME_TYPE, mime)
                 put(MediaStore.MediaColumns.RELATIVE_PATH, PHONE_REL)
             }
             val uri = runCatching { ctx.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv) }.getOrNull() ?: return null

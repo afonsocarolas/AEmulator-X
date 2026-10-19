@@ -243,6 +243,26 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
             item {
                 Section(stringResource(R.string.as_appearance)) {
                     XThemePicker(xTheme) { xTheme = it; AppPrefs.setXTheme(ctx, it); onRestyle() }
+                    // AEmulator X: the user's own picture behind the library
+                    var hasWallpaper by remember { mutableStateOf(LibraryWallpaper.file(ctx).isFile) }
+                    val pickWallpaper = androidx.activity.compose.rememberLauncherForActivityResult(
+                        androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri ->
+                        if (uri != null) kotlin.concurrent.thread {
+                            val ok = LibraryWallpaper.save(ctx, uri)
+                            (ctx as? android.app.Activity)?.runOnUiThread {
+                                if (ok) hasWallpaper = true
+                                else android.widget.Toast.makeText(ctx, R.string.x_cover_failed, android.widget.Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    ListItem(
+                        headlineContent = { Text(stringResource(R.string.x_wallpaper)) },
+                        supportingContent = { Text(stringResource(if (hasWallpaper) R.string.x_wallpaper_on else R.string.x_wallpaper_sub)) },
+                        trailingContent = {
+                            if (hasWallpaper) TextButton(onClick = { LibraryWallpaper.remove(ctx); hasWallpaper = false }) { Text(stringResource(R.string.x_wallpaper_remove)) }
+                        },
+                        modifier = Modifier.clickable { pickWallpaper.launch("image/*") },
+                    )
                     var snow by remember { mutableStateOf(AppPrefs.decemberSnow(ctx)) }
                     Toggle(stringResource(R.string.x_snow), stringResource(R.string.x_snow_sub), snow) { snow = it; AppPrefs.setDecemberSnow(ctx, it); onRestyle() }
                     Toggle(stringResource(R.string.x_pip), stringResource(R.string.x_pip_sub), pip) { pip = it; AppPrefs.setPictureInPicture(ctx, it) }
