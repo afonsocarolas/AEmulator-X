@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-19**: AEmulator X18 (`0.0.0.2.13-x18`): achievements (`app/src/main/java/app/aemu/core/Achievements.kt`,
+  `app/src/main/java/app/aemu/ui/AchievementsDialog.kt`, `MainActivity.kt`), QR code of the browser play address
+  (`app/src/main/java/app/aemu/core/QrCode.kt`, using ZXing core 3.5.3, Apache License 2.0), Game mode (`VmActivity.kt`);
+  tests in `X18FeaturesTest.kt`.
 - **2026-10-19**: AEmulator X17 (`0.0.0.2.13-x17`): retro screen (`app/src/main/java/app/aemu/ui/CrtOverlay.kt`), shake for screenshot
   (`app/src/main/java/app/aemu/core/ShakeDetector.kt`), controller rumble (`VibrationBridge.kt`), Android time machine library
   (`app/src/main/java/app/aemu/ui/Timeline.kt`, `AppPrefs.kt` `LAYOUT_TIMELINE`, `MainActivity.kt`, `AppSettingsActivity.kt`), play in a

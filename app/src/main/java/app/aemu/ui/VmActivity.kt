@@ -48,6 +48,7 @@ import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.ui.draw.alpha
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material.icons.rounded.Speed
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.material.icons.rounded.Tv
 import androidx.compose.material.icons.rounded.Vibration
 import androidx.compose.material.icons.rounded.Public
@@ -605,6 +606,9 @@ class VmActivity : ComponentActivity() {
     private var padVisible by mutableStateOf(false)
     /** AEmulator X: FPS / CPU / RAM box over the screen (⋮ › Performance overlay), remembered like the game buttons */
     private var perfVisible by mutableStateOf(false)
+    /** AEmulator X: Game mode — full screen, game buttons, screen kept on; what was there before comes back after */
+    private var gameMode by mutableStateOf(false)
+    private var beforeGame: Triple<Boolean, Boolean, Boolean>? = null
     /** AEmulator X: retro CRT layer over the screen (per firmware; on by default for Android 1.x-2.x) */
     private var crtView: CrtOverlayView? = null
     private var crtOn by mutableStateOf(false)
@@ -789,6 +793,7 @@ class VmActivity : ComponentActivity() {
                         val saved = if (res == android.view.PixelCopy.SUCCESS)
                             runCatching { app.aemu.core.Screenshot.takeBitmap(this, vmId, bmp, g.w, g.h) }.getOrNull() else null
                         bmp.recycle()
+                        if (saved != null) app.aemu.core.Achievements.bump(this@VmActivity, app.aemu.core.Achievements.SCREENSHOT)
                         toast(if (saved != null) getString(R.string.m_screenshot_saved, saved) else getString(R.string.m_failed))
                     }
                 }, h)
@@ -797,7 +802,8 @@ class VmActivity : ComponentActivity() {
         }
         thread {
             val saved = runCatching { app.aemu.core.Screenshot.take(this, vmId, g.fb, g.w, g.h, fmt, g.pages, g.shownPage) }.getOrNull()
-            toast(if (saved != null) getString(R.string.m_screenshot_saved, saved) else getString(R.string.m_failed))
+            if (saved != null) app.aemu.core.Achievements.bump(this@VmActivity, app.aemu.core.Achievements.SCREENSHOT)
+                        toast(if (saved != null) getString(R.string.m_screenshot_saved, saved) else getString(R.string.m_failed))
         }
     }
 
@@ -818,6 +824,7 @@ class VmActivity : ComponentActivity() {
         val rec = app.aemu.core.ScreenRecorder(this, vm.img.id, g.w, g.h, vm.audio.sampleRate, vm::log)
         recorder = rec
         recStartedAt = System.currentTimeMillis()
+        app.aemu.core.Achievements.bump(this, app.aemu.core.Achievements.RECORD)
         thread(name = "aemu-rec-grab") {
             if (!rec.start()) {
                 if (recorder !== rec) return@thread // stopped before it got going
@@ -892,10 +899,30 @@ class VmActivity : ComponentActivity() {
 
     // ------------------------------------------------------------------ AEmulator X: retro screen, shake, web play
 
+    private fun switchGameMode(on: Boolean) {
+        if (on == gameMode) return
+        gameMode = on
+        if (on) {
+            beforeGame = Triple(fullScreen, padVisible, (window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0)
+            setFullScreen(true)
+            padVisible = true
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            app.aemu.core.Achievements.bump(this, app.aemu.core.Achievements.GAME)
+            toast(getString(R.string.x_game_on))
+        } else {
+            val (fs, pad, awake) = beforeGame ?: Triple(false, uiPrefs.getBoolean("game_pad", false), true)
+            setFullScreen(fs)
+            padVisible = pad
+            if (!awake) window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            beforeGame = null
+        }
+    }
+
     private fun setCrt(on: Boolean) {
         crtOn = on
         crtView?.visibility = if (on) View.VISIBLE else View.GONE
         if (::vm.isInitialized) uiPrefs.edit().putBoolean("crt_" + vm.img.id, on).apply()
+        if (on) app.aemu.core.Achievements.bump(this, app.aemu.core.Achievements.RETRO)
     }
 
     private fun setShakeListening(on: Boolean) {
@@ -923,6 +950,7 @@ class VmActivity : ComponentActivity() {
         thread(name = "aemu-web-start") {
             val port = runCatching { srv.start(8080) }.getOrElse { toast(getString(R.string.x_web_failed, it.message.orEmpty())); return@thread }
             webServer = srv
+            app.aemu.core.Achievements.bump(this, app.aemu.core.Achievements.WEB)
             runOnUiThread { webAddress = "http://${localIp() ?: "?"}:$port/?k=${srv.token}"; webDialog = true }
             webGrab(srv)
         }
@@ -1004,6 +1032,10 @@ class VmActivity : ComponentActivity() {
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(stringResource(R.string.x_web_connect))
+                    // AEmulator X: scan it with another phone instead of typing the address
+                    val qr = androidx.compose.runtime.remember(addr) { app.aemu.core.QrCode.bitmap(addr, 480)?.asImageBitmap() }
+                    if (qr != null) androidx.compose.foundation.Image(qr, stringResource(R.string.x_web_qr),
+                        modifier = Modifier.size(200.dp).align(Alignment.CenterHorizontally))
                     androidx.compose.foundation.text.selection.SelectionContainer {
                         Text(addr, style = MaterialTheme.typography.titleMedium)
                     }
@@ -1034,6 +1066,7 @@ class VmActivity : ComponentActivity() {
             val port = runCatching { srv.start(5900) }.getOrElse { toast(getString(R.string.x_vnc_failed, it.message.orEmpty())); return@thread }
             srv.onViewers = { n -> runOnUiThread { vncViewers = n } }
             vncServer = srv
+            app.aemu.core.Achievements.bump(this, app.aemu.core.Achievements.VNC)
             val ip = localIp()
             runOnUiThread { vncAddress = "${ip ?: "?"}:$port"; vncDialog = true }
             vncGrab(srv)
@@ -1601,6 +1634,11 @@ class VmActivity : ComponentActivity() {
                         leadingIcon = { Icon(Icons.Rounded.Speed, null) },
                         trailingIcon = { if (perfVisible) Icon(Icons.Rounded.Check, null) },
                         onClick = { menu = false; perfVisible = !perfVisible; uiPrefs.edit().putBoolean("perf_overlay", perfVisible).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_game_mode)) },
+                        leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
+                        trailingIcon = { if (gameMode) Icon(Icons.Rounded.Check, null) },
+                        enabled = running || gameMode,
+                        onClick = { menu = false; switchGameMode(!gameMode) })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_crt)) },
                         leadingIcon = { Icon(Icons.Rounded.Tv, null) },
                         trailingIcon = { if (crtOn) Icon(Icons.Rounded.Check, null) },

@@ -146,4 +146,38 @@
     <string name="x_web_hint">Clique ou toque na tela, digite pelo teclado (Esc = Voltar). Quem tiver este endereço pode controlar o sistema: pare quando terminar.</string>
     <string name="x_web_stop">Parar</string>
     <string name="x_web_failed">Não foi possível iniciar o jogo no navegador: %1$s</string>
+    <!-- Achievements, game mode, QR code -->
+    <string name="ach_button">Conquistas</string>
+    <string name="ach_title">Conquistas · %1$d de %2$d</string>
+    <string name="ach_unlocked">🏆 Conquista desbloqueada!</string>
+    <string name="ach_show_all">Ver todas</string>
+    <string name="ach_first_boot">Primeira inicialização</string>
+    <string name="ach_first_boot_d">Inicie uma firmware pela primeira vez</string>
+    <string name="ach_collector">Colecionador</string>
+    <string name="ach_collector_d">Importe 5 firmwares</string>
+    <string name="ach_museum">Curador do museu</string>
+    <string name="ach_museum_d">Importe 10 firmwares</string>
+    <string name="ach_ancient">História antiga</string>
+    <string name="ach_ancient_d">Inicie o Android 1.x (2008–2009)</string>
+    <string name="ach_time_traveler">Viajante do tempo</string>
+    <string name="ach_time_traveler_d">Inicie um Android de 2010 ou antes e um de 2019 ou depois</string>
+    <string name="ach_eras">Todas as eras</string>
+    <string name="ach_eras_d">Inicie 5 versões diferentes do Android (Cupcake, KitKat…)</string>
+    <string name="ach_64">Poder de 64 bits</string>
+    <string name="ach_64_d">Inicie uma firmware de 64 bits</string>
+    <string name="ach_marathon">Maratona</string>
+    <string name="ach_marathon_d">Jogue 10 horas no total</string>
+    <string name="ach_photographer">Fotógrafo</string>
+    <string name="ach_photographer_d">Tire 10 capturas de tela</string>
+    <string name="ach_director">Diretor</string>
+    <string name="ach_director_d">Grave a tela</string>
+    <string name="ach_broadcaster">Transmissor</string>
+    <string name="ach_broadcaster_d">Jogue no navegador</string>
+    <string name="ach_retro">Velha guarda</string>
+    <string name="ach_retro_d">Ative a tela retrô</string>
+    <string name="ach_gamer">Gamer</string>
+    <string name="ach_gamer_d">Jogue no modo jogo</string>
+    <string name="x_game_mode">Modo jogo</string>
+    <string name="x_game_on">Modo jogo: tela cheia e botões de jogo. Abra o menu de novo para sair.</string>
+    <string name="x_web_qr">QR code do endereço</string>
 </resources>

@@ -58,8 +58,8 @@ android {
         // 28: гостевые бинарники запускаются из каталога данных приложения (W^X для targetSdk>=29)
         //noinspection ExpiredTargetSdkVersion
         targetSdk = 28
-        versionCode = 49
-        versionName = "0.0.0.2.13-x17" // <AEmulator base>.<Plus release>-x<X release>
+        versionCode = 50
+        versionName = "0.0.0.2.13-x18" // <AEmulator base>.<Plus release>-x<X release>
         ndk { abiFilters += listOf("arm64-v8a") }
         // AEmulator X: fork repository for updates and links (gradle.properties: aemuX.repo)
         buildConfigField("String", "X_REPO", "\"" + (project.findProperty("aemuX.repo") ?: "afonsocarolas/AEmulator-X") + "\"")
@@ -128,6 +128,8 @@ dependencies {
     implementation("org.tukaani:xz:1.10")
     implementation("org.apache.commons:commons-compress:1.28.0")
     implementation("com.github.junrar:junrar:8.1.1")
+    // AEmulator X: QR code of the browser play address
+    implementation("com.google.zxing:core:3.5.3")
     implementation("org.brotli:dec:0.1.2")
     implementation("net.lingala.zip4j:zip4j:2.11.6")
     implementation("com.github.luben:zstd-jni:1.5.7-4@aar")

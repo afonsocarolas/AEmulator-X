@@ -146,4 +146,38 @@
     <string name="x_web_hint">Нажимайте на экран мышью или пальцем, печатайте на клавиатуре (Esc = Назад). Любой, у кого есть этот адрес, может управлять системой: остановите, когда закончите.</string>
     <string name="x_web_stop">Остановить</string>
     <string name="x_web_failed">Не удалось запустить игру в браузере: %1$s</string>
+    <!-- Achievements, game mode, QR code -->
+    <string name="ach_button">Достижения</string>
+    <string name="ach_title">Достижения · %1$d из %2$d</string>
+    <string name="ach_unlocked">🏆 Новое достижение!</string>
+    <string name="ach_show_all">Показать все</string>
+    <string name="ach_first_boot">Первый запуск</string>
+    <string name="ach_first_boot_d">Запустите прошивку в первый раз</string>
+    <string name="ach_collector">Коллекционер</string>
+    <string name="ach_collector_d">Импортируйте 5 прошивок</string>
+    <string name="ach_museum">Хранитель музея</string>
+    <string name="ach_museum_d">Импортируйте 10 прошивок</string>
+    <string name="ach_ancient">Древняя история</string>
+    <string name="ach_ancient_d">Запустите Android 1.x (2008–2009)</string>
+    <string name="ach_time_traveler">Путешественник во времени</string>
+    <string name="ach_time_traveler_d">Запустите Android 2010 года или старше и 2019 года или новее</string>
+    <string name="ach_eras">Все эпохи</string>
+    <string name="ach_eras_d">Запустите 5 разных версий Android (Cupcake, KitKat…)</string>
+    <string name="ach_64">Сила 64 бит</string>
+    <string name="ach_64_d">Запустите 64-битную прошивку</string>
+    <string name="ach_marathon">Марафон</string>
+    <string name="ach_marathon_d">Играйте 10 часов в сумме</string>
+    <string name="ach_photographer">Фотограф</string>
+    <string name="ach_photographer_d">Сделайте 10 скриншотов</string>
+    <string name="ach_director">Режиссёр</string>
+    <string name="ach_director_d">Запишите экран</string>
+    <string name="ach_broadcaster">Ведущий</string>
+    <string name="ach_broadcaster_d">Играйте в браузере</string>
+    <string name="ach_retro">Старая школа</string>
+    <string name="ach_retro_d">Включите ретро-экран</string>
+    <string name="ach_gamer">Геймер</string>
+    <string name="ach_gamer_d">Играйте в игровом режиме</string>
+    <string name="x_game_mode">Игровой режим</string>
+    <string name="x_game_on">Игровой режим: полный экран и игровые кнопки. Откройте меню ещё раз, чтобы выйти.</string>
+    <string name="x_web_qr">QR-код адреса</string>
 </resources>

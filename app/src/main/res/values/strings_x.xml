@@ -147,4 +147,38 @@
     <string name="x_web_hint">Click or touch the screen to tap, type with the keyboard (Esc = Back). Anyone with this address can control the system: stop it when you are done.</string>
     <string name="x_web_stop">Stop</string>
     <string name="x_web_failed">Could not start browser play: %1$s</string>
+    <!-- Achievements, game mode, QR code -->
+    <string name="ach_button">Achievements</string>
+    <string name="ach_title">Achievements · %1$d of %2$d</string>
+    <string name="ach_unlocked">🏆 Achievement unlocked!</string>
+    <string name="ach_show_all">See all</string>
+    <string name="ach_first_boot">First boot</string>
+    <string name="ach_first_boot_d">Start a firmware for the first time</string>
+    <string name="ach_collector">Collector</string>
+    <string name="ach_collector_d">Import 5 firmwares</string>
+    <string name="ach_museum">Museum curator</string>
+    <string name="ach_museum_d">Import 10 firmwares</string>
+    <string name="ach_ancient">Ancient history</string>
+    <string name="ach_ancient_d">Boot Android 1.x (2008–2009)</string>
+    <string name="ach_time_traveler">Time traveler</string>
+    <string name="ach_time_traveler_d">Boot an Android from 2010 or earlier and one from 2019 or later</string>
+    <string name="ach_eras">Every era</string>
+    <string name="ach_eras_d">Boot 5 different Android versions (Cupcake, KitKat…)</string>
+    <string name="ach_64">64-bit power</string>
+    <string name="ach_64_d">Boot a 64-bit firmware</string>
+    <string name="ach_marathon">Marathon</string>
+    <string name="ach_marathon_d">Play for 10 hours in total</string>
+    <string name="ach_photographer">Photographer</string>
+    <string name="ach_photographer_d">Take 10 screenshots</string>
+    <string name="ach_director">Director</string>
+    <string name="ach_director_d">Record the screen</string>
+    <string name="ach_broadcaster">Broadcaster</string>
+    <string name="ach_broadcaster_d">Play in a web browser</string>
+    <string name="ach_retro">Old school</string>
+    <string name="ach_retro_d">Turn on the retro screen</string>
+    <string name="ach_gamer">Gamer</string>
+    <string name="ach_gamer_d">Play in Game mode</string>
+    <string name="x_game_mode">Game mode</string>
+    <string name="x_game_on">Game mode: full screen and game buttons. Open the menu again to leave.</string>
+    <string name="x_web_qr">QR code of the address</string>
 </resources>

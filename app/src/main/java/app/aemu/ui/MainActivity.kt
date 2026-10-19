@@ -111,6 +111,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Spa
+import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Bedtime
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material.icons.rounded.PhotoLibrary
@@ -193,6 +194,28 @@ fun Library(model: LibraryModel) {
     val gridRefresh = rememberResumeCount()
     // AEmulator X: search, sort, favourites, play time, home screen shortcuts
     var searching by remember { mutableStateOf(false) }
+    // AEmulator X: achievements; new ones are announced when the library comes back into view
+    var showAchievements by remember { mutableStateOf(false) }
+    var newBadges by remember { mutableStateOf<List<app.aemu.core.Achievements.Badge>>(emptyList()) }
+    LaunchedEffect(gridRefresh) {
+        val fresh = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { runCatching { app.aemu.core.Achievements.newlyUnlocked(ctx) }.getOrDefault(emptyList()) }
+        if (fresh.isNotEmpty()) newBadges = fresh
+    }
+    if (showAchievements) AchievementsDialog(onDismiss = { showAchievements = false })
+    if (newBadges.isNotEmpty()) AlertDialog(
+        onDismissRequest = { newBadges = emptyList() },
+        title = { Text(stringResource(R.string.ach_unlocked)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                newBadges.forEach { b ->
+                    Text("${b.emoji}  ${stringResource(b.title)}", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(b.desc), style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = { newBadges = emptyList(); showAchievements = true }) { Text(stringResource(R.string.ach_show_all)) } },
+        dismissButton = { TextButton(onClick = { newBadges = emptyList() }) { Text(stringResource(R.string.close)) } },
+    )
     var query by remember { mutableStateOf("") }
     var sort by remember { mutableStateOf(LibrarySort.Sort.of(AppPrefs.librarySort(ctx))) }
     var favorites by remember { mutableStateOf(AppPrefs.favorites(ctx)) }
@@ -274,6 +297,8 @@ fun Library(model: LibraryModel) {
                     scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.85f),
                 ),
                 actions = {
+                    // AEmulator X: the trophy shelf
+                    IconButton(onClick = { showAchievements = true }) { Icon(Icons.Rounded.EmojiEvents, stringResource(R.string.ach_button)) }
                     IconButton(onClick = { searching = !searching; if (!searching) query = "" }) {
                         Icon(if (searching) Icons.Rounded.SearchOff else Icons.Rounded.Search, stringResource(R.string.x_search))
                     }
