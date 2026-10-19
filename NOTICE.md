@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-19**: AEmulator X17 (`0.0.0.2.13-x17`): retro screen (`app/src/main/java/app/aemu/ui/CrtOverlay.kt`), shake for screenshot
+  (`app/src/main/java/app/aemu/core/ShakeDetector.kt`), controller rumble (`VibrationBridge.kt`), Android time machine library
+  (`app/src/main/java/app/aemu/ui/Timeline.kt`, `AppPrefs.kt` `LAYOUT_TIMELINE`, `MainActivity.kt`, `AppSettingsActivity.kt`), play in a
+  browser (`app/src/main/java/app/aemu/core/WebPlayServer.kt`, `VmActivity.kt`); tests in `X17FeaturesTest.kt`.
 - **2026-10-19**: AEmulator X16 (`0.0.0.2.13-x16`): Android 1.x–2.x boot fix after the 0.0.0.3 merge (`TreeFixer.kt` camera swap off for
   32-bit firmware and undone, X13's `engines/kk/libGLES.so`, `libGLES_split.so`, `libashmemshim.so` and `engines/gb/libashmemshim.so` back,
   0.0.0.3's GL builds kept as `engines/kk/*.n64.so` for the arm64 engine, `GuestRunner.kt`); AArch32 detection by a test program and a clear

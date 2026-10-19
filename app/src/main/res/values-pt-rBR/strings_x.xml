@@ -135,4 +135,15 @@
     <string name="x_snow_sub">Neve suave cai atrás da biblioteca e no modo dormir durante todo o mês de dezembro, com qualquer tema</string>
     <string name="x_perf">Painel de desempenho</string>
     <string name="x_native32_no_hw">Seu chip (%1$s) não tem hardware de 32 bits, então isto não pode ser ativado. Firmwares de 32 bits rodam pelo QEMU; as de 64 bits rodam nativamente.</string>
+    <!-- Timeline, retro screen, shake, browser play -->
+    <string name="x_lib_timeline">Linha do tempo</string>
+    <string name="x_crt">Tela retrô</string>
+    <string name="x_shake">Agitar para capturar a tela</string>
+    <string name="x_web_start">Jogar no navegador</string>
+    <string name="x_web_open">Endereço do navegador</string>
+    <string name="x_web_title">Jogar no navegador</string>
+    <string name="x_web_connect">Em um PC, tablet ou celular no mesmo Wi-Fi, abra este endereço no navegador:</string>
+    <string name="x_web_hint">Clique ou toque na tela, digite pelo teclado (Esc = Voltar). Quem tiver este endereço pode controlar o sistema: pare quando terminar.</string>
+    <string name="x_web_stop">Parar</string>
+    <string name="x_web_failed">Não foi possível iniciar o jogo no navegador: %1$s</string>
 </resources>

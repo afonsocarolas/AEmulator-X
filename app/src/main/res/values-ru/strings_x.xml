@@ -135,4 +135,15 @@
     <string name="x_snow_sub">Весь декабрь за библиотекой и в режиме сна тихо падает снег, с любой темой</string>
     <string name="x_perf">Показатели производительности</string>
     <string name="x_native32_no_hw">В вашем чипе (%1$s) нет 32-битного режима, поэтому включить это нельзя. 32-битные прошивки работают через QEMU, 64-битные — нативно.</string>
+    <!-- Timeline, retro screen, shake, browser play -->
+    <string name="x_lib_timeline">Хронология</string>
+    <string name="x_crt">Ретро-экран</string>
+    <string name="x_shake">Скриншот встряхиванием</string>
+    <string name="x_web_start">Играть в браузере</string>
+    <string name="x_web_open">Адрес для браузера</string>
+    <string name="x_web_title">Играть в браузере</string>
+    <string name="x_web_connect">На компьютере, планшете или телефоне в той же сети Wi-Fi откройте в браузере этот адрес:</string>
+    <string name="x_web_hint">Нажимайте на экран мышью или пальцем, печатайте на клавиатуре (Esc = Назад). Любой, у кого есть этот адрес, может управлять системой: остановите, когда закончите.</string>
+    <string name="x_web_stop">Остановить</string>
+    <string name="x_web_failed">Не удалось запустить игру в браузере: %1$s</string>
 </resources>

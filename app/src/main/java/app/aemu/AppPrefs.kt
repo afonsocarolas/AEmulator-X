@@ -140,8 +140,10 @@ object AppPrefs {
     const val LAYOUT_LIST = "list"
     const val LAYOUT_GRID = "grid"
     const val LAYOUT_3D = "3d"
+    /** AEmulator X: the Android time machine (ui/Timeline.kt) */
+    const val LAYOUT_TIMELINE = "timeline"
     fun libraryLayout(ctx: Context): String = sp(ctx).getString("library_layout", null)
-        ?.takeIf { it in setOf(LAYOUT_LIST, LAYOUT_GRID, LAYOUT_3D) } ?: if (library3d(ctx)) LAYOUT_3D else LAYOUT_LIST
+        ?.takeIf { it in setOf(LAYOUT_LIST, LAYOUT_GRID, LAYOUT_3D, LAYOUT_TIMELINE) } ?: if (library3d(ctx)) LAYOUT_3D else LAYOUT_LIST
     fun setLibraryLayout(ctx: Context, v: String) =
         sp(ctx).edit().putString("library_layout", v).putBoolean("library_3d", v == LAYOUT_3D).apply()
 

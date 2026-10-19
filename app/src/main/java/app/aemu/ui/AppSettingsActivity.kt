@@ -250,7 +250,7 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                     Text(stringResource(R.string.x_lib_layout), style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))
                     val layouts = listOf(AppPrefs.LAYOUT_LIST to R.string.x_lib_list, AppPrefs.LAYOUT_GRID to R.string.x_lib_grid,
-                        AppPrefs.LAYOUT_3D to R.string.x_lib_3d)
+                        AppPrefs.LAYOUT_3D to R.string.x_lib_3d, AppPrefs.LAYOUT_TIMELINE to R.string.x_lib_timeline)
                     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
                         layouts.forEachIndexed { i, (id, res) ->
                             ToggleButton(

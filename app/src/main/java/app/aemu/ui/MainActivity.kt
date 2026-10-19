@@ -352,7 +352,35 @@ fun Library(model: LibraryModel) {
                     onRename = { renameFor = it },
                     onDelete = { deleteFor = it },
                 )
-            } else if (layout == AppPrefs.LAYOUT_GRID && images.isNotEmpty()) androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+            } else if (layout == AppPrefs.LAYOUT_TIMELINE && images.isNotEmpty()) TimelineLibrary(
+                // AEmulator X: the Android time machine, firmwares by release year
+                arrange(images),
+                header = {
+                    Column {
+                        StorageAccessCard()
+                        if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) })
+                        AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
+                            Box(Modifier.padding(bottom = 12.dp)) { ImportCard(imp, onCancel = model::cancelImport, onDismiss = model::dismissImport) }
+                        }
+                    }
+                },
+                tile = { img ->
+                    SquareTile(
+                        img,
+                        active = activeVmId == img.id,
+                        refresh = gridRefresh,
+                        onStart = { VmActivity.start(ctx, img.id) },
+                        onLowPower = { VmActivity.start(ctx, img.id, lowPower = true) },
+                        onSettings = { settingsFor = img },
+                        onRename = { renameFor = img },
+                        onDelete = { deleteFor = img },
+                        favorite = img.id in favorites,
+                        stats = stats[img.id],
+                        onFavorite = { toggleFavorite(img) },
+                        onShortcut = { shortcut(img) },
+                    )
+                },
+            ) else if (layout == AppPrefs.LAYOUT_GRID && images.isNotEmpty()) androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
                 // AEmulator X: square tiles, ~2 per row on phones, more on tablets; cards and headers span the row
                 columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(150.dp),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 120.dp),

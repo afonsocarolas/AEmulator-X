@@ -48,6 +48,9 @@ import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.ui.draw.alpha
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material.icons.rounded.Speed
+import androidx.compose.material.icons.rounded.Tv
+import androidx.compose.material.icons.rounded.Vibration
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.material.icons.rounded.Settings
@@ -317,6 +320,11 @@ class VmActivity : ComponentActivity() {
         guest.passthrough = useBridge
         box.addView(surfaceView, FrameLayout.LayoutParams(-1, -1))
         box.addView(guest, FrameLayout.LayoutParams(-1, -1))
+        // AEmulator X: retro CRT layer (scanlines, shadow mask, dark corners); off unless chosen, on for 1.x-2.x
+        crtView = CrtOverlayView(this).also { box.addView(it, FrameLayout.LayoutParams(-1, -1)) }
+        crtOn = uiPrefs.getBoolean("crt_" + vm.img.id, vm.img.api <= 10)
+        crtView?.visibility = if (crtOn) View.VISIBLE else View.GONE
+        shakeOn = uiPrefs.getBoolean("shake_shot", false)
         // the theme's frame picture, behind the guest screen
         frameView = android.widget.ImageView(this).apply { scaleType = android.widget.ImageView.ScaleType.CENTER_CROP }
         root.addView(frameView, FrameLayout.LayoutParams(-1, -1))
@@ -444,6 +452,7 @@ class VmActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        setShakeListening(shakeOn)
         windowTurns = windowManager.defaultDisplay.rotation
         hostUi = app.aemu.AppPrefs.hostUiOptions(this)
         applyVmTheme()
@@ -503,6 +512,7 @@ class VmActivity : ComponentActivity() {
     }
 
     override fun onPause() {
+        setShakeListening(false)
         if (!isInPictureInPictureMode) countPlayTime()
         captureThumbnail()
         orientationListener?.disable()
@@ -595,6 +605,18 @@ class VmActivity : ComponentActivity() {
     private var padVisible by mutableStateOf(false)
     /** AEmulator X: FPS / CPU / RAM box over the screen (⋮ › Performance overlay), remembered like the game buttons */
     private var perfVisible by mutableStateOf(false)
+    /** AEmulator X: retro CRT layer over the screen (per firmware; on by default for Android 1.x-2.x) */
+    private var crtView: CrtOverlayView? = null
+    private var crtOn by mutableStateOf(false)
+    /** AEmulator X: shake the phone for a screenshot (⋮ menu, remembered) */
+    private var shakeOn by mutableStateOf(false)
+    private val shake = app.aemu.core.ShakeDetector()
+    private var shakeListener: android.hardware.SensorEventListener? = null
+    /** AEmulator X: play in a web browser on the local network */
+    @Volatile private var webServer: app.aemu.core.WebPlayServer? = null
+    private var webAddress by mutableStateOf<String?>(null)
+    private var webDialog by mutableStateOf(false)
+    @Volatile private var webDown = false
     /** AEmulator X: the boot (bootDoneAt) whose home screen is already the tile picture */
     private var homeShotFor = 0L
 
@@ -636,6 +658,7 @@ class VmActivity : ComponentActivity() {
         vmRoot = null
         heldNavKeys.releaseAll()
         stopVnc()
+        stopWeb()
         finishRecordingBlocking()
         if (::guest.isInitialized) guest.stop()
         shellRx?.let { runCatching { unregisterReceiver(it) } }
@@ -865,6 +888,132 @@ class VmActivity : ComponentActivity() {
         if (::vm.isInitialized) vm.audio.tap = null
         runOnUiThread { recStartedAt = 0L }
         rec.stop()?.let { toast(getString(R.string.x_rec_saved, it)) }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: retro screen, shake, web play
+
+    private fun setCrt(on: Boolean) {
+        crtOn = on
+        crtView?.visibility = if (on) View.VISIBLE else View.GONE
+        if (::vm.isInitialized) uiPrefs.edit().putBoolean("crt_" + vm.img.id, on).apply()
+    }
+
+    private fun setShakeListening(on: Boolean) {
+        val sm = getSystemService(android.hardware.SensorManager::class.java) ?: return
+        shakeListener?.let { sm.unregisterListener(it) }; shakeListener = null
+        if (!on) return
+        val acc = sm.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER) ?: return
+        val l = object : android.hardware.SensorEventListener {
+            override fun onSensorChanged(e: android.hardware.SensorEvent) {
+                if (shake.sample(e.values[0], e.values[1], e.values[2], android.os.SystemClock.uptimeMillis()))
+                    runOnUiThread { if (state == GuestVm.State.RUNNING) screenshot() }
+            }
+            override fun onAccuracyChanged(s: android.hardware.Sensor?, a: Int) {}
+        }
+        shakeListener = l
+        sm.registerListener(l, acc, android.hardware.SensorManager.SENSOR_DELAY_GAME)
+    }
+
+    private fun startWeb() {
+        if (webServer != null) { webDialog = true; return }
+        val g = guest
+        if (g.w <= 0 || g.h <= 0) return
+        val srv = app.aemu.core.WebPlayServer("AEmulator X - ${vm.img.name}", app.aemu.core.WebPlayServer.newToken(),
+            ::webTouch, ::vncKey, ::webButton, vm::log)
+        thread(name = "aemu-web-start") {
+            val port = runCatching { srv.start(8080) }.getOrElse { toast(getString(R.string.x_web_failed, it.message.orEmpty())); return@thread }
+            webServer = srv
+            runOnUiThread { webAddress = "http://${localIp() ?: "?"}:$port/?k=${srv.token}"; webDialog = true }
+            webGrab(srv)
+        }
+    }
+
+    private fun stopWeb() {
+        val s = webServer ?: return
+        webServer = null
+        s.stop()
+        webAddress = null; webDialog = false
+        if (webDown) runCatching { vm.input.touch(emptyList(), true) }
+        webDown = false
+    }
+
+    private fun webTouch(action: String, x: Int, y: Int) {
+        if (!::vm.isInitialized) return
+        when (action) {
+            "down" -> { vm.input.touch(listOf(app.aemu.core.InputService.P(0, x, y)), true); webDown = true }
+            "move" -> if (webDown) vm.input.touch(listOf(app.aemu.core.InputService.P(0, x, y)), false)
+            "up" -> { vm.input.touch(emptyList(), true); webDown = false }
+        }
+    }
+
+    private fun webButton(name: String) {
+        if (!::vm.isInitialized) return
+        val code = when (name) {
+            "back" -> app.aemu.core.InputService.KEY_BACK
+            "home" -> vm.input.homeCode
+            "recents" -> app.aemu.core.InputService.KEY_APPSELECT
+            else -> return
+        }
+        vm.input.key(code, true); vm.input.key(code, false)
+    }
+
+    /** Feeds the web page JPEG frames of the guest screen: 10 fps while a browser watches, 1 fps otherwise. */
+    private fun webGrab(srv: app.aemu.core.WebPlayServer) {
+        val copyThread = android.os.HandlerThread("aemu-web-copy").apply { start() }
+        val copyHandler = android.os.Handler(copyThread.looper)
+        var copyBmp: android.graphics.Bitmap? = null
+        var fbGrab: app.aemu.core.ScreenRecorder.FbGrabber? = null
+        val jpeg = java.io.ByteArrayOutputStream()
+        try {
+            while (webServer === srv) {
+                val started = android.os.SystemClock.uptimeMillis()
+                val g = guest
+                val w = g.w; val h = g.h
+                var shot: android.graphics.Bitmap? = null
+                if (g.passthrough && surfaceView.width > 0 && surfaceView.height > 0 && surfaceView.holder.surface.isValid) {
+                    val b = copyBmp?.takeIf { it.width == w && it.height == h }
+                        ?: android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888).also { copyBmp = it }
+                    val done = java.util.concurrent.CountDownLatch(1)
+                    val ok = java.util.concurrent.atomic.AtomicBoolean(false)
+                    runCatching {
+                        android.view.PixelCopy.request(surfaceView, b, { r -> ok.set(r == android.view.PixelCopy.SUCCESS); done.countDown() }, copyHandler)
+                    }.onFailure { done.countDown() }
+                    if (done.await(250, java.util.concurrent.TimeUnit.MILLISECONDS)) { if (ok.get()) shot = b } else copyBmp = null
+                } else {
+                    val fg = fbGrab?.takeIf { it.bitmap.width == w && it.bitmap.height == h }
+                        ?: app.aemu.core.ScreenRecorder.FbGrabber(w, h).also { fbGrab = it }
+                    val fmt = if (vm.recoveryMode) vm.recoveryFormat else g.format
+                    if (fg.grab(g.fb, fmt, g.pages, g.shownPage)) shot = fg.bitmap
+                }
+                shot?.let { jpeg.reset(); it.compress(android.graphics.Bitmap.CompressFormat.JPEG, 70, jpeg); srv.submitFrame(jpeg.toByteArray()) }
+                val period = if (srv.watched) 100L else 1000L
+                val rest = period - (android.os.SystemClock.uptimeMillis() - started)
+                if (rest > 0) Thread.sleep(rest)
+            }
+        } catch (_: InterruptedException) {
+        } finally { copyThread.quitSafely() }
+    }
+
+    @Composable
+    private fun WebPlayDialog() {
+        val addr = webAddress ?: return
+        AlertDialog(
+            onDismissRequest = { webDialog = false },
+            icon = { Icon(Icons.Rounded.Public, null) },
+            title = { Text(stringResource(R.string.x_web_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(stringResource(R.string.x_web_connect))
+                    androidx.compose.foundation.text.selection.SelectionContainer {
+                        Text(addr, style = MaterialTheme.typography.titleMedium)
+                    }
+                    Text(stringResource(R.string.x_web_hint), style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            },
+            confirmButton = { TextButton(onClick = { stopWeb() }) { Text(stringResource(R.string.x_web_stop)) } },
+            dismissButton = { TextButton(onClick = { webDialog = false }) { Text(stringResource(R.string.close)) } },
+        )
     }
 
     // ------------------------------------------------------------------ AEmulator X: VNC server
@@ -1358,6 +1507,7 @@ class VmActivity : ComponentActivity() {
                 }
             }
             if (vncDialog) VncInfoDialog()
+            if (webDialog) WebPlayDialog()
 
             // AEmulator X: on-screen game buttons, through the same mapping as a real controller
             LaunchedEffect(Unit) { padVisible = uiPrefs.getBoolean("game_pad", false) }
@@ -1451,6 +1601,18 @@ class VmActivity : ComponentActivity() {
                         leadingIcon = { Icon(Icons.Rounded.Speed, null) },
                         trailingIcon = { if (perfVisible) Icon(Icons.Rounded.Check, null) },
                         onClick = { menu = false; perfVisible = !perfVisible; uiPrefs.edit().putBoolean("perf_overlay", perfVisible).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_crt)) },
+                        leadingIcon = { Icon(Icons.Rounded.Tv, null) },
+                        trailingIcon = { if (crtOn) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; setCrt(!crtOn) })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_shake)) },
+                        leadingIcon = { Icon(Icons.Rounded.Vibration, null) },
+                        trailingIcon = { if (shakeOn) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; shakeOn = !shakeOn; uiPrefs.edit().putBoolean("shake_shot", shakeOn).apply(); setShakeListening(shakeOn) })
+                    DropdownMenuItem(text = { Text(stringResource(if (webAddress != null) R.string.x_web_open else R.string.x_web_start)) },
+                        leadingIcon = { Icon(Icons.Rounded.Public, null) },
+                        enabled = running || webAddress != null,
+                        onClick = { menu = false; startWeb() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_fullscreen)) },
                         leadingIcon = { Icon(if (fullScreen) Icons.Rounded.FullscreenExit else Icons.Rounded.Fullscreen, null) },
                         trailingIcon = { if (fullScreen) Icon(Icons.Rounded.Check, null) },
