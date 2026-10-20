@@ -48,6 +48,9 @@ import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.ui.draw.alpha
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material.icons.rounded.Speed
+import androidx.compose.material.icons.rounded.Gesture
+import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Gif
 import androidx.compose.material.icons.rounded.Repeat
@@ -338,6 +341,7 @@ class VmActivity : ComponentActivity() {
         }
         keymap = app.aemu.core.KeyMap.load(vm.paths)
         keymapOn = uiPrefs.getBoolean("keymap_on_" + vm.img.id, true) && !keymap.isEmpty()
+        if (uiPrefs.getBoolean("replay_on", false)) startReplay()
         external = ExternalScreen(this).also { ext ->
             externalAvailable = ext.displays().isNotEmpty()
             displayListener = ext.listen {
@@ -652,6 +656,17 @@ class VmActivity : ComponentActivity() {
     private var hasMacro by mutableStateOf(false)
     @Volatile private var gif: app.aemu.core.GifRecorder? = null
     private var gifOn by mutableStateOf(false)
+    /** AEmulator X: Instant replay (the last seconds of the screen), voice commands, gesture shortcuts */
+    private val replay = app.aemu.core.ReplayRing<ByteArray>()
+    private var replayOn by mutableStateOf(false)
+    @Volatile private var replayFeed = false
+    private var replayFrames by mutableStateOf<List<ByteArray>?>(null)
+    private var listening by mutableStateOf(false)
+    private var speech: android.speech.SpeechRecognizer? = null
+    private var gesturePad by mutableStateOf(false)
+    private val micAsk = registerForActivityResult(ActivityResultContracts.RequestPermission()) { ok ->
+        if (ok) listenVoice() else toast(getString(R.string.x_vc_no_mic))
+    }
     /** AEmulator X: keys mapped to touches (per firmware), its editor, and the external display */
     private var keymap = app.aemu.core.KeyMap()
     private var keymapOn by mutableStateOf(false)
@@ -717,6 +732,8 @@ class VmActivity : ComponentActivity() {
         stopVnc()
         stopWeb()
         stopExternal()
+        replayFeed = false
+        speech?.destroy(); speech = null
         displayListener?.let { l -> external?.unlisten(l) }
         macroStop = true
         gif = null
@@ -1019,6 +1036,120 @@ class VmActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: instant replay
+
+    /** Keeps the last [app.aemu.core.ReplayRing.SECONDS] seconds of the guest screen, small JPEG frames. */
+    private fun startReplay() {
+        if (replayFeed) return
+        replayOn = true; replayFeed = true
+        thread(name = "aemu-replay") {
+            val copyThread = android.os.HandlerThread("aemu-replay-copy").apply { start() }
+            val handler = android.os.Handler(copyThread.looper)
+            var buf: android.graphics.Bitmap? = null
+            var fbGrab: app.aemu.core.ScreenRecorder.FbGrabber? = null
+            val jpeg = java.io.ByteArrayOutputStream()
+            fun keep(b: android.graphics.Bitmap) {
+                val w = app.aemu.core.ReplayRing.WIDTH.coerceAtMost(b.width)
+                val h = (w.toLong() * b.height / b.width.coerceAtLeast(1)).toInt().coerceAtLeast(1)
+                val small = if (w == b.width) b else android.graphics.Bitmap.createScaledBitmap(b, w, h, true)
+                jpeg.reset()
+                small.compress(android.graphics.Bitmap.CompressFormat.JPEG, 70, jpeg)
+                if (small !== b) small.recycle()
+                replay.add(jpeg.toByteArray())
+            }
+            try {
+                while (replayFeed) {
+                    val started = android.os.SystemClock.uptimeMillis()
+                    val gs = guest
+                    val w = gs.w; val h = gs.h
+                    if (w > 0 && h > 0 && state == GuestVm.State.RUNNING && replayFrames == null) {
+                        if (gs.passthrough && surfaceView.width > 0 && surfaceView.holder.surface.isValid) {
+                            val b = buf?.takeIf { it.width == w && it.height == h }
+                                ?: android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888).also { buf = it }
+                            val done = java.util.concurrent.CountDownLatch(1)
+                            val ok = java.util.concurrent.atomic.AtomicBoolean(false)
+                            runCatching { android.view.PixelCopy.request(surfaceView, b, { r -> ok.set(r == android.view.PixelCopy.SUCCESS); done.countDown() }, handler) }
+                                .onFailure { done.countDown() }
+                            if (done.await(250, java.util.concurrent.TimeUnit.MILLISECONDS)) { if (ok.get()) keep(b) } else buf = null
+                        } else {
+                            val fg = fbGrab?.takeIf { it.bitmap.width == w && it.bitmap.height == h }
+                                ?: app.aemu.core.ScreenRecorder.FbGrabber(w, h).also { fbGrab = it }
+                            if (fg.grab(gs.fb, if (vm.recoveryMode) vm.recoveryFormat else gs.format, gs.pages, gs.shownPage)) keep(fg.bitmap)
+                        }
+                    }
+                    val rest = 1000L / app.aemu.core.ReplayRing.FPS - (android.os.SystemClock.uptimeMillis() - started)
+                    if (rest > 0) Thread.sleep(rest)
+                }
+            } catch (_: InterruptedException) {
+            } finally { copyThread.quitSafely() }
+        }
+    }
+
+    private fun stopReplay() {
+        replayFeed = false; replayOn = false
+        replay.clear()
+    }
+
+    private fun showReplay() {
+        if (!replayOn) { startReplay(); uiPrefs.edit().putBoolean("replay_on", true).apply(); toast(getString(R.string.x_rp_started)); return }
+        replayFrames = replay.snapshot()
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: voice commands and gestures
+
+    /** Runs a shortcut said out loud or drawn on the gesture pad. */
+    private fun runShortcut(a: app.aemu.core.VoiceCommands.Action) {
+        if (!::vm.isInitialized || state != GuestVm.State.RUNNING) return
+        when (a) {
+            app.aemu.core.VoiceCommands.Action.SCREENSHOT -> screenshot()
+            app.aemu.core.VoiceCommands.Action.HOME -> vm.input.press(vm.input.homeCode)
+            app.aemu.core.VoiceCommands.Action.BACK -> vm.input.press(NavButton.BACK.scanCode)
+            app.aemu.core.VoiceCommands.Action.RECENTS -> vm.input.press(NavButton.RECENTS.scanCode)
+            app.aemu.core.VoiceCommands.Action.MENU -> vm.input.press(NavButton.MENU.scanCode)
+            app.aemu.core.VoiceCommands.Action.VOLUME_UP -> vm.input.press(NavButton.VOLUME_UP.scanCode)
+            app.aemu.core.VoiceCommands.Action.VOLUME_DOWN -> vm.input.press(NavButton.VOLUME_DOWN.scanCode)
+            app.aemu.core.VoiceCommands.Action.POWER -> vm.input.press(NavButton.POWER.scanCode)
+            app.aemu.core.VoiceCommands.Action.REPLAY -> showReplay()
+            app.aemu.core.VoiceCommands.Action.GIF -> if (gif == null) startGif() else stopGif()
+        }
+    }
+
+    private fun startVoice() {
+        if (!android.speech.SpeechRecognizer.isRecognitionAvailable(this)) { toast(getString(R.string.x_vc_unavailable)); return }
+        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED)
+            micAsk.launch(android.Manifest.permission.RECORD_AUDIO)
+        else listenVoice()
+    }
+
+    /** Listens once; the best guesses are matched against the command words. */
+    private fun listenVoice() {
+        speech?.destroy()
+        val r = runCatching { android.speech.SpeechRecognizer.createSpeechRecognizer(this) }.getOrNull()
+            ?: run { toast(getString(R.string.x_vc_unavailable)); return }
+        speech = r
+        r.setRecognitionListener(object : android.speech.RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) { listening = true }
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() { listening = false }
+            override fun onError(error: Int) { listening = false; toast(getString(R.string.x_vc_not_heard)) }
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+            override fun onResults(results: Bundle?) {
+                listening = false
+                val guesses = results?.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION).orEmpty()
+                val a = app.aemu.core.VoiceCommands.match(guesses)
+                if (a == null) toast(getString(R.string.x_vc_unknown, guesses.firstOrNull() ?: "…"))
+                else { toast("🎙️ " + (guesses.firstOrNull() ?: "")); runShortcut(a) }
+            }
+        })
+        val intent = Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            .putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL, android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            .putExtra(android.speech.RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+        runCatching { r.startListening(intent) }.onFailure { toast(getString(R.string.x_vc_unavailable)) }
     }
 
     // ------------------------------------------------------------------ AEmulator X: external display
@@ -1846,6 +1977,13 @@ class VmActivity : ComponentActivity() {
             if (vncDialog) VncInfoDialog()
             if (webDialog) WebPlayDialog()
             if (filterDialog) FilterDialog()
+            if (gesturePad) GesturePad(onShape = { runShortcut(it.action) }, onClose = { gesturePad = false })
+            replayFrames?.let { f -> ReplayDialog(f) { replayFrames = null } }
+            if (listening) Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 12.dp)) {
+                Text("🎙️ " + stringResource(R.string.x_vc_listening), modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer)
+            }
             if (keymapEditing) KeymapEditorBar(Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 8.dp, start = 12.dp, end = 12.dp).widthIn(max = 420.dp))
 
             // AEmulator X: on-screen game buttons, through the same mapping as a real controller
@@ -1961,6 +2099,19 @@ class VmActivity : ComponentActivity() {
                         trailingIcon = { if (externalOn) Icon(Icons.Rounded.Check, null) },
                         enabled = externalOn || (running && externalAvailable),
                         onClick = { menu = false; if (externalOn) stopExternal() else startExternal() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_rp_menu)) },
+                        leadingIcon = { Icon(Icons.Rounded.Replay, null) },
+                        enabled = running, onClick = { menu = false; showReplay() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_rp_keep)) },
+                        leadingIcon = { Icon(Icons.Rounded.Replay, null) },
+                        trailingIcon = { if (replayOn) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; if (replayOn) stopReplay() else startReplay(); uiPrefs.edit().putBoolean("replay_on", replayOn).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_vc_menu)) },
+                        leadingIcon = { Icon(Icons.Rounded.Mic, null) },
+                        enabled = running, onClick = { menu = false; startVoice() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_gs_menu)) },
+                        leadingIcon = { Icon(Icons.Rounded.Gesture, null) },
+                        enabled = running, onClick = { menu = false; gesturePad = true })
                     DropdownMenuItem(text = { Text(stringResource(if (macroRecording) R.string.x_macro_stop_rec else R.string.x_macro_record)) },
                         leadingIcon = { Icon(if (macroRecording) Icons.Rounded.Stop else Icons.Rounded.FiberManualRecord, null) },
                         enabled = (running && !macroPlaying) || macroRecording,

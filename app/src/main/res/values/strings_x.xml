@@ -242,4 +242,60 @@
     <string name="x_snake_close">%1$d more…</string>
     <string name="ach_dessert">Dessert lover</string>
     <string name="ach_dessert_d">Eat every Android dessert, Cupcake to Pie, in one Snake game</string>
+    <!-- X22: theme maker, instant replay, voice, gestures, music, firmware of the day -->
+    <string name="x_tm_custom">My theme</string>
+    <string name="x_tm_title">Theme maker</string>
+    <string name="x_tm_name">Name</string>
+    <string name="x_tm_main">Main</string>
+    <string name="x_tm_g1">Glow 1</string>
+    <string name="x_tm_g2">Glow 2</string>
+    <string name="x_tm_g3">Glow 3</string>
+    <string name="x_tm_share">Share</string>
+    <string name="x_tm_paste">Paste code</string>
+    <string name="x_tm_reset">Reset</string>
+    <string name="x_tm_use">Use theme</string>
+    <string name="x_tm_start">Start</string>
+    <string name="x_tm_pasted">Theme code pasted</string>
+    <string name="x_tm_no_code">No theme code in the clipboard</string>
+    <string name="x_tm_share_text">My AEmulator X theme \"%1$s\". Copy this line and use Paste code in Settings › Appearance › My theme:\n%2$s</string>
+    <string name="x_rp_title">Instant replay</string>
+    <string name="x_rp_menu">Instant replay</string>
+    <string name="x_rp_keep">Keep instant replay</string>
+    <string name="x_rp_empty">Nothing recorded yet. Play a little and try again.</string>
+    <string name="x_rp_ago">%1$s s ago</string>
+    <string name="x_rp_save">Save GIF</string>
+    <string name="x_rp_started">Instant replay is on: it keeps the last 15 seconds. Open it again in a moment.</string>
+    <string name="x_vc_menu">Voice command</string>
+    <string name="x_vc_listening">Listening… say \"screenshot\", \"home\", \"back\"…</string>
+    <string name="x_vc_no_mic">Voice commands need the microphone</string>
+    <string name="x_vc_unavailable">Speech recognition is not available on this device</string>
+    <string name="x_vc_not_heard">Didn\'t catch that. Try again</string>
+    <string name="x_vc_unknown">Heard \"%1$s\", but that is not a command</string>
+    <string name="x_gs_menu">Draw a shortcut</string>
+    <string name="x_gs_title">Draw a shape</string>
+    <string name="x_gs_legend">O Home · &lt; Back · ^ Recents · S Screenshot · ✓ Instant replay · Z GIF</string>
+    <string name="x_gs_unknown">Not sure what that was. Draw again</string>
+    <string name="x_gs_close">Tap anywhere to close</string>
+    <string name="x_mu_menu">Music player</string>
+    <string name="x_mu_cannot">Cannot play %1$s</string>
+    <string name="x_fotd_title">Firmware of the day</string>
+    <string name="x_fotd_boot">Boot it</string>
+    <string-array name="x_fotd_facts">
+        <item>The first Android phone, the T-Mobile G1 (HTC Dream), had a slide-out keyboard and a trackball.</item>
+        <item>Cupcake (1.5) was the first Android with an on-screen keyboard and home screen widgets.</item>
+        <item>Donut (1.6) taught Android to handle different screen sizes and added the quick search box.</item>
+        <item>Eclair (2.0–2.1) brought live wallpapers and free turn-by-turn Google Maps Navigation.</item>
+        <item>Froyo (2.2) turned phones into Wi-Fi hotspots and added a JIT compiler that made apps much faster.</item>
+        <item>Gingerbread (2.3) added NFC and support for more than one camera, like front cameras.</item>
+        <item>Honeycomb (3.x) was made only for tablets and introduced the blue \"Holo\" look.</item>
+        <item>Ice Cream Sandwich (4.0) put the Back, Home and Recents buttons on the screen and added Face Unlock.</item>
+        <item>Jelly Bean (4.1) brought \"Project Butter\" for smooth 60 fps scrolling, and Google Now.</item>
+        <item>KitKat (4.4) was a real deal with Nestlé, and it was tuned to run on phones with only 512 MB of RAM.</item>
+        <item>Lollipop (5.0) introduced Material Design and replaced the Dalvik runtime with ART.</item>
+        <item>Marshmallow (6.0) let you allow or deny app permissions while using the app, and added fingerprint support.</item>
+        <item>Nougat (7.0) brought split-screen, two apps side by side, to phones.</item>
+        <item>Oreo (8.0) added picture-in-picture and notification dots on app icons.</item>
+        <item>Pie (9) introduced gesture navigation with a pill-shaped Home button, and Digital Wellbeing.</item>
+        <item>Android 10 stopped using dessert names in public and added a dark theme for the whole system.</item>
+    </string-array>
 </resources>

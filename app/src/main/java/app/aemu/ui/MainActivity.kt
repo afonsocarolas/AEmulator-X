@@ -49,6 +49,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.Android
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
@@ -145,6 +146,11 @@ class MainActivity : ComponentActivity() {
         handleView(intent)
     }
 
+    override fun onStop() {
+        super.onStop()
+        HomeMusic.pause()
+    }
+
     override fun onResume() {
         super.onResume()
         model.refresh()
@@ -183,6 +189,9 @@ fun Library(model: LibraryModel) {
         }
     }
     val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let { model.import(it) } }
+    // AEmulator X: songs for the library's music player
+    val pickSongs = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris -> HomeMusic.setSongs(ctx, uris) }
+    androidx.compose.runtime.LaunchedEffect(Unit) { HomeMusic.load(ctx) }
     var settingsFor by remember { mutableStateOf<GuestImage?>(null) }
     var deleteFor by remember { mutableStateOf<GuestImage?>(null) }
     var renameFor by remember { mutableStateOf<GuestImage?>(null) }
@@ -334,6 +343,13 @@ fun Library(model: LibraryModel) {
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_sleep_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.Bedtime, null) },
                                 onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, SleepActivity::class.java)) })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_mu_menu)) },
+                                leadingIcon = { Icon(Icons.Rounded.LibraryMusic, null) },
+                                onClick = {
+                                    moreMenu = false
+                                    if (HomeMusic.songs.isEmpty()) pickSongs.launch(arrayOf("audio/*"))
+                                    else { HomeMusic.visible = true; if (!HomeMusic.playing) HomeMusic.toggle(ctx) }
+                                })
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.st_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.BarChart, null) },
                                 onClick = { moreMenu = false; showStats = true })
@@ -363,6 +379,7 @@ fun Library(model: LibraryModel) {
             if (view3d && images.isNotEmpty()) Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
                 .padding(start = 16.dp, end = 16.dp, bottom = 120.dp)) {
                 StorageAccessCard()
+                FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }
                 if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) })
                 AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
                     Box(Modifier.padding(bottom = 12.dp)) {
@@ -389,6 +406,7 @@ fun Library(model: LibraryModel) {
                 header = {
                     Column {
                         StorageAccessCard()
+                        FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }
                         if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) })
                         AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
                             Box(Modifier.padding(bottom = 12.dp)) { ImportCard(imp, onCancel = model::cancelImport, onDismiss = model::dismissImport) }
@@ -421,6 +439,7 @@ fun Library(model: LibraryModel) {
                 val full: (androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope) -> androidx.compose.foundation.lazy.grid.GridItemSpan =
                     { androidx.compose.foundation.lazy.grid.GridItemSpan(it.maxLineSpan) }
                 item(span = full) { StorageAccessCard() }
+                item(span = full) { FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) } }
                 if (!imp.active) item(span = full) { FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) }) }
                 item(span = full) {
                     AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
@@ -456,6 +475,7 @@ fun Library(model: LibraryModel) {
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 120.dp),
             ) {
                 item { StorageAccessCard() }
+                item { FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) } }
                 item { if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) }) }
                 item {
                     AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
@@ -492,6 +512,7 @@ fun Library(model: LibraryModel) {
                 }
             }
         }
+        MusicBar(Modifier.align(Alignment.BottomStart).padding(start = 12.dp, end = 12.dp, bottom = 84.dp)) { pickSongs.launch(arrayOf("audio/*")) }
         }
     }
     } // AuroraBackground

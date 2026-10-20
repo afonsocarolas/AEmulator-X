@@ -241,4 +241,60 @@
     <string name="x_snake_close">%1$d más…</string>
     <string name="ach_dessert">Goloso</string>
     <string name="ach_dessert_d">Come todos los postres de Android, de Cupcake a Pie, en una partida de serpiente</string>
+    <!-- X22: theme maker, instant replay, voice, gestures, music, firmware of the day -->
+    <string name="x_tm_custom">Mi tema</string>
+    <string name="x_tm_title">Creador de temas</string>
+    <string name="x_tm_name">Nombre</string>
+    <string name="x_tm_main">Principal</string>
+    <string name="x_tm_g1">Brillo 1</string>
+    <string name="x_tm_g2">Brillo 2</string>
+    <string name="x_tm_g3">Brillo 3</string>
+    <string name="x_tm_share">Compartir</string>
+    <string name="x_tm_paste">Pegar código</string>
+    <string name="x_tm_reset">Restablecer</string>
+    <string name="x_tm_use">Usar tema</string>
+    <string name="x_tm_start">Iniciar</string>
+    <string name="x_tm_pasted">Código del tema pegado</string>
+    <string name="x_tm_no_code">No hay ningún código de tema en el portapapeles</string>
+    <string name="x_tm_share_text">Mi tema de AEmulator X \"%1$s\". Copia esta línea y usa Pegar código en Ajustes › Apariencia › Mi tema:\n%2$s</string>
+    <string name="x_rp_title">Repetición instantánea</string>
+    <string name="x_rp_menu">Repetición instantánea</string>
+    <string name="x_rp_keep">Mantener repetición instantánea</string>
+    <string name="x_rp_empty">Aún no hay nada grabado. Juega un poco y vuelve a intentarlo.</string>
+    <string name="x_rp_ago">hace %1$s s</string>
+    <string name="x_rp_save">Guardar GIF</string>
+    <string name="x_rp_started">Repetición instantánea activada: guarda los últimos 15 segundos. Ábrela de nuevo en un momento.</string>
+    <string name="x_vc_menu">Comando de voz</string>
+    <string name="x_vc_listening">Escuchando… di \"captura\", \"inicio\", \"atrás\"…</string>
+    <string name="x_vc_no_mic">Los comandos de voz necesitan el micrófono</string>
+    <string name="x_vc_unavailable">El reconocimiento de voz no está disponible en este dispositivo</string>
+    <string name="x_vc_not_heard">No te entendí. Inténtalo otra vez</string>
+    <string name="x_vc_unknown">Escuché \"%1$s\", pero no es un comando</string>
+    <string name="x_gs_menu">Dibujar un atajo</string>
+    <string name="x_gs_title">Dibuja una forma</string>
+    <string name="x_gs_legend">O Inicio · &lt; Atrás · ^ Recientes · S Captura · ✓ Repetición · Z GIF</string>
+    <string name="x_gs_unknown">No sé qué era eso. Dibuja otra vez</string>
+    <string name="x_gs_close">Toca en cualquier lugar para cerrar</string>
+    <string name="x_mu_menu">Reproductor de música</string>
+    <string name="x_mu_cannot">No se puede reproducir %1$s</string>
+    <string name="x_fotd_title">Firmware del día</string>
+    <string name="x_fotd_boot">Iniciar</string>
+    <string-array name="x_fotd_facts">
+        <item>El primer teléfono Android, el T-Mobile G1 (HTC Dream), tenía teclado deslizable y trackball.</item>
+        <item>Cupcake (1.5) fue el primer Android con teclado en pantalla y widgets en la pantalla de inicio.</item>
+        <item>Donut (1.6) enseñó a Android a manejar pantallas de distintos tamaños y añadió el cuadro de búsqueda rápida.</item>
+        <item>Eclair (2.0–2.1) trajo fondos animados y navegación giro a giro gratis en Google Maps.</item>
+        <item>Froyo (2.2) convirtió los teléfonos en puntos de acceso Wi-Fi y añadió un compilador JIT que hizo las apps mucho más rápidas.</item>
+        <item>Gingerbread (2.3) añadió NFC y soporte para más de una cámara, como la frontal.</item>
+        <item>Honeycomb (3.x) se hizo solo para tablets y estrenó el estilo azul \"Holo\".</item>
+        <item>Ice Cream Sandwich (4.0) puso los botones Atrás, Inicio y Recientes en la pantalla y añadió el Desbloqueo facial.</item>
+        <item>Jelly Bean (4.1) trajo \"Project Butter\", para un desplazamiento fluido a 60 fps, y Google Now.</item>
+        <item>KitKat (4.4) fue un acuerdo real con Nestlé, y se ajustó para funcionar en teléfonos con solo 512 MB de RAM.</item>
+        <item>Lollipop (5.0) estrenó Material Design y cambió Dalvik por ART.</item>
+        <item>Marshmallow (6.0) empezó a pedir permisos mientras usas la app y añadió soporte para lector de huellas.</item>
+        <item>Nougat (7.0) llevó la pantalla dividida, dos apps lado a lado, a los teléfonos.</item>
+        <item>Oreo (8.0) añadió imagen en imagen y puntos de notificación en los iconos.</item>
+        <item>Pie (9) estrenó la navegación por gestos con el botón en forma de píldora, y Bienestar digital.</item>
+        <item>Android 10 dejó de usar nombres de postres en público y añadió un tema oscuro para todo el sistema.</item>
+    </string-array>
 </resources>

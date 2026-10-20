@@ -65,6 +65,11 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-20**: AEmulator X22 (`0.0.0.2.13-x22`): theme maker (`app/src/main/java/app/aemu/core/CustomTheme.kt`, `ui/ThemeMaker.kt`),
+  instant replay (`core/ReplayRing.kt`, `ui/ReplayDialog.kt`), voice commands (`core/VoiceCommands.kt`), gesture shortcuts
+  (`core/GestureShapes.kt`, `ui/GesturePad.kt`), music player (`ui/HomeMusic.kt`), firmware of the day (`core/DailyPick.kt`,
+  `ui/FirmwareOfTheDay.kt`); wiring in `VmActivity.kt`, `MainActivity.kt`, `AppSettingsActivity.kt`, `XStyle.kt`, `Theme.kt`,
+  `core/GifRecorder.kt`; tests in `X22FeaturesTest.kt`.
 - **2026-10-20**: AEmulator X21 (`0.0.0.2.13-x21`): hidden Dessert Snake game (`app/src/main/java/app/aemu/core/SnakeGame.kt`,
   `ui/SnakeActivity.kt`), opened from the About logo in `AppSettingsActivity.kt`; Dessert lover badge in `Achievements.kt`; tests in `X21SnakeTest.kt`.
 - **2026-10-20**: AEmulator X20 (`0.0.0.2.13-x20`): key mapping (`app/src/main/java/app/aemu/core/KeyMap.kt`,

@@ -242,7 +242,12 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
 
             item {
                 Section(stringResource(R.string.as_appearance)) {
-                    XThemePicker(xTheme) { xTheme = it; AppPrefs.setXTheme(ctx, it); onRestyle() }
+                    // AEmulator X: the last swatch opens the theme maker
+                    var themeMaker by remember { mutableStateOf(false) }
+                    XThemePicker(xTheme, onMake = { themeMaker = true }) { xTheme = it; AppPrefs.setXTheme(ctx, it); onRestyle() }
+                    if (themeMaker) ThemeMakerDialog(onDismiss = { themeMaker = false }) {
+                        themeMaker = false; xTheme = app.aemu.core.CustomTheme.ID; AppPrefs.setXTheme(ctx, xTheme); onRestyle()
+                    }
                     // AEmulator X: the user's own picture behind the library
                     var hasWallpaper by remember { mutableStateOf(LibraryWallpaper.file(ctx).isFile) }
                     val pickWallpaper = androidx.activity.compose.rememberLauncherForActivityResult(

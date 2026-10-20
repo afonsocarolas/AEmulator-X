@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit
  * Frames of the guest screen, shrunk to [WIDTH] px, collected at [FPS] for at most [MAX_SECONDS], then encoded as a
  * looping GIF (gifencoder, Apache-2.0). Small enough to share in a chat.
  */
-class GifRecorder {
+class GifRecorder(private val fps: Int = FPS) {
     private val frames = ArrayList<IntArray>()
     var w = 0; private set
     var h = 0; private set
 
-    val full: Boolean get() = frames.size >= FPS * MAX_SECONDS
+    val full: Boolean get() = frames.size >= maxOf(FPS * MAX_SECONDS, ReplayRing.FPS * ReplayRing.SECONDS)
     val count: Int get() = frames.size
 
     /** Adds one frame (any size; it is scaled to [WIDTH] keeping the aspect). */
@@ -37,7 +37,7 @@ class GifRecorder {
         if (frames.isEmpty()) return null
         val out = ByteArrayOutputStream()
         val enc = GifEncoder(out, w, h, 0)
-        val opts = ImageOptions().setDelay(1000L / FPS, TimeUnit.MILLISECONDS)
+        val opts = ImageOptions().setDelay(1000L / fps, TimeUnit.MILLISECONDS)
             .setColorQuantizer(MedianCutQuantizer.INSTANCE).setDitherer(FloydSteinbergDitherer.INSTANCE)
         for (px in frames) {
             val rgb = Array(h) { y -> IntArray(w) { x -> px[y * w + x] and 0xffffff } }

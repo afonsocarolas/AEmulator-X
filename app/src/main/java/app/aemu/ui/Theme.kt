@@ -125,7 +125,7 @@ fun AemuTheme(forceDark: Boolean? = null, content: @Composable () -> Unit) {
         onDispose { sp.unregisterOnSharedPreferenceChangeListener(l) }
     }
     rev.intValue
-    val holoX = XThemes.byId(app.aemu.AppPrefs.xTheme(ctx)).holo
+    val holoX = XThemes.resolve(ctx, app.aemu.AppPrefs.xTheme(ctx)).holo
     // AEmulator X: Time mode reads the clock only when chosen (the hour state ticks every 30 s)
     val timeMode = app.aemu.AppPrefs.theme(ctx) == app.aemu.AppPrefs.THEME_TIME
     val nightNow = if (timeMode) TimeMode.isNight(currentHour()) else false
@@ -137,7 +137,7 @@ fun AemuTheme(forceDark: Boolean? = null, content: @Composable () -> Unit) {
     }
     val accent = app.aemu.AppPrefs.accentColor(ctx)
     // AEmulator X: a chosen colour style overrides the accent/dynamic scheme and recolours the brand gradient
-    val xt = XThemes.byId(app.aemu.AppPrefs.xTheme(ctx))
+    val xt = XThemes.resolve(ctx, app.aemu.AppPrefs.xTheme(ctx))
     XBrand.theme = xt
     val scheme = when {
         xt.id == "violet" -> if (dark) Dark else Light

@@ -15,6 +15,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -92,15 +93,18 @@ object XBrand {
 
 /** App settings › Appearance: one gradient swatch per [XThemes] entry; [set] gets the chosen id. */
 @Composable
-fun XThemePicker(current: String, set: (String) -> Unit) {
+fun XThemePicker(current: String, onMake: () -> Unit = {}, set: (String) -> Unit) {
     Text(androidx.compose.ui.res.stringResource(app.aemu.R.string.x_theme_title), style = MaterialTheme.typography.labelLarge,
         modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))
     Row(Modifier.horizontalScroll(androidx.compose.foundation.rememberScrollState()).padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        XThemes.ALL.forEach { t ->
+        val ctx = androidx.compose.ui.platform.LocalContext.current
+        val own = CustomThemes.load(ctx)?.let { CustomThemes.toXTheme(it) }
+        (XThemes.ALL + listOf(own ?: XTheme(app.aemu.core.CustomTheme.ID, app.aemu.R.string.x_tm_custom, null, 0xFF9E9E9E, 0xFFBDBDBD, 0xFFE0E0E0))).forEach { t ->
             val selected = t.id == current
+            val isOwn = t.id == app.aemu.core.CustomTheme.ID
             androidx.compose.foundation.layout.Column(
-                Modifier.clip(RoundedCornerShape(12.dp)).clickable { set(t.id) }.padding(4.dp),
+                Modifier.clip(RoundedCornerShape(12.dp)).clickable { if (isOwn) onMake() else set(t.id) }.padding(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
@@ -111,6 +115,8 @@ fun XThemePicker(current: String, set: (String) -> Unit) {
                     contentAlignment = Alignment.Center,
                 ) {
                     if (selected) androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Rounded.Check, null,
+                        tint = Color.White, modifier = Modifier.size(24.dp))
+                    else if (isOwn) androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Rounded.Palette, null,
                         tint = Color.White, modifier = Modifier.size(24.dp))
                 }
                 Text(androidx.compose.ui.res.stringResource(t.label), style = MaterialTheme.typography.labelMedium,

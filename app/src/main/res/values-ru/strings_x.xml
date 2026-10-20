@@ -241,4 +241,60 @@
     <string name="x_snake_close">Ещё %1$d…</string>
     <string name="ach_dessert">Сладкоежка</string>
     <string name="ach_dessert_d">Съешьте все десерты Android, от Cupcake до Pie, за одну игру в змейку</string>
+    <!-- X22: theme maker, instant replay, voice, gestures, music, firmware of the day -->
+    <string name="x_tm_custom">Моя тема</string>
+    <string name="x_tm_title">Конструктор тем</string>
+    <string name="x_tm_name">Название</string>
+    <string name="x_tm_main">Основной</string>
+    <string name="x_tm_g1">Свечение 1</string>
+    <string name="x_tm_g2">Свечение 2</string>
+    <string name="x_tm_g3">Свечение 3</string>
+    <string name="x_tm_share">Поделиться</string>
+    <string name="x_tm_paste">Вставить код</string>
+    <string name="x_tm_reset">Сброс</string>
+    <string name="x_tm_use">Применить</string>
+    <string name="x_tm_start">Запуск</string>
+    <string name="x_tm_pasted">Код темы вставлен</string>
+    <string name="x_tm_no_code">В буфере обмена нет кода темы</string>
+    <string name="x_tm_share_text">Моя тема AEmulator X «%1$s». Скопируйте эту строку и нажмите «Вставить код» в Настройки › Оформление › Моя тема:\n%2$s</string>
+    <string name="x_rp_title">Мгновенный повтор</string>
+    <string name="x_rp_menu">Мгновенный повтор</string>
+    <string name="x_rp_keep">Записывать мгновенный повтор</string>
+    <string name="x_rp_empty">Пока ничего не записано. Поиграйте немного и попробуйте снова.</string>
+    <string name="x_rp_ago">%1$s с назад</string>
+    <string name="x_rp_save">Сохранить GIF</string>
+    <string name="x_rp_started">Мгновенный повтор включён: хранятся последние 15 секунд. Откройте его чуть позже.</string>
+    <string name="x_vc_menu">Голосовая команда</string>
+    <string name="x_vc_listening">Слушаю… скажите «скриншот», «домой», «назад»…</string>
+    <string name="x_vc_no_mic">Для голосовых команд нужен микрофон</string>
+    <string name="x_vc_unavailable">Распознавание речи недоступно на этом устройстве</string>
+    <string name="x_vc_not_heard">Не расслышал. Попробуйте ещё раз</string>
+    <string name="x_vc_unknown">Услышал «%1$s», но это не команда</string>
+    <string name="x_gs_menu">Нарисовать жест</string>
+    <string name="x_gs_title">Нарисуйте фигуру</string>
+    <string name="x_gs_legend">O Домой · &lt; Назад · ^ Недавние · S Скриншот · ✓ Повтор · Z GIF</string>
+    <string name="x_gs_unknown">Не понял, что это. Нарисуйте ещё раз</string>
+    <string name="x_gs_close">Нажмите в любом месте, чтобы закрыть</string>
+    <string name="x_mu_menu">Музыкальный плеер</string>
+    <string name="x_mu_cannot">Не удаётся воспроизвести %1$s</string>
+    <string name="x_fotd_title">Прошивка дня</string>
+    <string name="x_fotd_boot">Запустить</string>
+    <string-array name="x_fotd_facts">
+        <item>Первый Android-телефон, T-Mobile G1 (HTC Dream), имел выдвижную клавиатуру и трекбол.</item>
+        <item>Cupcake (1.5) — первая версия Android с экранной клавиатурой и виджетами на рабочем столе.</item>
+        <item>Donut (1.6) научил Android работать с разными размерами экрана и добавил строку быстрого поиска.</item>
+        <item>Eclair (2.0–2.1) принёс живые обои и бесплатную пошаговую навигацию Google Maps.</item>
+        <item>Froyo (2.2) превратил телефоны в точки доступа Wi-Fi и добавил JIT-компилятор, который заметно ускорил приложения.</item>
+        <item>Gingerbread (2.3) добавил NFC и поддержку нескольких камер, например фронтальной.</item>
+        <item>Honeycomb (3.x) был сделан только для планшетов и представил синий стиль «Holo».</item>
+        <item>Ice Cream Sandwich (4.0) вывел кнопки «Назад», «Домой» и «Недавние» на экран и добавил Face Unlock.</item>
+        <item>Jelly Bean (4.1) принёс «Project Butter» для плавных 60 кадров в секунду и Google Now.</item>
+        <item>KitKat (4.4) — настоящая сделка с Nestlé, и он умел работать на телефонах всего с 512 МБ памяти.</item>
+        <item>Lollipop (5.0) представил Material Design и заменил среду Dalvik на ART.</item>
+        <item>Marshmallow (6.0) позволил разрешать и запрещать доступ приложениям прямо во время работы и добавил сканер отпечатков.</item>
+        <item>Nougat (7.0) принёс на телефоны разделённый экран — два приложения рядом.</item>
+        <item>Oreo (8.0) добавил «картинку в картинке» и точки уведомлений на значках.</item>
+        <item>Pie (9) представил навигацию жестами с кнопкой-«таблеткой» и Цифровое благополучие.</item>
+        <item>Android 10 перестал называться в честь десертов и добавил тёмную тему для всей системы.</item>
+    </string-array>
 </resources>
