@@ -231,4 +231,15 @@
     <string name="x_ext_menu">External display</string>
     <string name="x_ext_found">External display connected: ⋮ › External display</string>
     <string name="x_ext_none">No external display is connected</string>
+    <!-- X21: the hidden Snake game -->
+    <string name="x_snake_title">Dessert Snake</string>
+    <string name="x_snake_score">Score: %1$d</string>
+    <string name="x_snake_best">Best: %1$d</string>
+    <string name="x_snake_hint">Swipe or use the arrow keys. Tap to pause.</string>
+    <string name="x_snake_ate">Yum! %1$s</string>
+    <string name="x_snake_over">Game over! %1$d desserts eaten.\nTap to play again</string>
+    <string name="x_snake_paused">Paused. Tap or swipe to go on</string>
+    <string name="x_snake_close">%1$d more…</string>
+    <string name="ach_dessert">Dessert lover</string>
+    <string name="ach_dessert_d">Eat every Android dessert, Cupcake to Pie, in one Snake game</string>
 </resources>

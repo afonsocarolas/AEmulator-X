@@ -432,9 +432,20 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
 
 @Composable
 private fun AboutCard() {
+    // AEmulator X: tapping the logo 7 times opens the hidden Snake game
+    val ctx = LocalContext.current
+    var logoTaps by androidx.compose.runtime.remember { androidx.compose.runtime.mutableIntStateOf(0) }
     Card(shape = MaterialTheme.shapes.extraLarge, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
         Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-            Image(painterResource(R.drawable.logo), null, Modifier.size(64.dp).clip(RoundedCornerShape(20.dp)))
+            Image(painterResource(R.drawable.logo), null, Modifier.size(64.dp).clip(RoundedCornerShape(20.dp)).clickable(
+                interactionSource = androidx.compose.runtime.remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                indication = null) {
+                logoTaps++
+                when {
+                    logoTaps >= 7 -> { logoTaps = 0; ctx.startActivity(Intent(ctx, SnakeActivity::class.java)) }
+                    logoTaps >= 4 -> android.widget.Toast.makeText(ctx, ctx.getString(R.string.x_snake_close, 7 - logoTaps), android.widget.Toast.LENGTH_SHORT).show()
+                }
+            })
             Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {
                 SunsetTitle(style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onPrimaryContainer)

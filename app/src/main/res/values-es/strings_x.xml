@@ -230,4 +230,15 @@
     <string name="x_ext_menu">Pantalla externa</string>
     <string name="x_ext_found">Pantalla externa conectada: ⋮ › Pantalla externa</string>
     <string name="x_ext_none">No hay ninguna pantalla externa conectada</string>
+    <!-- X21: the hidden Snake game -->
+    <string name="x_snake_title">Serpiente de postres</string>
+    <string name="x_snake_score">Puntos: %1$d</string>
+    <string name="x_snake_best">Récord: %1$d</string>
+    <string name="x_snake_hint">Desliza o usa las flechas. Toca para pausar.</string>
+    <string name="x_snake_ate">¡Rico! %1$s</string>
+    <string name="x_snake_over">¡Fin del juego! %1$d postres comidos.\nToca para jugar otra vez</string>
+    <string name="x_snake_paused">En pausa. Toca o desliza para seguir</string>
+    <string name="x_snake_close">%1$d más…</string>
+    <string name="ach_dessert">Goloso</string>
+    <string name="ach_dessert_d">Come todos los postres de Android, de Cupcake a Pie, en una partida de serpiente</string>
 </resources>

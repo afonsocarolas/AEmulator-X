@@ -109,6 +109,11 @@
             android:theme="@style/Theme.AEmulator.Vm"
             android:parentActivityName=".ui.MainActivity" />
 
+        <!-- AEmulator X: the hidden Snake game -->
+        <activity android:name=".ui.SnakeActivity" android:exported="false"
+            android:theme="@style/Theme.AEmulator.Vm"
+            android:parentActivityName=".ui.MainActivity" />
+
         <!-- AEmulator X: Sleep mode -->
         <activity android:name=".ui.SleepActivity" android:exported="false"
             android:theme="@style/Theme.AEmulator.Vm"

@@ -230,4 +230,15 @@
     <string name="x_ext_menu">Внешний экран</string>
     <string name="x_ext_found">Подключён внешний экран: ⋮ › Внешний экран</string>
     <string name="x_ext_none">Внешний экран не подключён</string>
+    <!-- X21: the hidden Snake game -->
+    <string name="x_snake_title">Десертная змейка</string>
+    <string name="x_snake_score">Счёт: %1$d</string>
+    <string name="x_snake_best">Рекорд: %1$d</string>
+    <string name="x_snake_hint">Проводите пальцем или жмите стрелки. Нажмите для паузы.</string>
+    <string name="x_snake_ate">Вкусно! %1$s</string>
+    <string name="x_snake_over">Игра окончена! Съедено десертов: %1$d.\nНажмите, чтобы сыграть снова</string>
+    <string name="x_snake_paused">Пауза. Нажмите или проведите, чтобы продолжить</string>
+    <string name="x_snake_close">Ещё %1$d…</string>
+    <string name="ach_dessert">Сладкоежка</string>
+    <string name="ach_dessert_d">Съешьте все десерты Android, от Cupcake до Pie, за одну игру в змейку</string>
 </resources>

@@ -230,4 +230,15 @@
     <string name="x_ext_menu">Tela externa</string>
     <string name="x_ext_found">Tela externa conectada: ⋮ › Tela externa</string>
     <string name="x_ext_none">Nenhuma tela externa conectada</string>
+    <!-- X21: the hidden Snake game -->
+    <string name="x_snake_title">Cobrinha das sobremesas</string>
+    <string name="x_snake_score">Pontos: %1$d</string>
+    <string name="x_snake_best">Recorde: %1$d</string>
+    <string name="x_snake_hint">Deslize ou use as setas. Toque para pausar.</string>
+    <string name="x_snake_ate">Delícia! %1$s</string>
+    <string name="x_snake_over">Fim de jogo! %1$d sobremesas comidas.\nToque para jogar de novo</string>
+    <string name="x_snake_paused">Pausado. Toque ou deslize para continuar</string>
+    <string name="x_snake_close">Mais %1$d…</string>
+    <string name="ach_dessert">Formiguinha</string>
+    <string name="ach_dessert_d">Coma todas as sobremesas do Android, de Cupcake a Pie, em um jogo da cobrinha</string>
 </resources>
