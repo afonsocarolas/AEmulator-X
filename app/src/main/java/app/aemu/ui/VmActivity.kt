@@ -331,6 +331,23 @@ class VmActivity : ComponentActivity() {
             ?: if (uiPrefs.getBoolean("crt_" + vm.img.id, vm.img.api <= 10)) ScreenFilter.CRT else ScreenFilter.NONE
         box.post { applyFilter(savedFilter, remember = false) }
         shakeOn = uiPrefs.getBoolean("shake_shot", false)
+        // AEmulator X: key mapping editor layer (hidden unless editing) and the saved map
+        keymapView = KeymapOverlayView(this, ::keymapPick, ::keymapRemove).also {
+            it.visibility = View.GONE
+            box.addView(it, FrameLayout.LayoutParams(-1, -1))
+        }
+        keymap = app.aemu.core.KeyMap.load(vm.paths)
+        keymapOn = uiPrefs.getBoolean("keymap_on_" + vm.img.id, true) && !keymap.isEmpty()
+        external = ExternalScreen(this).also { ext ->
+            externalAvailable = ext.displays().isNotEmpty()
+            displayListener = ext.listen {
+                runOnUiThread {
+                    externalAvailable = ext.displays().isNotEmpty()
+                    if (!externalAvailable && externalOn) stopExternal()
+                    else if (externalAvailable && !externalOn) toast(getString(R.string.x_ext_found))
+                }
+            }
+        }
         hasMacro = app.aemu.core.TouchMacro.file(vm.paths).isFile
         // the theme's frame picture, behind the guest screen
         frameView = android.widget.ImageView(this).apply { scaleType = android.widget.ImageView.ScaleType.CENTER_CROP }
@@ -583,12 +600,20 @@ class VmActivity : ComponentActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        // AEmulator X: the key mapping editor waits for the key of a spot (Back cancels)
+        keymapWaitAt?.let { (x, y) ->
+            if (keyCode != KeyEvent.KEYCODE_BACK) setKeymap(keymap.withTap(app.aemu.core.KeyMap.Tap(keyCode, x, y)))
+            keymapWaitAt = null
+            return true
+        }
+        if (keymapTouch(keyCode, true, event.repeatCount)) return true
         val code = padKey(keyCode, event) ?: map(keyCode) ?: return super.onKeyDown(keyCode, event)
         if (event.repeatCount == 0) vm.input.key(code, true)
         return true
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (keymapTouch(keyCode, false, 0)) return true
         val code = padKey(keyCode, event) ?: map(keyCode) ?: return super.onKeyUp(keyCode, event)
         vm.input.key(code, false)
         return true
@@ -627,6 +652,19 @@ class VmActivity : ComponentActivity() {
     private var hasMacro by mutableStateOf(false)
     @Volatile private var gif: app.aemu.core.GifRecorder? = null
     private var gifOn by mutableStateOf(false)
+    /** AEmulator X: keys mapped to touches (per firmware), its editor, and the external display */
+    private var keymap = app.aemu.core.KeyMap()
+    private var keymapOn by mutableStateOf(false)
+    private var keymapEditing by mutableStateOf(false)
+    private var keymapStickMode by mutableStateOf(false)
+    private var keymapWaitAt by mutableStateOf<Pair<Int, Int>?>(null)
+    private var keymapView: KeymapOverlayView? = null
+    private val heldMapKeys = HashSet<Int>()
+    private var external: ExternalScreen? = null
+    private var externalOn by mutableStateOf(false)
+    private var externalAvailable by mutableStateOf(false)
+    @Volatile private var externalFeed = false
+    private var displayListener: android.hardware.display.DisplayManager.DisplayListener? = null
     /** AEmulator X: shake the phone for a screenshot (⋮ menu, remembered) */
     private var shakeOn by mutableStateOf(false)
     private val shake = app.aemu.core.ShakeDetector()
@@ -678,6 +716,8 @@ class VmActivity : ComponentActivity() {
         heldNavKeys.releaseAll()
         stopVnc()
         stopWeb()
+        stopExternal()
+        displayListener?.let { l -> external?.unlisten(l) }
         macroStop = true
         gif = null
         finishRecordingBlocking()
@@ -912,6 +952,119 @@ class VmActivity : ComponentActivity() {
         if (::vm.isInitialized) vm.audio.tap = null
         runOnUiThread { recStartedAt = 0L }
         rec.stop()?.let { toast(getString(R.string.x_rec_saved, it)) }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: key mapping
+
+    /** A mapped key went down or up: the fingers of all mapped keys held now go to the guest. */
+    private fun keymapTouch(key: Int, down: Boolean, repeat: Int): Boolean {
+        if (!::vm.isInitialized || !keymapOn || keymapEditing || !keymap.handles(key)) return false
+        if (down) { if (repeat > 0) return true; heldMapKeys.add(key) } else heldMapKeys.remove(key)
+        vm.input.touch(keymap.touches(heldMapKeys), true)
+        return true
+    }
+
+    private fun setKeymap(m: app.aemu.core.KeyMap) {
+        keymap = m
+        keymapView?.map = m
+        if (::vm.isInitialized) app.aemu.core.KeyMap.save(vm.paths, m)
+    }
+
+    private fun keymapPick(x: Int, y: Int) {
+        if (keymapStickMode) {
+            val g = guest
+            setKeymap(keymap.withStick(app.aemu.core.KeyMap.Stick(x, y, (minOf(g.w, g.h) / 8).coerceAtLeast(20))))
+            keymapStickMode = false
+        } else keymapWaitAt = x to y
+    }
+
+    private fun keymapRemove(x: Int, y: Int) {
+        val g = guest
+        setKeymap(keymap.without(x, y, (minOf(g.w, g.h) / 10).coerceAtLeast(24)))
+    }
+
+    private fun startKeymapEditor() {
+        val v = keymapView ?: return
+        val g = guest
+        v.guestW = g.w.coerceAtLeast(1); v.guestH = g.h.coerceAtLeast(1)
+        v.map = keymap
+        v.visibility = View.VISIBLE
+        heldMapKeys.clear()
+        keymapEditing = true
+    }
+
+    private fun finishKeymapEditor() {
+        keymapView?.visibility = View.GONE
+        keymapEditing = false; keymapStickMode = false; keymapWaitAt = null
+        keymapOn = !keymap.isEmpty()
+        if (::vm.isInitialized) uiPrefs.edit().putBoolean("keymap_on_" + vm.img.id, keymapOn).apply()
+    }
+
+    @Composable
+    private fun KeymapEditorBar(modifier: Modifier) {
+        Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.95f), modifier = modifier) {
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(stringResource(R.string.x_km_title), style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(when {
+                    keymapWaitAt != null -> R.string.x_km_press
+                    keymapStickMode -> R.string.x_km_stick_place
+                    else -> R.string.x_km_hint
+                }), style = MaterialTheme.typography.bodySmall)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    androidx.compose.material3.FilledTonalButton(onClick = { keymapStickMode = !keymapStickMode; keymapWaitAt = null }) {
+                        Text(stringResource(R.string.x_km_stick))
+                    }
+                    TextButton(onClick = { setKeymap(app.aemu.core.KeyMap()) }) { Text(stringResource(R.string.x_km_clear)) }
+                    androidx.compose.material3.Button(onClick = { finishKeymapEditor() }) { Text(stringResource(R.string.x_km_done)) }
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: external display
+
+    private fun startExternal() {
+        val ext = external ?: return
+        if (!ext.show()) { toast(getString(R.string.x_ext_none)); return }
+        externalOn = true
+        externalFeed = true
+        thread(name = "aemu-ext-feed") {
+            val copyThread = android.os.HandlerThread("aemu-ext-copy").apply { start() }
+            val handler = android.os.Handler(copyThread.looper)
+            var buf: android.graphics.Bitmap? = null
+            var fbGrab: app.aemu.core.ScreenRecorder.FbGrabber? = null
+            try {
+                while (externalFeed) {
+                    val started = android.os.SystemClock.uptimeMillis()
+                    val gs = guest
+                    val w = gs.w; val h = gs.h
+                    if (w > 0 && h > 0) {
+                        if (gs.passthrough && surfaceView.width > 0 && surfaceView.holder.surface.isValid) {
+                            val b = buf?.takeIf { it.width == w && it.height == h }
+                                ?: android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888).also { buf = it }
+                            val done = java.util.concurrent.CountDownLatch(1)
+                            val ok = java.util.concurrent.atomic.AtomicBoolean(false)
+                            runCatching { android.view.PixelCopy.request(surfaceView, b, { r -> ok.set(r == android.view.PixelCopy.SUCCESS); done.countDown() }, handler) }
+                                .onFailure { done.countDown() }
+                            if (done.await(250, java.util.concurrent.TimeUnit.MILLISECONDS)) { if (ok.get()) ext.post(b) } else buf = null
+                        } else {
+                            val fg = fbGrab?.takeIf { it.bitmap.width == w && it.bitmap.height == h }
+                                ?: app.aemu.core.ScreenRecorder.FbGrabber(w, h).also { fbGrab = it }
+                            if (fg.grab(gs.fb, if (vm.recoveryMode) vm.recoveryFormat else gs.format, gs.pages, gs.shownPage)) ext.post(fg.bitmap)
+                        }
+                    }
+                    val rest = 33L - (android.os.SystemClock.uptimeMillis() - started)
+                    if (rest > 0) Thread.sleep(rest)
+                }
+            } catch (_: InterruptedException) {
+            } finally { copyThread.quitSafely() }
+        }
+    }
+
+    private fun stopExternal() {
+        externalFeed = false
+        external?.dismiss()
+        externalOn = false
     }
 
     // ------------------------------------------------------------------ AEmulator X: retro screen, shake, web play
@@ -1693,6 +1846,7 @@ class VmActivity : ComponentActivity() {
             if (vncDialog) VncInfoDialog()
             if (webDialog) WebPlayDialog()
             if (filterDialog) FilterDialog()
+            if (keymapEditing) KeymapEditorBar(Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 8.dp, start = 12.dp, end = 12.dp).widthIn(max = 420.dp))
 
             // AEmulator X: on-screen game buttons, through the same mapping as a real controller
             LaunchedEffect(Unit) { padVisible = uiPrefs.getBoolean("game_pad", false) }
@@ -1795,6 +1949,18 @@ class VmActivity : ComponentActivity() {
                         leadingIcon = { Icon(Icons.Rounded.Tv, null) },
                         trailingIcon = { if (screenFilter != ScreenFilter.NONE) Icon(Icons.Rounded.Check, null) },
                         onClick = { menu = false; filterDialog = true })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_km_menu)) },
+                        leadingIcon = { Icon(Icons.Rounded.Keyboard, null) },
+                        enabled = running, onClick = { menu = false; startKeymapEditor() })
+                    if (!keymap.isEmpty()) DropdownMenuItem(text = { Text(stringResource(R.string.x_km_use)) },
+                        leadingIcon = { Icon(Icons.Rounded.Keyboard, null) },
+                        trailingIcon = { if (keymapOn) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; keymapOn = !keymapOn; heldMapKeys.clear(); uiPrefs.edit().putBoolean("keymap_on_" + vm.img.id, keymapOn).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_ext_menu)) },
+                        leadingIcon = { Icon(Icons.Rounded.Tv, null) },
+                        trailingIcon = { if (externalOn) Icon(Icons.Rounded.Check, null) },
+                        enabled = externalOn || (running && externalAvailable),
+                        onClick = { menu = false; if (externalOn) stopExternal() else startExternal() })
                     DropdownMenuItem(text = { Text(stringResource(if (macroRecording) R.string.x_macro_stop_rec else R.string.x_macro_record)) },
                         leadingIcon = { Icon(if (macroRecording) Icons.Rounded.Stop else Icons.Rounded.FiberManualRecord, null) },
                         enabled = (running && !macroPlaying) || macroRecording,

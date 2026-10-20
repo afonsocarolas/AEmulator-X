@@ -217,4 +217,17 @@
     <string name="x_copy_guest">Copiar do celular emulado</string>
     <string name="x_copy_guest_ok">Copiado para o seu aparelho: %1$s</string>
     <string name="x_copy_guest_fail">A área de transferência do celular emulado está vazia ou não pôde ser lida</string>
+    <!-- X20: key mapping, external display -->
+    <string name="x_km_menu">Mapeamento de teclas…</string>
+    <string name="x_km_use">Usar mapeamento de teclas</string>
+    <string name="x_km_title">Mapeamento de teclas</string>
+    <string name="x_km_hint">Toque em um ponto da tela e depois aperte uma tecla ou botão do controle. Toque e segure um ponto para removê-lo.</string>
+    <string name="x_km_press">Agora aperte a tecla ou botão do controle para este ponto (Voltar cancela)</string>
+    <string name="x_km_stick">Joystick (WASD)</string>
+    <string name="x_km_stick_place">Toque onde fica o joystick do jogo</string>
+    <string name="x_km_clear">Limpar</string>
+    <string name="x_km_done">Pronto</string>
+    <string name="x_ext_menu">Tela externa</string>
+    <string name="x_ext_found">Tela externa conectada: ⋮ › Tela externa</string>
+    <string name="x_ext_none">Nenhuma tela externa conectada</string>
 </resources>

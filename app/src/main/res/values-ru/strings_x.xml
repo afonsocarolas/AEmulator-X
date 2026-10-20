@@ -217,4 +217,17 @@
     <string name="x_copy_guest">Копировать с эмулируемого телефона</string>
     <string name="x_copy_guest_ok">Скопировано на ваше устройство: %1$s</string>
     <string name="x_copy_guest_fail">Буфер обмена эмулируемого телефона пуст или недоступен</string>
+    <!-- X20: key mapping, external display -->
+    <string name="x_km_menu">Назначение клавиш…</string>
+    <string name="x_km_use">Использовать назначение клавиш</string>
+    <string name="x_km_title">Назначение клавиш</string>
+    <string name="x_km_hint">Нажмите точку на экране, затем клавишу или кнопку геймпада. Долгое нажатие на точку удаляет её.</string>
+    <string name="x_km_press">Теперь нажмите клавишу или кнопку геймпада для этой точки (Назад — отмена)</string>
+    <string name="x_km_stick">Джойстик (WASD)</string>
+    <string name="x_km_stick_place">Нажмите туда, где в игре джойстик</string>
+    <string name="x_km_clear">Очистить</string>
+    <string name="x_km_done">Готово</string>
+    <string name="x_ext_menu">Внешний экран</string>
+    <string name="x_ext_found">Подключён внешний экран: ⋮ › Внешний экран</string>
+    <string name="x_ext_none">Внешний экран не подключён</string>
 </resources>

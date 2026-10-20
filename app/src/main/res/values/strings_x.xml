@@ -218,4 +218,17 @@
     <string name="x_copy_guest">Copy from emulated phone</string>
     <string name="x_copy_guest_ok">Copied to your device: %1$s</string>
     <string name="x_copy_guest_fail">The emulated phone\'s clipboard is empty or could not be read</string>
+    <!-- X20: key mapping, external display -->
+    <string name="x_km_menu">Key mapping…</string>
+    <string name="x_km_use">Use key mapping</string>
+    <string name="x_km_title">Key mapping</string>
+    <string name="x_km_hint">Tap a spot on the screen, then press a key or controller button. Long-press a spot to remove it.</string>
+    <string name="x_km_press">Now press the key or controller button for this spot (Back cancels)</string>
+    <string name="x_km_stick">Joystick (WASD)</string>
+    <string name="x_km_stick_place">Tap where the joystick of the game is</string>
+    <string name="x_km_clear">Clear</string>
+    <string name="x_km_done">Done</string>
+    <string name="x_ext_menu">External display</string>
+    <string name="x_ext_found">External display connected: ⋮ › External display</string>
+    <string name="x_ext_none">No external display is connected</string>
 </resources>
