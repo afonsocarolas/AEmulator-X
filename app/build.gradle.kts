@@ -58,8 +58,8 @@ android {
         // 28: гостевые бинарники запускаются из каталога данных приложения (W^X для targetSdk>=29)
         //noinspection ExpiredTargetSdkVersion
         targetSdk = 28
-        versionCode = 57
-        versionName = "0.0.0.2.13-x25" // <AEmulator base>.<Plus release>-x<X release>
+        versionCode = 58
+        versionName = "0.0.0.2.13-x26" // <AEmulator base>.<Plus release>-x<X release>
         ndk { abiFilters += listOf("arm64-v8a") }
         // AEmulator X: fork repository for updates and links (gradle.properties: aemuX.repo)
         buildConfigField("String", "X_REPO", "\"" + (project.findProperty("aemuX.repo") ?: "afonsocarolas/AEmulator-X") + "\"")

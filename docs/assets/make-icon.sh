@@ -22,6 +22,8 @@ for d in mdpi:108 hdpi:162 xhdpi:216 xxhdpi:324 xxxhdpi:432; do
   magick -size 432x432 xc:none "$T/fg.png" -gravity center -composite -resize ${px}x${px} "$RES/mipmap-$dir/ic_launcher_fg.png"
   magick -size 432x432 xc:none "$T/mono.png" -gravity center -composite -resize ${px}x${px} "$RES/mipmap-$dir/ic_launcher_mono.png"
 done
+# in-app logo (Settings › About; the screen rounds the corners itself), 512 px
+magick icon-x.png -resize 512x512 -strip PNG32:$RES/drawable-nodpi/logo.png
 # README logo: the artwork with rounded corners, 256 px
 magick icon-x.png -resize 256x256 \( -size 256x256 xc:black -fill white -draw "roundrectangle 0,0 255,255 56,56" \) \
   -alpha off -compose CopyOpacity -composite logo.png
