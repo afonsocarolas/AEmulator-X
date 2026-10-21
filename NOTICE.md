@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-21**: AEmulator X23 (`0.0.0.2.13-x23`): daily challenges (`app/src/main/java/app/aemu/core/DailyChallenge.kt`), Android
+  birthdays (`core/AndroidBirthdays.kt`), sound effects synthesised in code (`core/UiSounds.kt`), library cards and confetti
+  (`ui/DailyCards.kt`); wiring in `core/Achievements.kt`, `core/GuestVm.kt`, `MainActivity.kt`, `VmActivity.kt`,
+  `SnakeActivity.kt`, `AppSettingsActivity.kt`; tests in `X23FeaturesTest.kt`.
 - **2026-10-20**: AEmulator X22 (`0.0.0.2.13-x22`): theme maker (`app/src/main/java/app/aemu/core/CustomTheme.kt`, `ui/ThemeMaker.kt`),
   instant replay (`core/ReplayRing.kt`, `ui/ReplayDialog.kt`), voice commands (`core/VoiceCommands.kt`), gesture shortcuts
   (`core/GestureShapes.kt`, `ui/GesturePad.kt`), music player (`ui/HomeMusic.kt`), firmware of the day (`core/DailyPick.kt`,

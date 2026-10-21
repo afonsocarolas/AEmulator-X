@@ -104,8 +104,11 @@ class SnakeActivity : ComponentActivity() {
             while (!paused && !g.over) {
                 delay(g.tickMs)
                 val ate = g.step()
+                if (ate) app.aemu.core.UiSounds.play(this@SnakeActivity, app.aemu.core.UiSounds.Sfx.POP)
                 if (ate) eatenName = SnakeGame.DESSERTS[(g.score - 1) % SnakeGame.DESSERTS.size].let { "${it.emoji} ${it.name} (${it.version})" }
                 if (g.over) {
+                    app.aemu.core.UiSounds.play(this@SnakeActivity, app.aemu.core.UiSounds.Sfx.GAME_OVER)
+                    if (g.score >= 5) runCatching { Achievements.bump(this@SnakeActivity, app.aemu.core.DailyChallenge.SNAKE_ROUND) }
                     if (g.score > best) {
                         best = g.score
                         getSharedPreferences("x_snake", MODE_PRIVATE).edit().putInt("best", best).apply()

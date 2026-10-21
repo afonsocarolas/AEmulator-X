@@ -854,6 +854,7 @@ class VmActivity : ComponentActivity() {
 
     /** raw fb0 → PNG in /sdcard/Pictures/AEmulator (see core/Screenshot.kt) */
     private fun screenshot() {
+        app.aemu.core.UiSounds.play(this, app.aemu.core.UiSounds.Sfx.SHUTTER)
         val g = guest
         val vmId = vm.img.id
         val fmt = if (vm.recoveryMode) vm.recoveryFormat else g.format
@@ -2450,6 +2451,7 @@ class VmActivity : ComponentActivity() {
         const val EXTRA_RECOVERY = "recovery"
         const val EXTRA_LOW_POWER = "low_power"
         fun start(ctx: Context, id: String, recovery: Boolean = false, lowPower: Boolean = false) {
+            app.aemu.core.UiSounds.play(ctx, app.aemu.core.UiSounds.Sfx.START)
             ctx.startActivity(Intent(ctx, VmActivity::class.java).putExtra(EXTRA_ID, id).putExtra(EXTRA_RECOVERY, recovery).putExtra(EXTRA_LOW_POWER, lowPower)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }

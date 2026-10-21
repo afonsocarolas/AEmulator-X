@@ -297,4 +297,25 @@
         <item>Pie (9) представил навигацию жестами с кнопкой-«таблеткой» и Цифровое благополучие.</item>
         <item>Android 10 перестал называться в честь десертов и добавил тёмную тему для всей системы.</item>
     </string-array>
+    <!-- X23: daily challenges, Android birthdays, sound effects -->
+    <string name="x_dc_title">Задание дня</string>
+    <string name="x_dc_streak">Серия: %1$d дн.</string>
+    <string name="x_dc_best">Лучшая серия: %1$d дн.</string>
+    <string name="x_dc_hint">Каждый день новое задание. Выполняйте, чтобы не прервать серию!</string>
+    <string name="x_dc_done">Готово! 🎉 Завтра будет новое.</string>
+    <string name="x_dc_play">Поиграйте %1$d минут</string>
+    <string name="x_dc_shots">Сделайте скриншотов: %1$d</string>
+    <string name="x_dc_record">Запишите видео или GIF</string>
+    <string name="x_dc_retro">Поиграйте с ретро-экраном CRT</string>
+    <string name="x_dc_game">Поиграйте в игровом режиме</string>
+    <string name="x_dc_boot">Запустите прошивок: %1$d</string>
+    <string name="x_dc_era">Запустите прошивку %1$s</string>
+    <string name="x_dc_snake">Съешьте 5 десертов за одну игру в Десертную змейку</string>
+    <string name="x_bd_title">День рождения Android</string>
+    <string name="x_bd_happy">С %1$d-м днём рождения, %2$s!</string>
+    <string name="x_bd_since">Вышел в этот день в %1$d году.</string>
+    <string name="x_bd_party">Отпраздновать с %1$s</string>
+    <string name="x_bd_next">Следующий день рождения: %1$s исполнится %2$d через %3$d дн.</string>
+    <string name="x_sfx">Звуковые эффекты</string>
+    <string name="x_sfx_sub">Короткие звуки при запуске прошивки, скриншоте, новом значке…</string>
 </resources>

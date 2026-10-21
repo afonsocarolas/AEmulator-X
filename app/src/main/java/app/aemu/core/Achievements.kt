@@ -62,6 +62,7 @@ object Achievements {
             m[key] = (m[key] ?: 0) + 1
             f.writeText(m.entries.joinToString("") { "${it.key} ${it.value}\n" })
         }
+        DailyChallenge.bumpToday(ctx, key)
     }
 
     /** Everything the badges look at, read now. Blocking (reads the library and play time). */

@@ -211,7 +211,7 @@ fun Library(model: LibraryModel) {
     var newBadges by remember { mutableStateOf<List<app.aemu.core.Achievements.Badge>>(emptyList()) }
     LaunchedEffect(gridRefresh) {
         val fresh = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { runCatching { app.aemu.core.Achievements.newlyUnlocked(ctx) }.getOrDefault(emptyList()) }
-        if (fresh.isNotEmpty()) newBadges = fresh
+        if (fresh.isNotEmpty()) { newBadges = fresh; app.aemu.core.UiSounds.play(ctx, app.aemu.core.UiSounds.Sfx.BADGE) }
     }
     if (showAchievements) AchievementsDialog(onDismiss = { showAchievements = false })
     if (newBadges.isNotEmpty()) AlertDialog(
@@ -379,7 +379,7 @@ fun Library(model: LibraryModel) {
             if (view3d && images.isNotEmpty()) Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
                 .padding(start = 16.dp, end = 16.dp, bottom = 120.dp)) {
                 StorageAccessCard()
-                FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }
+                FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(images, gridRefresh) { VmActivity.start(ctx, it.id) }
                 if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) })
                 AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
                     Box(Modifier.padding(bottom = 12.dp)) {
@@ -406,7 +406,7 @@ fun Library(model: LibraryModel) {
                 header = {
                     Column {
                         StorageAccessCard()
-                        FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }
+                        FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(images, gridRefresh) { VmActivity.start(ctx, it.id) }
                         if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) })
                         AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
                             Box(Modifier.padding(bottom = 12.dp)) { ImportCard(imp, onCancel = model::cancelImport, onDismiss = model::dismissImport) }
@@ -439,7 +439,7 @@ fun Library(model: LibraryModel) {
                 val full: (androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope) -> androidx.compose.foundation.lazy.grid.GridItemSpan =
                     { androidx.compose.foundation.lazy.grid.GridItemSpan(it.maxLineSpan) }
                 item(span = full) { StorageAccessCard() }
-                item(span = full) { FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) } }
+                item(span = full) { FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(images, gridRefresh) { VmActivity.start(ctx, it.id) } }
                 if (!imp.active) item(span = full) { FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) }) }
                 item(span = full) {
                     AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
@@ -475,7 +475,7 @@ fun Library(model: LibraryModel) {
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 120.dp),
             ) {
                 item { StorageAccessCard() }
-                item { FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) } }
+                item { FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(images, gridRefresh) { VmActivity.start(ctx, it.id) } }
                 item { if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) }) }
                 item {
                     AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {

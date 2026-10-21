@@ -298,4 +298,25 @@
         <item>Pie (9) introduced gesture navigation with a pill-shaped Home button, and Digital Wellbeing.</item>
         <item>Android 10 stopped using dessert names in public and added a dark theme for the whole system.</item>
     </string-array>
+    <!-- X23: daily challenges, Android birthdays, sound effects -->
+    <string name="x_dc_title">Today\'s challenge</string>
+    <string name="x_dc_streak">%1$d-day streak</string>
+    <string name="x_dc_best">Best streak: %1$d days</string>
+    <string name="x_dc_hint">A new challenge every day. Do it to keep your streak going!</string>
+    <string name="x_dc_done">Done! 🎉 Come back tomorrow for a new one.</string>
+    <string name="x_dc_play">Play for %1$d minutes</string>
+    <string name="x_dc_shots">Take %1$d screenshots</string>
+    <string name="x_dc_record">Record a video or a GIF</string>
+    <string name="x_dc_retro">Play with the retro CRT screen</string>
+    <string name="x_dc_game">Play in Game mode</string>
+    <string name="x_dc_boot">Boot %1$d firmwares</string>
+    <string name="x_dc_era">Boot a %1$s firmware</string>
+    <string name="x_dc_snake">Eat 5 desserts in one Dessert Snake game</string>
+    <string name="x_bd_title">Android birthday</string>
+    <string name="x_bd_happy">Happy birthday, %2$s! %1$d today</string>
+    <string name="x_bd_since">Released on this day in %1$d.</string>
+    <string name="x_bd_party">Party with %1$s</string>
+    <string name="x_bd_next">Next birthday: %1$s turns %2$d in %3$d days</string>
+    <string name="x_sfx">Sound effects</string>
+    <string name="x_sfx_sub">Little sounds when you start a firmware, take a screenshot, unlock a badge…</string>
 </resources>

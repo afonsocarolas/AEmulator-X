@@ -297,4 +297,25 @@
         <item>Pie (9) estrenó la navegación por gestos con el botón en forma de píldora, y Bienestar digital.</item>
         <item>Android 10 dejó de usar nombres de postres en público y añadió un tema oscuro para todo el sistema.</item>
     </string-array>
+    <!-- X23: daily challenges, Android birthdays, sound effects -->
+    <string name="x_dc_title">Reto del día</string>
+    <string name="x_dc_streak">Racha de %1$d días</string>
+    <string name="x_dc_best">Mejor racha: %1$d días</string>
+    <string name="x_dc_hint">Un reto nuevo cada día. ¡Cúmplelo para mantener la racha!</string>
+    <string name="x_dc_done">¡Hecho! 🎉 Vuelve mañana por uno nuevo.</string>
+    <string name="x_dc_play">Juega %1$d minutos</string>
+    <string name="x_dc_shots">Haz %1$d capturas de pantalla</string>
+    <string name="x_dc_record">Graba un vídeo o un GIF</string>
+    <string name="x_dc_retro">Juega con la pantalla retro CRT</string>
+    <string name="x_dc_game">Juega en modo juego</string>
+    <string name="x_dc_boot">Inicia %1$d firmwares</string>
+    <string name="x_dc_era">Inicia un firmware %1$s</string>
+    <string name="x_dc_snake">Come 5 postres en una partida de Serpiente de postres</string>
+    <string name="x_bd_title">Cumpleaños de Android</string>
+    <string name="x_bd_happy">¡Feliz %1$dº cumpleaños, %2$s!</string>
+    <string name="x_bd_since">Salió un día como hoy de %1$d.</string>
+    <string name="x_bd_party">Celebrar con %1$s</string>
+    <string name="x_bd_next">Próximo cumpleaños: %1$s cumple %2$d en %3$d días</string>
+    <string name="x_sfx">Efectos de sonido</string>
+    <string name="x_sfx_sub">Sonidos cortos al iniciar un firmware, hacer una captura, ganar un logro…</string>
 </resources>

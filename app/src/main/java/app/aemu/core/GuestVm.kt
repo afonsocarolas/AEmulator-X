@@ -1646,6 +1646,9 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
         runCatching {
             ImageStore.update(ctx, img.id) { it.copy(lastBootMs = bootDoneAt - bootAt, bootCount = it.bootCount + 1) }
         }.onFailure { log("boot statistics: could not save: ${it.message}") }
+        // AEmulator X: daily challenges
+        Achievements.bump(ctx, DailyChallenge.BOOT)
+        Achievements.bump(ctx, DailyChallenge.bootKey(DailyPick.factGroup(img.api)))
     }
 
     /**

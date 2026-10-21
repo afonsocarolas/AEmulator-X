@@ -248,6 +248,12 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                     if (themeMaker) ThemeMakerDialog(onDismiss = { themeMaker = false }) {
                         themeMaker = false; xTheme = app.aemu.core.CustomTheme.ID; AppPrefs.setXTheme(ctx, xTheme); onRestyle()
                     }
+                    // AEmulator X: the app's own little sounds
+                    var sfx by remember { mutableStateOf(app.aemu.core.UiSounds.enabled(ctx)) }
+                    Toggle(stringResource(R.string.x_sfx), stringResource(R.string.x_sfx_sub), sfx) {
+                        sfx = it; app.aemu.core.UiSounds.setEnabled(ctx, it)
+                        if (it) app.aemu.core.UiSounds.play(ctx, app.aemu.core.UiSounds.Sfx.BADGE)
+                    }
                     // AEmulator X: the user's own picture behind the library
                     var hasWallpaper by remember { mutableStateOf(LibraryWallpaper.file(ctx).isFile) }
                     val pickWallpaper = androidx.activity.compose.rememberLauncherForActivityResult(
