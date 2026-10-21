@@ -327,4 +327,34 @@
     <string name="x_notes">Notas</string>
     <string name="x_notes_hint">Melhor para jogos, Wi-Fi lento, meu favorito…</string>
     <string name="x_name_notes">Nome e notas</string>
+    <!-- X25: gamepad editor, device museum -->
+    <string name="x_museum_title">Museu de aparelhos</string>
+    <string name="x_museum_by">Feito pela %1$s · veio com Android %2$s</string>
+    <string name="x_museum_boot">Iniciar %1$s</string>
+    <string name="x_museum_none">Adicione um firmware Android %1$s para iniciá-lo daqui</string>
+    <string name="x_museum_swipe">Deslize para viajar no tempo</string>
+    <string name="x_pe_menu">Editar controle…</string>
+    <string name="x_pe_title">Editar controle</string>
+    <string name="x_pe_hint">Arraste os botões para onde quiser. Toque em um grupo para mudar o tamanho.</string>
+    <string name="x_pe_size">Tamanho: %1$s</string>
+    <string name="x_pe_opacity">Transparência</string>
+    <string name="x_pe_lr">Botões L / R</string>
+    <string name="x_pe_reset">Redefinir</string>
+    <string-array name="x_museum_facts">
+        <item>O primeiro celular Android de todos. A tela deslizava para o lado e mostrava um teclado completo, e tinha um trackball para rolar.</item>
+        <item>Um dos primeiros celulares Android sem teclado físico: graças ao Cupcake, você digitava na tela.</item>
+        <item>Os anúncios \"Droid Does\" da Verizon deixaram o Android famoso nos EUA. Foi o primeiro celular com Android 2.0.</item>
+        <item>O primeiro celular com o nome do próprio Google, vendido direto numa loja online do Google.</item>
+        <item>O celular que começou a família Galaxy S da Samsung, com uma tela Super AMOLED bem brilhante.</item>
+        <item>O primeiro celular com Android 2.3 Gingerbread e um dos primeiros com NFC.</item>
+        <item>O primeiro tablet com Honeycomb, a versão do Android feita só para tablets.</item>
+        <item>Muito fino para a época e um dos Android mais vendidos de 2011.</item>
+        <item>O primeiro celular com Ice Cream Sandwich e botões Voltar, Início e Recentes na tela.</item>
+        <item>O primeiro tablet do próprio Google, pequeno, de 7 polegadas, lançado junto com o Jelly Bean.</item>
+        <item>O KitKat foi lançado com este celular. Ele veio em preto e branco, e depois em vermelho vivo.</item>
+        <item>Um celular grande de 6 polegadas feito pela Motorola, o primeiro com Lollipop e Material Design.</item>
+        <item>Lançado com Marshmallow e um leitor de digital na traseira chamado Nexus Imprint.</item>
+        <item>O primeiríssimo Pixel e o primeiro celular com o Google Assistente embutido.</item>
+        <item>Veio com Android Pie e a nova navegação por gestos, e tirava fotos incríveis com uma só câmera traseira.</item>
+    </string-array>
 </resources>

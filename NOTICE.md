@@ -65,6 +65,9 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-21**: AEmulator X25 (`0.0.0.2.13-x25`): gamepad editor (`app/src/main/java/app/aemu/core/PadLayout.kt`,
+  `ui/GamePadOverlay.kt`, `VmActivity.kt`), device museum (`core/DeviceMuseum.kt`, `ui/MuseumActivity.kt`); tests in
+  `X25FeaturesTest.kt`.
 - **2026-10-21**: AEmulator X24 (`0.0.0.2.13-x24`): screenshot frames (`app/src/main/java/app/aemu/core/ScreenshotFrame.kt`,
   `core/Screenshot.kt`, `VmActivity.kt`), firmware notes (`core/FirmwareNotes.kt`, `MainActivity.kt`, `LibraryGrid.kt`, `Home.kt`);
   tests in `X24FeaturesTest.kt`.

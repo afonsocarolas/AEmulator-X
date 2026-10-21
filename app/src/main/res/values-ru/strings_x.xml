@@ -327,4 +327,34 @@
     <string name="x_notes">Заметки</string>
     <string name="x_notes_hint">Лучше для игр, медленный Wi-Fi, любимая…</string>
     <string name="x_name_notes">Название и заметки</string>
+    <!-- X25: gamepad editor, device museum -->
+    <string name="x_museum_title">Музей устройств</string>
+    <string name="x_museum_by">Производитель: %1$s · вышел с Android %2$s</string>
+    <string name="x_museum_boot">Запустить %1$s</string>
+    <string name="x_museum_none">Добавьте прошивку Android %1$s, чтобы запустить её отсюда</string>
+    <string name="x_museum_swipe">Листайте, чтобы путешествовать во времени</string>
+    <string name="x_pe_menu">Настроить геймпад…</string>
+    <string name="x_pe_title">Настройка геймпада</string>
+    <string name="x_pe_hint">Перетащите кнопки куда хотите. Нажмите на группу, чтобы изменить размер.</string>
+    <string name="x_pe_size">Размер: %1$s</string>
+    <string name="x_pe_opacity">Прозрачность</string>
+    <string name="x_pe_lr">Кнопки L / R</string>
+    <string name="x_pe_reset">Сброс</string>
+    <string-array name="x_museum_facts">
+        <item>Самый первый Android-телефон. Его экран сдвигался вбок, открывая полную клавиатуру, а для прокрутки был трекбол.</item>
+        <item>Один из первых Android-телефонов без аппаратной клавиатуры: благодаря Cupcake печатали прямо на экране.</item>
+        <item>Реклама Verizon «Droid Does» прославила Android в США. Это был первый телефон с Android 2.0.</item>
+        <item>Первый телефон Google под её собственным именем, продавался прямо в интернет-магазине Google.</item>
+        <item>Телефон, с которого началось семейство Samsung Galaxy S, с ярким экраном Super AMOLED.</item>
+        <item>Первый телефон с Android 2.3 Gingerbread и один из первых с NFC.</item>
+        <item>Первый планшет с Honeycomb — версией Android, созданной специально для планшетов.</item>
+        <item>Очень тонкий для своего времени и один из самых продаваемых Android-телефонов 2011 года.</item>
+        <item>Первый телефон с Ice Cream Sandwich и экранными кнопками «Назад», «Домой» и «Недавние».</item>
+        <item>Первый собственный планшет Google, маленький, 7 дюймов, вышел вместе с Jelly Bean.</item>
+        <item>С этим телефоном вышел KitKat. Он был чёрным и белым, а позже и ярко-красным.</item>
+        <item>Большой 6-дюймовый телефон от Motorola, первый с Lollipop и Material Design.</item>
+        <item>Вышел с Marshmallow и сканером отпечатков на задней панели под названием Nexus Imprint.</item>
+        <item>Самый первый Pixel и первый телефон со встроенным Google Ассистентом.</item>
+        <item>Вышел с Android Pie и новой навигацией жестами и делал потрясающие фото всего одной основной камерой.</item>
+    </string-array>
 </resources>

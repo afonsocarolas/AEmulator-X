@@ -327,4 +327,34 @@
     <string name="x_notes">Notas</string>
     <string name="x_notes_hint">Mejor para juegos, Wi-Fi lento, mi favorito…</string>
     <string name="x_name_notes">Nombre y notas</string>
+    <!-- X25: gamepad editor, device museum -->
+    <string name="x_museum_title">Museo de dispositivos</string>
+    <string name="x_museum_by">Hecho por %1$s · venía con Android %2$s</string>
+    <string name="x_museum_boot">Iniciar %1$s</string>
+    <string name="x_museum_none">Añade un firmware Android %1$s para iniciarlo desde aquí</string>
+    <string name="x_museum_swipe">Desliza para viajar en el tiempo</string>
+    <string name="x_pe_menu">Editar mando…</string>
+    <string name="x_pe_title">Editar mando</string>
+    <string name="x_pe_hint">Arrastra los botones donde quieras. Toca un grupo para cambiar su tamaño.</string>
+    <string name="x_pe_size">Tamaño: %1$s</string>
+    <string name="x_pe_opacity">Transparencia</string>
+    <string name="x_pe_lr">Botones L / R</string>
+    <string name="x_pe_reset">Restablecer</string>
+    <string-array name="x_museum_facts">
+        <item>El primer teléfono Android de todos. Su pantalla se deslizaba hacia un lado para mostrar un teclado completo, y tenía un trackball para desplazarse.</item>
+        <item>Uno de los primeros Android sin teclado físico: gracias a Cupcake, escribías en la pantalla.</item>
+        <item>Los anuncios \"Droid Does\" de Verizon hicieron famoso a Android en EE. UU. Fue el primer teléfono con Android 2.0.</item>
+        <item>El primer teléfono con el nombre de Google, vendido directamente en una tienda web de Google.</item>
+        <item>El teléfono que empezó la familia Galaxy S de Samsung, con una pantalla Super AMOLED muy brillante.</item>
+        <item>El primer teléfono con Android 2.3 Gingerbread y uno de los primeros con NFC.</item>
+        <item>La primera tablet con Honeycomb, la versión de Android hecha solo para tablets.</item>
+        <item>Muy delgado para su época y uno de los Android más vendidos de 2011.</item>
+        <item>El primer teléfono con Ice Cream Sandwich y botones Atrás, Inicio y Recientes en pantalla.</item>
+        <item>La primera tablet propia de Google, pequeña, de 7 pulgadas, lanzada junto con Jelly Bean.</item>
+        <item>KitKat se lanzó con este teléfono. Venía en negro y blanco, y más tarde en rojo intenso.</item>
+        <item>Un teléfono grande de 6 pulgadas hecho por Motorola, el primero con Lollipop y Material Design.</item>
+        <item>Salió con Marshmallow y un lector de huellas trasero llamado Nexus Imprint.</item>
+        <item>El primerísimo Pixel y el primer teléfono con el Asistente de Google integrado.</item>
+        <item>Venía con Android Pie y su nueva navegación por gestos, y hacía fotos increíbles con una sola cámara trasera.</item>
+    </string-array>
 </resources>

@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.viewinterop.AndroidView
 import app.aemu.core.SmsStore
 import app.aemu.core.NavButton
+import app.aemu.core.PadLayout.Group as PadGroup
 import app.aemu.core.NavControls
 import app.aemu.core.HeldNavKeys
 import app.aemu.core.VmUiPolicy
@@ -344,6 +345,7 @@ class VmActivity : ComponentActivity() {
         keymapOn = uiPrefs.getBoolean("keymap_on_" + vm.img.id, true) && !keymap.isEmpty()
         if (uiPrefs.getBoolean("replay_on", false)) startReplay()
         shotFrame = app.aemu.core.ScreenshotFrame.Style.of(uiPrefs.getString("shot_frame", null))
+        padLayout = app.aemu.core.PadLayout.load(vm.paths.dir)
         external = ExternalScreen(this).also { ext ->
             externalAvailable = ext.displays().isNotEmpty()
             displayListener = ext.listen {
@@ -641,6 +643,10 @@ class VmActivity : ComponentActivity() {
 
     /** on-screen game buttons shown (menu toggle, remembered in vm_ui prefs) */
     private var padVisible by mutableStateOf(false)
+    /** AEmulator X: where the on-screen gamepad's groups are (per firmware), and its editor */
+    private var padLayout by mutableStateOf(app.aemu.core.PadLayout())
+    private var padEditing by mutableStateOf(false)
+    private var padSelected by mutableStateOf<app.aemu.core.PadLayout.Group?>(null)
     /** AEmulator X: FPS / CPU / RAM box over the screen (⋮ › Performance overlay), remembered like the game buttons */
     private var perfVisible by mutableStateOf(false)
     /** AEmulator X: Game mode — full screen, game buttons, screen kept on; what was there before comes back after */
@@ -978,6 +984,42 @@ class VmActivity : ComponentActivity() {
         if (::vm.isInitialized) vm.audio.tap = null
         runOnUiThread { recStartedAt = 0L }
         rec.stop()?.let { toast(getString(R.string.x_rec_saved, it)) }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: gamepad editor
+
+    private fun finishPadEditor() {
+        padEditing = false; padSelected = null
+        if (::vm.isInitialized) app.aemu.core.PadLayout.save(vm.paths.dir, padLayout)
+        if (!padVisible) { padVisible = true; uiPrefs.edit().putBoolean("game_pad", true).apply() }
+    }
+
+    /** Size of the selected group, see-through-ness of all, L/R on or off, reset, done. */
+    @Composable
+    private fun PadEditorBar(modifier: Modifier) {
+        Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.95f), modifier = modifier) {
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(stringResource(R.string.x_pe_title), style = MaterialTheme.typography.titleSmall)
+                val sel = padSelected
+                if (sel == null) Text(stringResource(R.string.x_pe_hint), style = MaterialTheme.typography.bodySmall)
+                else {
+                    val name = when (sel) { PadGroup.DPAD -> "D-pad"; PadGroup.FACE -> "A B X Y"; PadGroup.MENU -> "Select / Start"; PadGroup.L -> "L"; PadGroup.R -> "R" }
+                    Text(stringResource(R.string.x_pe_size, name), style = MaterialTheme.typography.bodySmall)
+                    androidx.compose.material3.Slider(padLayout.spot(sel).size, { v -> padLayout = padLayout.with(sel, padLayout.spot(sel).copy(size = v)) },
+                        valueRange = app.aemu.core.PadLayout.MIN_SIZE..app.aemu.core.PadLayout.MAX_SIZE)
+                }
+                Text(stringResource(R.string.x_pe_opacity), style = MaterialTheme.typography.bodySmall)
+                androidx.compose.material3.Slider(padLayout.opacity, { padLayout = padLayout.copy(opacity = it) }, valueRange = 0.15f..1f)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    val lr = padLayout.spot(PadGroup.L).shown
+                    androidx.compose.material3.FilterChip(selected = lr, onClick = {
+                        padLayout = padLayout.with(PadGroup.L, padLayout.spot(PadGroup.L).copy(shown = !lr)).let { it.with(PadGroup.R, it.spot(PadGroup.R).copy(shown = !lr)) }
+                    }, label = { Text(stringResource(R.string.x_pe_lr)) })
+                    TextButton(onClick = { padLayout = app.aemu.core.PadLayout(); padSelected = null }) { Text(stringResource(R.string.x_pe_reset)) }
+                    androidx.compose.material3.Button(onClick = { finishPadEditor() }) { Text(stringResource(R.string.x_km_done)) }
+                }
+            }
+        }
     }
 
     // ------------------------------------------------------------------ AEmulator X: key mapping
@@ -2015,9 +2057,10 @@ class VmActivity : ComponentActivity() {
 
             // AEmulator X: on-screen game buttons, through the same mapping as a real controller
             LaunchedEffect(Unit) { padVisible = uiPrefs.getBoolean("game_pad", false) }
-            if (padVisible && !showLog && running) GamePadOverlay(onKey = { keyCode, down ->
+            if ((padVisible || padEditing) && !showLog && running) GamePadOverlay(onKey = { keyCode, down ->
                 app.aemu.core.GamepadMap.key(keyCode, padMode())?.let { code -> vm.input.key(code, down) }
-            })
+            }, layout = padLayout, editing = padEditing, selected = padSelected, onSelect = { padSelected = it }, onLayout = { padLayout = it })
+            if (padEditing) PadEditorBar(Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 8.dp, start = 12.dp, end = 12.dp).widthIn(max = 460.dp))
 
             // AEmulator X: performance overlay; tap it to hide
             LaunchedEffect(Unit) { perfVisible = uiPrefs.getBoolean("perf_overlay", false) }
@@ -2101,6 +2144,9 @@ class VmActivity : ComponentActivity() {
                         leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
                         trailingIcon = { if (padVisible) Icon(Icons.Rounded.Check, null) },
                         onClick = { menu = false; padVisible = !padVisible; uiPrefs.edit().putBoolean("game_pad", padVisible).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_pe_menu)) },
+                        leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
+                        enabled = running, onClick = { menu = false; padSelected = null; padEditing = true })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_perf)) },
                         leadingIcon = { Icon(Icons.Rounded.Speed, null) },
                         trailingIcon = { if (perfVisible) Icon(Icons.Rounded.Check, null) },

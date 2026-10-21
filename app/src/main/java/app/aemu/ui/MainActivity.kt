@@ -49,6 +49,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Museum
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.Android
 import androidx.compose.material.icons.rounded.Delete
@@ -343,6 +344,9 @@ fun Library(model: LibraryModel) {
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_sleep_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.Bedtime, null) },
                                 onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, SleepActivity::class.java)) })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_museum_title)) },
+                                leadingIcon = { Icon(Icons.Rounded.Museum, null) },
+                                onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, MuseumActivity::class.java)) })
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_mu_menu)) },
                                 leadingIcon = { Icon(Icons.Rounded.LibraryMusic, null) },
                                 onClick = {

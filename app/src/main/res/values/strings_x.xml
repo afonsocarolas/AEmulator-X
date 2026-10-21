@@ -328,4 +328,34 @@
     <string name="x_notes">Notes</string>
     <string name="x_notes_hint">Best for games, Wi-Fi is slow, my favourite…</string>
     <string name="x_name_notes">Name and notes</string>
+    <!-- X25: gamepad editor, device museum -->
+    <string name="x_museum_title">Device museum</string>
+    <string name="x_museum_by">Made by %1$s · came with Android %2$s</string>
+    <string name="x_museum_boot">Boot %1$s</string>
+    <string name="x_museum_none">Add an Android %1$s firmware to boot it from here</string>
+    <string name="x_museum_swipe">Swipe to travel through time</string>
+    <string name="x_pe_menu">Edit gamepad…</string>
+    <string name="x_pe_title">Edit gamepad</string>
+    <string name="x_pe_hint">Drag the buttons where you like. Tap a group to change its size.</string>
+    <string name="x_pe_size">Size: %1$s</string>
+    <string name="x_pe_opacity">See-through</string>
+    <string name="x_pe_lr">L / R buttons</string>
+    <string name="x_pe_reset">Reset</string>
+    <string-array name="x_museum_facts">
+        <item>The very first Android phone. Its screen slid sideways to show a full keyboard, and it had a trackball for scrolling.</item>
+        <item>One of the first Android phones without a hardware keyboard: thanks to Cupcake, you typed on the screen.</item>
+        <item>Verizon\'s \"Droid Does\" ads made Android famous in the USA. It was the first phone with Android 2.0.</item>
+        <item>Google\'s first phone with its own name on it, sold straight from a Google web store.</item>
+        <item>The phone that started Samsung\'s Galaxy S family, with a bright Super AMOLED screen.</item>
+        <item>The first phone with Android 2.3 Gingerbread, and one of the first with NFC.</item>
+        <item>The first tablet with Honeycomb, the Android version made just for tablets.</item>
+        <item>Very thin for its time, and one of the best-selling Android phones of 2011.</item>
+        <item>The first phone with Ice Cream Sandwich and on-screen Back, Home and Recents buttons.</item>
+        <item>Google\'s first own tablet, a small 7-inch one, launched together with Jelly Bean.</item>
+        <item>KitKat was launched with this phone. It came in black and white, and later in bright red.</item>
+        <item>A big 6-inch phone made by Motorola, the first with Lollipop and Material Design.</item>
+        <item>Launched with Marshmallow and a fingerprint sensor on the back called Nexus Imprint.</item>
+        <item>The very first Pixel, and the first phone with the Google Assistant built in.</item>
+        <item>Came with Android Pie and its new gesture navigation, and took amazing photos with just one rear camera.</item>
+    </string-array>
 </resources>
