@@ -48,6 +48,7 @@ import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.ui.draw.alpha
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material.icons.rounded.Speed
+import androidx.compose.material.icons.rounded.CropFree
 import androidx.compose.material.icons.rounded.Gesture
 import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.Replay
@@ -342,6 +343,7 @@ class VmActivity : ComponentActivity() {
         keymap = app.aemu.core.KeyMap.load(vm.paths)
         keymapOn = uiPrefs.getBoolean("keymap_on_" + vm.img.id, true) && !keymap.isEmpty()
         if (uiPrefs.getBoolean("replay_on", false)) startReplay()
+        shotFrame = app.aemu.core.ScreenshotFrame.Style.of(uiPrefs.getString("shot_frame", null))
         external = ExternalScreen(this).also { ext ->
             externalAvailable = ext.displays().isNotEmpty()
             displayListener = ext.listen {
@@ -656,6 +658,9 @@ class VmActivity : ComponentActivity() {
     private var hasMacro by mutableStateOf(false)
     @Volatile private var gif: app.aemu.core.GifRecorder? = null
     private var gifOn by mutableStateOf(false)
+    /** AEmulator X: frame around screenshots (none, phone, Polaroid) and its picker */
+    private var shotFrame by mutableStateOf(app.aemu.core.ScreenshotFrame.Style.NONE)
+    private var frameDialog by mutableStateOf(false)
     /** AEmulator X: Instant replay (the last seconds of the screen), voice commands, gesture shortcuts */
     private val replay = app.aemu.core.ReplayRing<ByteArray>()
     private var replayOn by mutableStateOf(false)
@@ -855,6 +860,9 @@ class VmActivity : ComponentActivity() {
     /** raw fb0 → PNG in /sdcard/Pictures/AEmulator (see core/Screenshot.kt) */
     private fun screenshot() {
         app.aemu.core.UiSounds.play(this, app.aemu.core.UiSounds.Sfx.SHUTTER)
+        app.aemu.core.Screenshot.frame = shotFrame
+        app.aemu.core.Screenshot.caption = vm.img.name + " · " +
+            java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM).format(java.util.Date())
         val g = guest
         val vmId = vm.img.id
         val fmt = if (vm.recoveryMode) vm.recoveryFormat else g.format
@@ -1978,6 +1986,24 @@ class VmActivity : ComponentActivity() {
             if (vncDialog) VncInfoDialog()
             if (webDialog) WebPlayDialog()
             if (filterDialog) FilterDialog()
+            if (frameDialog) AlertDialog(
+                onDismissRequest = { frameDialog = false },
+                title = { Text(stringResource(R.string.x_fr_title)) },
+                text = {
+                    Column {
+                        for ((style, label) in listOf(app.aemu.core.ScreenshotFrame.Style.NONE to R.string.x_fr_none,
+                            app.aemu.core.ScreenshotFrame.Style.PHONE to R.string.x_fr_phone, app.aemu.core.ScreenshotFrame.Style.POLAROID to R.string.x_fr_polaroid)) {
+                            Row(Modifier.fillMaxWidth().clickable {
+                                shotFrame = style; uiPrefs.edit().putString("shot_frame", style.id).apply(); frameDialog = false
+                            }.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                                androidx.compose.material3.RadioButton(selected = shotFrame == style, onClick = null)
+                                Text(stringResource(label), modifier = Modifier.padding(start = 8.dp))
+                            }
+                        }
+                    }
+                },
+                confirmButton = { TextButton(onClick = { frameDialog = false }) { Text(stringResource(R.string.close)) } },
+            )
             if (gesturePad) GesturePad(onShape = { runShortcut(it.action) }, onClose = { gesturePad = false })
             replayFrames?.let { f -> ReplayDialog(f) { replayFrames = null } }
             if (listening) Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.primaryContainer,
@@ -2100,6 +2126,10 @@ class VmActivity : ComponentActivity() {
                         trailingIcon = { if (externalOn) Icon(Icons.Rounded.Check, null) },
                         enabled = externalOn || (running && externalAvailable),
                         onClick = { menu = false; if (externalOn) stopExternal() else startExternal() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_fr_menu)) },
+                        leadingIcon = { Icon(Icons.Rounded.CropFree, null) },
+                        trailingIcon = { if (shotFrame != app.aemu.core.ScreenshotFrame.Style.NONE) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; frameDialog = true })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_rp_menu)) },
                         leadingIcon = { Icon(Icons.Rounded.Replay, null) },
                         enabled = running, onClick = { menu = false; showReplay() })

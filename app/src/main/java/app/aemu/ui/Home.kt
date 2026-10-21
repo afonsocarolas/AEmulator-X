@@ -133,7 +133,7 @@ fun MachineCard(
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.settings)) }, leadingIcon = { Icon(Icons.Rounded.Tune, null) },
                         onClick = { menu = false; onSettings() })
-                    DropdownMenuItem(text = { Text(stringResource(R.string.rename)) }, leadingIcon = { Icon(Icons.Rounded.Edit, null) },
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_name_notes)) }, leadingIcon = { Icon(Icons.Rounded.Edit, null) },
                         onClick = { menu = false; onRename() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.new_machine)) }, leadingIcon = { Icon(Icons.Rounded.ContentCopy, null) },
                         onClick = { menu = false; onNewMachine() })

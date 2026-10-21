@@ -318,4 +318,13 @@
     <string name="x_bd_next">Próximo aniversário: %1$s faz %2$d anos em %3$d dias</string>
     <string name="x_sfx">Efeitos sonoros</string>
     <string name="x_sfx_sub">Sons curtos ao iniciar um firmware, tirar uma captura, ganhar uma conquista…</string>
+    <!-- X24: screenshot frames, firmware notes -->
+    <string name="x_fr_menu">Moldura da captura…</string>
+    <string name="x_fr_title">Moldura da captura</string>
+    <string name="x_fr_none">Sem moldura</string>
+    <string name="x_fr_phone">📱 Celular</string>
+    <string name="x_fr_polaroid">📸 Foto Polaroid (com nome e data)</string>
+    <string name="x_notes">Notas</string>
+    <string name="x_notes_hint">Melhor para jogos, Wi-Fi lento, meu favorito…</string>
+    <string name="x_name_notes">Nome e notas</string>
 </resources>

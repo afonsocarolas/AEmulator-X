@@ -65,6 +65,9 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-21**: AEmulator X24 (`0.0.0.2.13-x24`): screenshot frames (`app/src/main/java/app/aemu/core/ScreenshotFrame.kt`,
+  `core/Screenshot.kt`, `VmActivity.kt`), firmware notes (`core/FirmwareNotes.kt`, `MainActivity.kt`, `LibraryGrid.kt`, `Home.kt`);
+  tests in `X24FeaturesTest.kt`.
 - **2026-10-21**: AEmulator X23 (`0.0.0.2.13-x23`): daily challenges (`app/src/main/java/app/aemu/core/DailyChallenge.kt`), Android
   birthdays (`core/AndroidBirthdays.kt`), sound effects synthesised in code (`core/UiSounds.kt`), library cards and confetti
   (`ui/DailyCards.kt`); wiring in `core/Achievements.kt`, `core/GuestVm.kt`, `MainActivity.kt`, `VmActivity.kt`,

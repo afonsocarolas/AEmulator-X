@@ -319,4 +319,13 @@
     <string name="x_bd_next">Next birthday: %1$s turns %2$d in %3$d days</string>
     <string name="x_sfx">Sound effects</string>
     <string name="x_sfx_sub">Little sounds when you start a firmware, take a screenshot, unlock a badge…</string>
+    <!-- X24: screenshot frames, firmware notes -->
+    <string name="x_fr_menu">Screenshot frame…</string>
+    <string name="x_fr_title">Screenshot frame</string>
+    <string name="x_fr_none">No frame</string>
+    <string name="x_fr_phone">📱 Phone</string>
+    <string name="x_fr_polaroid">📸 Polaroid photo (with name and date)</string>
+    <string name="x_notes">Notes</string>
+    <string name="x_notes_hint">Best for games, Wi-Fi is slow, my favourite…</string>
+    <string name="x_name_notes">Name and notes</string>
 </resources>

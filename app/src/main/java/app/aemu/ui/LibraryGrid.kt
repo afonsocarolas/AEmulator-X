@@ -155,7 +155,7 @@ internal fun SquareTile(
                         leadingIcon = { Icon(Icons.Rounded.BatteryChargingFull, null) }, onClick = { menu = false; onLowPower() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.settings)) }, leadingIcon = { Icon(Icons.Rounded.Tune, null) },
                         onClick = { menu = false; onSettings() })
-                    DropdownMenuItem(text = { Text(stringResource(R.string.rename)) }, leadingIcon = { Icon(Icons.Rounded.Edit, null) },
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_name_notes)) }, leadingIcon = { Icon(Icons.Rounded.Edit, null) },
                         onClick = { menu = false; onRename() })
                     DropdownMenuItem(text = { Text(stringResource(if (favorite) R.string.x_fav_remove else R.string.x_fav_add)) },
                         leadingIcon = { Icon(if (favorite) Icons.Rounded.StarBorder else Icons.Rounded.Star, null) },
@@ -174,6 +174,10 @@ internal fun SquareTile(
         }
 
         Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(12.dp)) {
+            val note = remember(img.id, app.aemu.core.FirmwareNotes.rev) { app.aemu.core.FirmwareNotes.read(ctx, img.id) }
+            if (note.isNotEmpty()) Text("📝 " + app.aemu.core.FirmwareNotes.oneLine(note), color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(bottom = 2.dp)
+                    .background(Color(0x66000000), RoundedCornerShape(8.dp)).padding(horizontal = 6.dp, vertical = 2.dp))
             Text(img.name, color = Color.White, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {

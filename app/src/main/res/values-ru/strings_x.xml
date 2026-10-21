@@ -318,4 +318,13 @@
     <string name="x_bd_next">Следующий день рождения: %1$s исполнится %2$d через %3$d дн.</string>
     <string name="x_sfx">Звуковые эффекты</string>
     <string name="x_sfx_sub">Короткие звуки при запуске прошивки, скриншоте, новом значке…</string>
+    <!-- X24: screenshot frames, firmware notes -->
+    <string name="x_fr_menu">Рамка скриншота…</string>
+    <string name="x_fr_title">Рамка скриншота</string>
+    <string name="x_fr_none">Без рамки</string>
+    <string name="x_fr_phone">📱 Телефон</string>
+    <string name="x_fr_polaroid">📸 Фото «Полароид» (с названием и датой)</string>
+    <string name="x_notes">Заметки</string>
+    <string name="x_notes_hint">Лучше для игр, медленный Wi-Fi, любимая…</string>
+    <string name="x_name_notes">Название и заметки</string>
 </resources>

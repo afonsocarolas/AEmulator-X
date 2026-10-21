@@ -533,11 +533,24 @@ AlertDialog(
     }
     renameFor?.let { img ->
         var name by remember { mutableStateOf(img.name) }
+        // AEmulator X: your own notes about the firmware, shown on its tile
+        var notes by remember { mutableStateOf(app.aemu.core.FirmwareNotes.read(ctx, img.id)) }
         AlertDialog(
             onDismissRequest = { renameFor = null },
             title = { Text(stringResource(R.string.name)) },
-            text = { OutlinedTextField(value = name, onValueChange = { name = it }, singleLine = true) },
-            confirmButton = { Button(onClick = { model.rename(img, name.trim().ifEmpty { img.name }); renameFor = null }) { Text(stringResource(R.string.save)) } },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(value = name, onValueChange = { name = it }, singleLine = true)
+                    OutlinedTextField(value = notes, onValueChange = { notes = it.take(app.aemu.core.FirmwareNotes.MAX) },
+                        label = { Text("📝 " + stringResource(R.string.x_notes)) }, placeholder = { Text(stringResource(R.string.x_notes_hint)) },
+                        minLines = 3, maxLines = 6, supportingText = { Text("${notes.length} / ${app.aemu.core.FirmwareNotes.MAX}") })
+                }
+            },
+            confirmButton = { Button(onClick = {
+                model.rename(img, name.trim().ifEmpty { img.name })
+                app.aemu.core.FirmwareNotes.write(ctx, img.id, notes)
+                renameFor = null
+            }) { Text(stringResource(R.string.save)) } },
             dismissButton = { TextButton(onClick = { renameFor = null }) { Text(stringResource(R.string.cancel)) } },
         )
     }
@@ -767,6 +780,9 @@ private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Un
             if (stats != null && stats.totalMs >= 1000) Text(stringResource(R.string.x_played, app.aemu.core.PlayStats.duration(stats.totalMs),
                 android.text.format.DateUtils.getRelativeTimeSpanString(stats.lastPlayedAt).toString()),
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            val note = remember(img.id, app.aemu.core.FirmwareNotes.rev) { app.aemu.core.FirmwareNotes.read(ctx, img.id) }
+            if (note.isNotEmpty()) Text("📝 $note", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary,
+                maxLines = 4, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 4.dp))
             img.warnings.firstOrNull()?.let { Text("⚠ " + ImportWarnings.text(ctx, it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary) }
             Spacer(Modifier.height(12.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -787,7 +803,7 @@ private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Un
                 }
                 Spacer(Modifier.weight(1f))
                 FilledTonalIconButton(onClick = onSettings) { Icon(Icons.Rounded.Tune, stringResource(R.string.settings)) }
-                FilledTonalIconButton(onClick = onRename) { Icon(Icons.Rounded.Edit, stringResource(R.string.rename)) }
+                FilledTonalIconButton(onClick = onRename) { Icon(Icons.Rounded.Edit, stringResource(R.string.x_name_notes)) }
                 FilledTonalIconButton(onClick = onDelete) { Icon(Icons.Rounded.Delete, stringResource(R.string.delete)) }
             }
         }

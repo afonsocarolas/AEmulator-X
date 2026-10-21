@@ -55,11 +55,19 @@ object Screenshot {
      * For the in-app GPU bridge (frames go straight to the SurfaceView and fb0 stays empty):
      * [bmp] is a PixelCopy of the surface. Scaled to the guest size [w]×[h] when they differ.
      */
+    /** AEmulator X: frame around the next screenshots, and the Polaroid caption (set by the running system) */
+    @Volatile var frame: ScreenshotFrame.Style = ScreenshotFrame.Style.NONE
+    @Volatile var caption: String = ""
+
+    private fun framed(b: Bitmap): Bitmap = runCatching { ScreenshotFrame.apply(b, frame, caption) }.getOrDefault(b)
+
     fun takeBitmap(ctx: Context, vmId: String, bmp: Bitmap, w: Int, h: Int): String? {
         val stamp = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(Date())
         val src = if (w > 0 && h > 0 && (bmp.width != w || bmp.height != h)) Bitmap.createScaledBitmap(bmp, w, h, true) else bmp
         val out = ByteArrayOutputStream()
-        src.compress(Bitmap.CompressFormat.PNG, 100, out)
+        val f = framed(src)
+        f.compress(Bitmap.CompressFormat.PNG, 100, out)
+        if (f !== src) f.recycle()
         if (src !== bmp) src.recycle()
         return save(ctx, withDpi(out.toByteArray(), DPI), "$stamp-$vmId.png")
     }
@@ -82,7 +90,9 @@ object Screenshot {
     private fun rawToPng(raw: File, w: Int, h: Int, format: Int, bpp: Int, page: Int): ByteArray? {
         val bmp = rawToBitmap(raw, w, h, format, bpp, page) ?: return null
         val out = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
+        val f = framed(bmp)
+        f.compress(Bitmap.CompressFormat.PNG, 100, out)
+        if (f !== bmp) f.recycle()
         bmp.recycle()
         return withDpi(out.toByteArray(), DPI)
     }
