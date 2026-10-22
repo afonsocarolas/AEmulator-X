@@ -389,4 +389,37 @@
     <string name="x_wr_end_bottom">Feito com 💜 por você e o AEmulator X</string>
     <string name="x_wr_share">Compartilhar</string>
     <string name="x_wr_share_text">Minha retrospectiva AEmulator X 🎁\n📚 %1$d firmwares\n⏱️ %2$s jogados\n🥇 Favorito: %3$s\n📸 %4$d capturas\n🏆 %5$d / %6$d conquistas</string>
+    <!-- X28: app icons, play timer, firmware info -->
+    <string name="x_ic_title">Ícone do app</string>
+    <string name="x_ic_default">Clássico</string>
+    <string name="x_ic_neon">Neon</string>
+    <string name="x_ic_gold">Ouro</string>
+    <string name="x_ic_retro">Retrô</string>
+    <string name="x_ic_christmas">Natal</string>
+    <string name="x_ic_mono">Mono</string>
+    <string name="x_ic_changed">Ícone trocado! A tela inicial pode levar um momento para mostrar.</string>
+    <string name="x_tm2_menu">Timer de jogo…</string>
+    <string name="x_tm2_title">Timer de jogo</string>
+    <string name="x_tm2_sub">Quanto tempo você quer jogar? Você recebe um aviso 5 minutos antes do fim.</string>
+    <string name="x_tm2_min">%1$d min</string>
+    <string name="x_tm2_off">Desligar</string>
+    <string name="x_tm2_warn">⏰ Faltam 5 minutos!</string>
+    <string name="x_tm2_up">Acabou o tempo!</string>
+    <string name="x_tm2_up_sub">Ótima sessão! Talvez seja um bom momento para uma pausa. 🙂</string>
+    <string name="x_tm2_ok">OK</string>
+    <string name="x_tm2_more">Mais 5 minutos</string>
+    <string name="x_info_title">Informações</string>
+    <string name="x_info_android">Android</string>
+    <string name="x_info_cpu">Processador</string>
+    <string name="x_info_screen">Tela</string>
+    <string name="x_info_size">Tamanho</string>
+    <string name="x_info_base">Feito a partir de</string>
+    <string name="x_info_boots">Inicializações</string>
+    <string name="x_info_never">Ainda não iniciado</string>
+    <string name="x_info_boot_time">Última inicialização</string>
+    <string name="x_info_played">Jogado</string>
+    <string name="x_info_last">Jogado por último</string>
+    <string name="x_info_added">Adicionado</string>
+    <string name="x_info_collections">Coleções</string>
+    <string name="x_info_twin">Mesmo Android que</string>
 </resources>

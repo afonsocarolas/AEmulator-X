@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.BatteryChargingFull
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
@@ -102,6 +103,7 @@ internal fun SquareTile(
     stats: app.aemu.core.PlayStats.Stats? = null,
     onFavorite: () -> Unit = {},
     onShortcut: () -> Unit = {},
+    onInfo: () -> Unit = {},
 ) {
     var menu by remember { mutableStateOf(false) }
     val ctx = LocalContext.current
@@ -153,6 +155,8 @@ internal fun SquareTile(
                         onClick = { menu = false; onStart() })
                     if (!active) DropdownMenuItem(text = { Text(stringResource(R.string.lpm_start)) },
                         leadingIcon = { Icon(Icons.Rounded.BatteryChargingFull, null) }, onClick = { menu = false; onLowPower() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_info_title)) }, leadingIcon = { Icon(Icons.Rounded.Info, null) },
+                        onClick = { menu = false; onInfo() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.settings)) }, leadingIcon = { Icon(Icons.Rounded.Tune, null) },
                         onClick = { menu = false; onSettings() })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_name_notes)) }, leadingIcon = { Icon(Icons.Rounded.Edit, null) },

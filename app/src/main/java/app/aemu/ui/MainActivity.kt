@@ -204,6 +204,7 @@ fun Library(model: LibraryModel) {
     var settingsFor by remember { mutableStateOf<GuestImage?>(null) }
     var deleteFor by remember { mutableStateOf<GuestImage?>(null) }
     var renameFor by remember { mutableStateOf<GuestImage?>(null) }
+    var infoFor by remember { mutableStateOf<GuestImage?>(null) }
     var help by remember { mutableStateOf(false) }
     var addMenu by remember { mutableStateOf(false) }
     var containerFrom by remember { mutableStateOf<GuestImage?>(null) }
@@ -416,6 +417,7 @@ fun Library(model: LibraryModel) {
                     onSettings = { settingsFor = it },
                     onRename = { renameFor = it },
                     onDelete = { deleteFor = it },
+                    onInfo = { infoFor = it },
                 )
             } else if (layout == AppPrefs.LAYOUT_TIMELINE && allImages.isNotEmpty()) TimelineLibrary(
                 // AEmulator X: the Android time machine, firmwares by release year
@@ -444,6 +446,7 @@ fun Library(model: LibraryModel) {
                         stats = stats[img.id],
                         onFavorite = { toggleFavorite(img) },
                         onShortcut = { shortcut(img) },
+                        onInfo = { infoFor = img },
                     )
                 },
             ) else if (layout == AppPrefs.LAYOUT_GRID && allImages.isNotEmpty()) androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
@@ -485,6 +488,7 @@ fun Library(model: LibraryModel) {
                             stats = stats[img.id],
                             onFavorite = { toggleFavorite(img) },
                             onShortcut = { shortcut(img) },
+                            onInfo = { infoFor = img },
                         )
                     }
                 }
@@ -523,6 +527,7 @@ fun Library(model: LibraryModel) {
                             stats = stats[img.id],
                             onFavorite = { toggleFavorite(img) },
                             onShortcut = { shortcut(img) },
+                            onInfo = { infoFor = img },
                         )
                         }
                     }
@@ -547,6 +552,10 @@ AlertDialog(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text(stringResource(R.string.delete)) } },
             dismissButton = { TextButton(onClick = { deleteFor = null }) { Text(stringResource(R.string.cancel)) } },
         )
+    }
+    infoFor?.let { img ->
+        FirmwareInfoDialog(img, allImages.firstOrNull { it.id == img.baseId }?.name, onStart = { VmActivity.start(ctx, img.id) },
+            onDismiss = { infoFor = null })
     }
     renameFor?.let { img ->
         var name by remember { mutableStateOf(img.name) }
@@ -762,7 +771,8 @@ private fun ImportCard(s: ImportState, onCancel: () -> Unit, onDismiss: () -> Un
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Unit, onRename: () -> Unit, onDelete: () -> Unit, baseName: String? = null, active: Boolean = false,
-                      favorite: Boolean = false, stats: app.aemu.core.PlayStats.Stats? = null, onFavorite: () -> Unit = {}, onShortcut: () -> Unit = {}) {
+                      favorite: Boolean = false, stats: app.aemu.core.PlayStats.Stats? = null, onFavorite: () -> Unit = {}, onShortcut: () -> Unit = {},
+                      onInfo: () -> Unit = {}) {
     val ctx = LocalContext.current
     val lowPowerLabel = stringResource(R.string.lpm_start)
     // AEmulator X: glass card, gradient release badge, gradient Start button
@@ -782,6 +792,7 @@ private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Un
                         tint = if (favorite) XBrand.Magenta else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 IconButton(onClick = onShortcut) { Icon(Icons.Rounded.AddToHomeScreen, stringResource(R.string.x_shortcut)) }
+                IconButton(onClick = onInfo) { Icon(Icons.Rounded.Info, stringResource(R.string.x_info_title)) }
             }
             Spacer(Modifier.height(10.dp))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

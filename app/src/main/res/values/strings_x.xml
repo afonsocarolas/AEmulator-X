@@ -390,4 +390,37 @@
     <string name="x_wr_end_bottom">Made with 💜 by you and AEmulator X</string>
     <string name="x_wr_share">Share</string>
     <string name="x_wr_share_text">My AEmulator X Wrapped 🎁\n📚 %1$d firmwares\n⏱️ %2$s played\n🥇 Top: %3$s\n📸 %4$d screenshots\n🏆 %5$d / %6$d badges</string>
+    <!-- X28: app icons, play timer, firmware info -->
+    <string name="x_ic_title">App icon</string>
+    <string name="x_ic_default">Classic</string>
+    <string name="x_ic_neon">Neon</string>
+    <string name="x_ic_gold">Gold</string>
+    <string name="x_ic_retro">Retro</string>
+    <string name="x_ic_christmas">Christmas</string>
+    <string name="x_ic_mono">Mono</string>
+    <string name="x_ic_changed">Icon changed! Your home screen may take a moment to show it.</string>
+    <string name="x_tm2_menu">Play timer…</string>
+    <string name="x_tm2_title">Play timer</string>
+    <string name="x_tm2_sub">How long do you want to play? You\'ll get a heads-up 5 minutes before the end.</string>
+    <string name="x_tm2_min">%1$d min</string>
+    <string name="x_tm2_off">Turn off</string>
+    <string name="x_tm2_warn">⏰ 5 minutes left!</string>
+    <string name="x_tm2_up">Time\'s up!</string>
+    <string name="x_tm2_up_sub">Great session! Maybe it\'s a good moment for a little break. 🙂</string>
+    <string name="x_tm2_ok">OK</string>
+    <string name="x_tm2_more">5 more minutes</string>
+    <string name="x_info_title">Info</string>
+    <string name="x_info_android">Android</string>
+    <string name="x_info_cpu">Processor</string>
+    <string name="x_info_screen">Screen</string>
+    <string name="x_info_size">Size on disk</string>
+    <string name="x_info_base">Made from</string>
+    <string name="x_info_boots">Boots</string>
+    <string name="x_info_never">Never booted yet</string>
+    <string name="x_info_boot_time">Last boot took</string>
+    <string name="x_info_played">Played</string>
+    <string name="x_info_last">Last played</string>
+    <string name="x_info_added">Added</string>
+    <string name="x_info_collections">Collections</string>
+    <string name="x_info_twin">Same Android as</string>
 </resources>

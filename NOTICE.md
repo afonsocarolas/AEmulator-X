@@ -65,6 +65,11 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-22**: AEmulator X28 (`0.0.0.2.13-x28`): app icons from Chris's artwork (`docs/assets/make-icon-variants.sh`,
+  `res/mipmap-*/ic_launcher_*_fg.png`, `res/mipmap-anydpi-v26/ic_launcher_*.xml`, `res/values/colors.xml`, launcher
+  activity-aliases in `AndroidManifest.xml`, `app/src/main/java/app/aemu/ui/AppIcons.kt`), play timer (`core/PlayTimer.kt`,
+  `VmActivity.kt`), firmware info card (`ui/FirmwareInfo.kt`, `MainActivity.kt`, `LibraryGrid.kt`, `Library3D.kt`); tests in
+  `X28FeaturesTest.kt`.
 - **2026-10-22**: AEmulator X27 (`0.0.0.2.13-x27`): collections (`app/src/main/java/app/aemu/core/Collections.kt`,
   `ui/CollectionChips.kt`, `MainActivity.kt`), AEmulator Wrapped (`core/WrappedStats.kt`, `ui/WrappedActivity.kt`); tests in
   `X27FeaturesTest.kt`.

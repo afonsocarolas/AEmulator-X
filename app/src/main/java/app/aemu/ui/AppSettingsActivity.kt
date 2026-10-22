@@ -248,6 +248,8 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                     if (themeMaker) ThemeMakerDialog(onDismiss = { themeMaker = false }) {
                         themeMaker = false; xTheme = app.aemu.core.CustomTheme.ID; AppPrefs.setXTheme(ctx, xTheme); onRestyle()
                     }
+                    // AEmulator X: the home screen icon
+                    AppIconPicker()
                     // AEmulator X: the app's own little sounds
                     var sfx by remember { mutableStateOf(app.aemu.core.UiSounds.enabled(ctx)) }
                     Toggle(stringResource(R.string.x_sfx), stringResource(R.string.x_sfx_sub), sfx) {

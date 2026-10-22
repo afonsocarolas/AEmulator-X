@@ -389,4 +389,37 @@
     <string name="x_wr_end_bottom">Сделано с 💜 вами и AEmulator X</string>
     <string name="x_wr_share">Поделиться</string>
     <string name="x_wr_share_text">Мои итоги AEmulator X 🎁\n📚 Прошивок: %1$d\n⏱️ Сыграно: %2$s\n🥇 Любимая: %3$s\n📸 Скриншотов: %4$d\n🏆 Значков: %5$d / %6$d</string>
+    <!-- X28: app icons, play timer, firmware info -->
+    <string name="x_ic_title">Значок приложения</string>
+    <string name="x_ic_default">Классика</string>
+    <string name="x_ic_neon">Неон</string>
+    <string name="x_ic_gold">Золото</string>
+    <string name="x_ic_retro">Ретро</string>
+    <string name="x_ic_christmas">Рождество</string>
+    <string name="x_ic_mono">Моно</string>
+    <string name="x_ic_changed">Значок изменён! Рабочему столу может понадобиться немного времени.</string>
+    <string name="x_tm2_menu">Таймер игры…</string>
+    <string name="x_tm2_title">Таймер игры</string>
+    <string name="x_tm2_sub">Сколько вы хотите играть? За 5 минут до конца будет напоминание.</string>
+    <string name="x_tm2_min">%1$d мин</string>
+    <string name="x_tm2_off">Выключить</string>
+    <string name="x_tm2_warn">⏰ Осталось 5 минут!</string>
+    <string name="x_tm2_up">Время вышло!</string>
+    <string name="x_tm2_up_sub">Отличная игра! Возможно, сейчас хороший момент для небольшого перерыва. 🙂</string>
+    <string name="x_tm2_ok">OK</string>
+    <string name="x_tm2_more">Ещё 5 минут</string>
+    <string name="x_info_title">Сведения</string>
+    <string name="x_info_android">Android</string>
+    <string name="x_info_cpu">Процессор</string>
+    <string name="x_info_screen">Экран</string>
+    <string name="x_info_size">Размер</string>
+    <string name="x_info_base">Создан из</string>
+    <string name="x_info_boots">Запусков</string>
+    <string name="x_info_never">Ещё не запускался</string>
+    <string name="x_info_boot_time">Последний запуск</string>
+    <string name="x_info_played">Сыграно</string>
+    <string name="x_info_last">Последняя игра</string>
+    <string name="x_info_added">Добавлен</string>
+    <string name="x_info_collections">Коллекции</string>
+    <string name="x_info_twin">Тот же Android, что у</string>
 </resources>

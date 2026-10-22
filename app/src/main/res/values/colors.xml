@@ -3,4 +3,9 @@
     <!-- Modified for AEmulator Sunset on 2026-09-30; for AEmulator Plus on 2026-10-04 (logo colour); for AEmulator X on 2026-10-15 (X palette). -->
     <color name="bg">#FFFBF8FF</color>
     <color name="ic_bg">#FF5637CF</color>
+    <color name="ic_bg_neon">#FF0B0A12</color>
+    <color name="ic_bg_gold">#FF3E2723</color>
+    <color name="ic_bg_retro">#FF050A05</color>
+    <color name="ic_bg_christmas">#FFC62828</color>
+    <color name="ic_bg_mono">#FFFFFFFF</color>
 </resources>

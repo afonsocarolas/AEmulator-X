@@ -47,6 +47,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -131,6 +132,7 @@ internal fun Library3D(
     onSettings: (GuestImage) -> Unit,
     onRename: (GuestImage) -> Unit,
     onDelete: (GuestImage) -> Unit,
+    onInfo: (GuestImage) -> Unit = {},
 ) {
     if (images.isEmpty()) return
     val ctx = LocalContext.current
@@ -220,7 +222,7 @@ internal fun Library3D(
                 }
             }
             PageDots(images.size, pager.currentPage)
-            Details(current, current.id == activeVmId, baseNameOf(current), ::start, onSettings, onRename, onDelete)
+            Details(current, current.id == activeVmId, baseNameOf(current), ::start, onSettings, onRename, onDelete, onInfo)
         }
     }
 }
@@ -463,7 +465,8 @@ private fun PageDots(count: Int, current: Int) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Details(img: GuestImage, active: Boolean, baseName: String?, onStart: (GuestImage, Boolean) -> Unit,
-                    onSettings: (GuestImage) -> Unit, onRename: (GuestImage) -> Unit, onDelete: (GuestImage) -> Unit) {
+                    onSettings: (GuestImage) -> Unit, onRename: (GuestImage) -> Unit, onDelete: (GuestImage) -> Unit,
+                    onInfo: (GuestImage) -> Unit) {
     val ctx = LocalContext.current
     val lowPowerLabel = stringResource(R.string.lpm_start)
     Column(Modifier.fillMaxWidth().padding(horizontal = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -496,6 +499,7 @@ private fun Details(img: GuestImage, active: Boolean, baseName: String?, onStart
                     Text(stringResource(if (active) R.string.open_vm else R.string.start))
                 }
             }
+            FilledTonalIconButton(onClick = { onInfo(img) }) { Icon(Icons.Rounded.Info, stringResource(R.string.x_info_title)) }
             FilledTonalIconButton(onClick = { onSettings(img) }) { Icon(Icons.Rounded.Tune, stringResource(R.string.settings)) }
             FilledTonalIconButton(onClick = { onRename(img) }) { Icon(Icons.Rounded.Edit, stringResource(R.string.rename)) }
             FilledTonalIconButton(onClick = { onDelete(img) }) { Icon(Icons.Rounded.Delete, stringResource(R.string.delete)) }

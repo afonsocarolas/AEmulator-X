@@ -49,6 +49,7 @@ import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.ui.draw.alpha
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material.icons.rounded.Speed
+import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material.icons.rounded.CropFree
 import androidx.compose.material.icons.rounded.Gesture
 import androidx.compose.material.icons.rounded.Mic
@@ -346,6 +347,7 @@ class VmActivity : ComponentActivity() {
         if (uiPrefs.getBoolean("replay_on", false)) startReplay()
         shotFrame = app.aemu.core.ScreenshotFrame.Style.of(uiPrefs.getString("shot_frame", null))
         padLayout = app.aemu.core.PadLayout.load(vm.paths.dir)
+        timerEnd = uiPrefs.getLong("timer_end", 0L).takeIf { it > System.currentTimeMillis() } ?: 0L
         external = ExternalScreen(this).also { ext ->
             externalAvailable = ext.displays().isNotEmpty()
             displayListener = ext.listen {
@@ -643,6 +645,10 @@ class VmActivity : ComponentActivity() {
 
     /** on-screen game buttons shown (menu toggle, remembered in vm_ui prefs) */
     private var padVisible by mutableStateOf(false)
+    /** AEmulator X: play timer (wall-clock end, 0 = off), its picker and its "time's up" */
+    private var timerEnd by mutableLongStateOf(0L)
+    private var timerDialog by mutableStateOf(false)
+    private var timeUp by mutableStateOf(false)
     /** AEmulator X: where the on-screen gamepad's groups are (per firmware), and its editor */
     private var padLayout by mutableStateOf(app.aemu.core.PadLayout())
     private var padEditing by mutableStateOf(false)
@@ -984,6 +990,71 @@ class VmActivity : ComponentActivity() {
         if (::vm.isInitialized) vm.audio.tap = null
         runOnUiThread { recStartedAt = 0L }
         rec.stop()?.let { toast(getString(R.string.x_rec_saved, it)) }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: play timer
+
+    private fun setTimer(end: Long) {
+        timerEnd = end
+        uiPrefs.edit().putLong("timer_end", end).apply()
+    }
+
+    @Composable
+    private fun androidx.compose.foundation.layout.BoxScope.PlayTimerLayer() {
+        var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
+        var warned by remember(timerEnd) { mutableStateOf(false) }
+        LaunchedEffect(timerEnd) {
+            while (timerEnd != 0L) {
+                now = System.currentTimeMillis()
+                when (app.aemu.core.PlayTimer.stage(timerEnd, now)) {
+                    app.aemu.core.PlayTimer.Stage.WARN -> if (!warned) {
+                        warned = true
+                        toast(getString(R.string.x_tm2_warn))
+                        app.aemu.core.UiSounds.play(this@VmActivity, app.aemu.core.UiSounds.Sfx.POP)
+                    }
+                    app.aemu.core.PlayTimer.Stage.UP -> {
+                        setTimer(0L); timeUp = true
+                        app.aemu.core.UiSounds.play(this@VmActivity, app.aemu.core.UiSounds.Sfx.CHALLENGE)
+                        runCatching { getSystemService(android.os.Vibrator::class.java)?.vibrate(android.os.VibrationEffect.createWaveform(longArrayOf(0, 200, 150, 200), -1)) }
+                    }
+                    else -> {}
+                }
+                delay(1000)
+            }
+        }
+        if (timerEnd != 0L && !showLog) {
+            val warn = app.aemu.core.PlayTimer.stage(timerEnd, now) == app.aemu.core.PlayTimer.Stage.WARN
+            Surface(shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp), color = if (warn) Color(0xE6FF6D00) else Color(0x99000000),
+                modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp).clickable { timerDialog = true }) {
+                Text("⏰ " + app.aemu.core.PlayTimer.left(timerEnd, now), color = Color.White, style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
+            }
+        }
+        if (timerDialog) AlertDialog(
+            onDismissRequest = { timerDialog = false },
+            title = { Text("⏰ " + stringResource(R.string.x_tm2_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.x_tm2_sub), style = MaterialTheme.typography.bodyMedium)
+                    androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        for (m in app.aemu.core.PlayTimer.CHOICES) androidx.compose.material3.FilterChip(selected = false, onClick = {
+                            setTimer(System.currentTimeMillis() + m * 60_000L); timerDialog = false
+                        }, label = { Text(stringResource(R.string.x_tm2_min, m)) })
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { timerDialog = false }) { Text(stringResource(R.string.close)) } },
+            dismissButton = { if (timerEnd != 0L) TextButton(onClick = { setTimer(0L); timerDialog = false }) { Text(stringResource(R.string.x_tm2_off)) } },
+        )
+        if (timeUp) AlertDialog(
+            onDismissRequest = { timeUp = false },
+            title = { Text("⏰ " + stringResource(R.string.x_tm2_up)) },
+            text = { Text(stringResource(R.string.x_tm2_up_sub)) },
+            confirmButton = { androidx.compose.material3.Button(onClick = { timeUp = false }) { Text(stringResource(R.string.x_tm2_ok)) } },
+            dismissButton = { TextButton(onClick = {
+                timeUp = false; setTimer(System.currentTimeMillis() + app.aemu.core.PlayTimer.SNOOZE_MS)
+            }) { Text(stringResource(R.string.x_tm2_more)) } },
+        )
     }
 
     // ------------------------------------------------------------------ AEmulator X: gamepad editor
@@ -2060,6 +2131,7 @@ class VmActivity : ComponentActivity() {
             if ((padVisible || padEditing) && !showLog && running) GamePadOverlay(onKey = { keyCode, down ->
                 app.aemu.core.GamepadMap.key(keyCode, padMode())?.let { code -> vm.input.key(code, down) }
             }, layout = padLayout, editing = padEditing, selected = padSelected, onSelect = { padSelected = it }, onLayout = { padLayout = it })
+            PlayTimerLayer()
             if (padEditing) PadEditorBar(Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 8.dp, start = 12.dp, end = 12.dp).widthIn(max = 460.dp))
 
             // AEmulator X: performance overlay; tap it to hide
@@ -2144,6 +2216,10 @@ class VmActivity : ComponentActivity() {
                         leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
                         trailingIcon = { if (padVisible) Icon(Icons.Rounded.Check, null) },
                         onClick = { menu = false; padVisible = !padVisible; uiPrefs.edit().putBoolean("game_pad", padVisible).apply() })
+                    DropdownMenuItem(text = { Text(stringResource(R.string.x_tm2_menu)) },
+                        leadingIcon = { Icon(Icons.Rounded.Timer, null) },
+                        trailingIcon = { if (timerEnd != 0L) Icon(Icons.Rounded.Check, null) },
+                        onClick = { menu = false; timerDialog = true })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_pe_menu)) },
                         leadingIcon = { Icon(Icons.Rounded.SportsEsports, null) },
                         enabled = running, onClick = { menu = false; padSelected = null; padEditing = true })
