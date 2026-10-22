@@ -422,4 +422,26 @@
     <string name="x_info_added">Añadido</string>
     <string name="x_info_collections">Colecciones</string>
     <string name="x_info_twin">Mismo Android que</string>
+    <!-- X29: boot logo creator -->
+    <string name="x_bl_menu">Crear el tuyo…</string>
+    <string name="x_bl_title">Creador de logo de arranque</string>
+    <string name="x_bl_text">Palabra grande (tu nombre, un apodo…)</string>
+    <string name="x_bl_sub">Línea pequeña debajo</string>
+    <string name="x_bl_colors">Colores</string>
+    <string name="x_bl_bg">Fondo</string>
+    <string name="x_bl_bg_black">Negro</string>
+    <string name="x_bl_bg_night">Noche</string>
+    <string name="x_bl_bg_gradient">Brillo</string>
+    <string name="x_bl_entrance">Entrada</string>
+    <string name="x_bl_zoom">Zoom</string>
+    <string name="x_bl_fade">Aparecer</string>
+    <string name="x_bl_slide">Subir</string>
+    <string name="x_bl_type">Máquina de escribir</string>
+    <string name="x_bl_pic_add">Añadir imagen</string>
+    <string name="x_bl_pic_change">Cambiar imagen</string>
+    <string name="x_bl_pic_remove">Quitar</string>
+    <string name="x_bl_note">Se verá en el próximo arranque de este firmware. Algunos teléfonos (Samsung, algunos HTC) usan su propia pantalla de arranque.</string>
+    <string name="x_bl_use">Usarlo</string>
+    <string name="x_bl_making">Creando…</string>
+    <string name="x_bl_saved">¡Tu logo de arranque está listo! Lo verás en el próximo arranque. 🎬</string>
 </resources>

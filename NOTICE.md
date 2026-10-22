@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-22**: AEmulator X29 (`0.0.0.2.13-x29`): boot logo creator (`app/src/main/java/app/aemu/core/BootLogoMaker.kt`,
+  `ui/BootLogoCreator.kt`, `ui/BootAnimSection.kt`), Polish, French and German AEmulator X texts (`res/values-pl/strings_x.xml`,
+  `res/values-fr/strings_x.xml`, `res/values-de/strings_x.xml`), voice command words in those languages (`core/VoiceCommands.kt`);
+  tests in `X29FeaturesTest.kt`.
 - **2026-10-22**: AEmulator X28 (`0.0.0.2.13-x28`): app icons from Chris's artwork (`docs/assets/make-icon-variants.sh`,
   `res/mipmap-*/ic_launcher_*_fg.png`, `res/mipmap-anydpi-v26/ic_launcher_*.xml`, `res/values/colors.xml`, launcher
   activity-aliases in `AndroidManifest.xml`, `app/src/main/java/app/aemu/ui/AppIcons.kt`), play timer (`core/PlayTimer.kt`,

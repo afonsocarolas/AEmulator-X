@@ -422,4 +422,26 @@
     <string name="x_info_added">Adicionado</string>
     <string name="x_info_collections">Coleções</string>
     <string name="x_info_twin">Mesmo Android que</string>
+    <!-- X29: boot logo creator -->
+    <string name="x_bl_menu">Criar o seu…</string>
+    <string name="x_bl_title">Criador de logo de inicialização</string>
+    <string name="x_bl_text">Palavra grande (seu nome, um apelido…)</string>
+    <string name="x_bl_sub">Linha pequena embaixo</string>
+    <string name="x_bl_colors">Cores</string>
+    <string name="x_bl_bg">Fundo</string>
+    <string name="x_bl_bg_black">Preto</string>
+    <string name="x_bl_bg_night">Noite</string>
+    <string name="x_bl_bg_gradient">Brilho</string>
+    <string name="x_bl_entrance">Entrada</string>
+    <string name="x_bl_zoom">Zoom</string>
+    <string name="x_bl_fade">Aparecer</string>
+    <string name="x_bl_slide">Subir</string>
+    <string name="x_bl_type">Máquina de escrever</string>
+    <string name="x_bl_pic_add">Adicionar imagem</string>
+    <string name="x_bl_pic_change">Trocar imagem</string>
+    <string name="x_bl_pic_remove">Remover</string>
+    <string name="x_bl_note">Ele aparece na próxima inicialização deste firmware. Alguns celulares (Samsung, alguns HTC) usam a própria tela de inicialização.</string>
+    <string name="x_bl_use">Usar</string>
+    <string name="x_bl_making">Criando…</string>
+    <string name="x_bl_saved">Seu logo de inicialização está pronto! Você vai vê-lo na próxima inicialização. 🎬</string>
 </resources>

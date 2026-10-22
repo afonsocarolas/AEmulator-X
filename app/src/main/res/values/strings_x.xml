@@ -423,4 +423,26 @@
     <string name="x_info_added">Added</string>
     <string name="x_info_collections">Collections</string>
     <string name="x_info_twin">Same Android as</string>
+    <!-- X29: boot logo creator -->
+    <string name="x_bl_menu">Create your own…</string>
+    <string name="x_bl_title">Boot logo creator</string>
+    <string name="x_bl_text">Big word (your name, a nickname…)</string>
+    <string name="x_bl_sub">Small line under it</string>
+    <string name="x_bl_colors">Colours</string>
+    <string name="x_bl_bg">Background</string>
+    <string name="x_bl_bg_black">Black</string>
+    <string name="x_bl_bg_night">Night</string>
+    <string name="x_bl_bg_gradient">Glow</string>
+    <string name="x_bl_entrance">Entrance</string>
+    <string name="x_bl_zoom">Zoom</string>
+    <string name="x_bl_fade">Fade</string>
+    <string name="x_bl_slide">Slide up</string>
+    <string name="x_bl_type">Typewriter</string>
+    <string name="x_bl_pic_add">Add a picture</string>
+    <string name="x_bl_pic_change">Change picture</string>
+    <string name="x_bl_pic_remove">Remove</string>
+    <string name="x_bl_note">It plays at the next boot of this firmware. Some phones (Samsung, some HTC) use their own boot screen instead.</string>
+    <string name="x_bl_use">Use it</string>
+    <string name="x_bl_making">Making…</string>
+    <string name="x_bl_saved">Your boot logo is ready! You\'ll see it at the next boot. 🎬</string>
 </resources>

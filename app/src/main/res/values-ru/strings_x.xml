@@ -422,4 +422,26 @@
     <string name="x_info_added">Добавлен</string>
     <string name="x_info_collections">Коллекции</string>
     <string name="x_info_twin">Тот же Android, что у</string>
+    <!-- X29: boot logo creator -->
+    <string name="x_bl_menu">Создать свою…</string>
+    <string name="x_bl_title">Конструктор загрузочного логотипа</string>
+    <string name="x_bl_text">Крупное слово (ваше имя, ник…)</string>
+    <string name="x_bl_sub">Маленькая строка под ним</string>
+    <string name="x_bl_colors">Цвета</string>
+    <string name="x_bl_bg">Фон</string>
+    <string name="x_bl_bg_black">Чёрный</string>
+    <string name="x_bl_bg_night">Ночь</string>
+    <string name="x_bl_bg_gradient">Свечение</string>
+    <string name="x_bl_entrance">Появление</string>
+    <string name="x_bl_zoom">Приближение</string>
+    <string name="x_bl_fade">Проявление</string>
+    <string name="x_bl_slide">Снизу вверх</string>
+    <string name="x_bl_type">Печатная машинка</string>
+    <string name="x_bl_pic_add">Добавить картинку</string>
+    <string name="x_bl_pic_change">Сменить картинку</string>
+    <string name="x_bl_pic_remove">Убрать</string>
+    <string name="x_bl_note">Она появится при следующем запуске этой прошивки. Некоторые телефоны (Samsung, часть HTC) используют свой экран загрузки.</string>
+    <string name="x_bl_use">Применить</string>
+    <string name="x_bl_making">Создаётся…</string>
+    <string name="x_bl_saved">Ваш загрузочный логотип готов! Вы увидите его при следующем запуске. 🎬</string>
 </resources>

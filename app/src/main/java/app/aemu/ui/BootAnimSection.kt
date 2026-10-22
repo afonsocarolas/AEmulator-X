@@ -36,6 +36,7 @@ internal fun BootAnimSection(img: GuestImage, value: String, set: (String) -> Un
     val ctx = LocalContext.current
     val paths = remember(img.id) { VmPaths(ctx, img.id) }
     var open by remember { mutableStateOf(false) }
+    var creating by remember { mutableStateOf(false) }
     val main = remember { android.os.Handler(android.os.Looper.getMainLooper()) }
     val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
@@ -61,6 +62,7 @@ internal fun BootAnimSection(img: GuestImage, value: String, set: (String) -> Un
                 DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_bootanim_firmware)) }, onClick = { open = false; set(BootAnimation.FIRMWARE) })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_bootanim_x)) }, onClick = { open = false; set(BootAnimation.X) })
+                    DropdownMenuItem(text = { Text("🎬 " + stringResource(R.string.x_bl_menu)) }, onClick = { open = false; creating = true })
                     DropdownMenuItem(text = { Text(stringResource(R.string.x_bootanim_pick)) },
                         onClick = { open = false; pick.launch(arrayOf("application/zip", "application/octet-stream", "*/*")) })
                     if (BootAnimation.customFile(paths).isFile) DropdownMenuItem(text = { Text(stringResource(R.string.x_bootanim_custom)) },
@@ -71,4 +73,5 @@ internal fun BootAnimSection(img: GuestImage, value: String, set: (String) -> Un
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         modifier = Modifier.fillMaxWidth(),
     )
+    if (creating) BootLogoCreator(img, onDismiss = { creating = false }, onSaved = { creating = false; set(BootAnimation.CUSTOM) })
 }
