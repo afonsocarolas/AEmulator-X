@@ -456,4 +456,13 @@
     <string name="x_wg_device_ok">Обои установлены на это устройство! 📱</string>
     <string name="x_wg_save">Сохранить в картинки</string>
     <string name="x_wg_saved">Сохранено в ваши картинки 💾</string>
+    <!-- X31: screenshot stickers -->
+    <string name="x_st_title">Украсить</string>
+    <string name="x_st_saved">Сохранено со стикерами! ✨</string>
+    <string name="x_st_shared">Готово к отправке ✨</string>
+    <string name="x_st_size">Размер</string>
+    <string name="x_st_text">Текст</string>
+    <string name="x_st_text_hint">Напишите что-нибудь…</string>
+    <string name="x_st_add">Добавить</string>
+    <string name="x_st_hint">Нажмите на стикер, чтобы выбрать его, перетащите, чтобы сдвинуть, сведите или разведите два пальца, чтобы изменить размер и повернуть.</string>
 </resources>

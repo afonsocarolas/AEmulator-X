@@ -165,6 +165,8 @@ private fun Gallery(onBack: () -> Unit) {
     var rev by remember { mutableIntStateOf(0) }
     val items by produceState<List<MediaItem>?>(null, rev) { value = withContext(Dispatchers.IO) { GalleryStore.load(ctx) } }
     var deleteItem by remember { mutableStateOf<MediaItem?>(null) }
+    // AEmulator X: stickers on a screenshot
+    var decorateItem by remember { mutableStateOf<MediaItem?>(null) }
 
     AuroraBackground(Modifier.fillMaxSize()) {
         Scaffold(
@@ -190,13 +192,14 @@ private fun Gallery(onBack: () -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(list, key = { it.name }) { item ->
-                        GalleryCell(item, onDelete = { deleteItem = item })
+                        GalleryCell(item, onDelete = { deleteItem = item }, onDecorate = { decorateItem = item })
                     }
                 }
             }
         }
     }
 
+    decorateItem?.let { item -> StickerEditor(item, onDismiss = { decorateItem = null }, onSaved = { decorateItem = null; rev++ }) }
     deleteItem?.let { item ->
         AlertDialog(
             onDismissRequest = { deleteItem = null },
@@ -216,7 +219,7 @@ private fun Gallery(onBack: () -> Unit) {
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
-private fun GalleryCell(item: MediaItem, onDelete: () -> Unit) {
+private fun GalleryCell(item: MediaItem, onDelete: () -> Unit, onDecorate: () -> Unit = {}) {
     val ctx = LocalContext.current
     var menu by remember { mutableStateOf(false) }
     val thumb by produceState<ImageBitmap?>(null, item.uri) {
@@ -238,6 +241,8 @@ private fun GalleryCell(item: MediaItem, onDelete: () -> Unit) {
         if (item.video) Box(Modifier.align(Alignment.Center).size(36.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.55f)),
             contentAlignment = Alignment.Center) { Icon(Icons.Rounded.PlayArrow, null, tint = Color.White) }
         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+            if (!item.video && !item.name.endsWith(".gif", true)) DropdownMenuItem(text = { Text("✨ " + stringResource(R.string.x_st_title)) },
+                onClick = { menu = false; onDecorate() })
             DropdownMenuItem(text = { Text(stringResource(R.string.x_gallery_share)) }, leadingIcon = { Icon(Icons.Rounded.Share, null) },
                 onClick = { menu = false; share() })
             DropdownMenuItem(text = { Text(stringResource(R.string.delete)) }, leadingIcon = { Icon(Icons.Rounded.Delete, null) },

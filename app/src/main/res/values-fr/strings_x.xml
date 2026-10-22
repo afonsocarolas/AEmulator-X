@@ -396,6 +396,15 @@
     <string name="x_wg_device_ok">Fond d’écran appliqué sur cet appareil ! 📱</string>
     <string name="x_wg_save">Enregistrer dans les images</string>
     <string name="x_wg_saved">Enregistré dans vos images 💾</string>
+    <!-- X31: screenshot stickers -->
+    <string name="x_st_title">Décorer</string>
+    <string name="x_st_saved">Enregistré avec vos autocollants ! ✨</string>
+    <string name="x_st_shared">Prêt à partager ✨</string>
+    <string name="x_st_size">Taille</string>
+    <string name="x_st_text">Texte</string>
+    <string name="x_st_text_hint">Écrivez quelque chose…</string>
+    <string name="x_st_add">Ajouter</string>
+    <string name="x_st_hint">Touchez un autocollant pour le choisir, faites-le glisser pour le déplacer, pincez à deux doigts pour le redimensionner et le tourner.</string>
     <string-array name="x_fotd_facts">
         <item>Le tout premier téléphone Android, le T-Mobile G1 (HTC Dream), avait un clavier coulissant et un trackball.</item>
         <item>Cupcake (1.5) a été le premier Android avec un clavier à l’écran et des widgets sur l’écran d’accueil.</item>

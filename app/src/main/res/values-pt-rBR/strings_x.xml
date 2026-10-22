@@ -456,4 +456,13 @@
     <string name="x_wg_device_ok">Papel de parede definido neste aparelho! 📱</string>
     <string name="x_wg_save">Salvar nas imagens</string>
     <string name="x_wg_saved">Salvo nas suas imagens 💾</string>
+    <!-- X31: screenshot stickers -->
+    <string name="x_st_title">Decorar</string>
+    <string name="x_st_saved">Salvo com seus adesivos! ✨</string>
+    <string name="x_st_shared">Pronto para compartilhar ✨</string>
+    <string name="x_st_size">Tamanho</string>
+    <string name="x_st_text">Texto</string>
+    <string name="x_st_text_hint">Escreva algo…</string>
+    <string name="x_st_add">Adicionar</string>
+    <string name="x_st_hint">Toque num adesivo para escolhê-lo, arraste para mover, use dois dedos para mudar o tamanho e girar.</string>
 </resources>

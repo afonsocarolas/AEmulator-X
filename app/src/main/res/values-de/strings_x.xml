@@ -396,6 +396,15 @@
     <string name="x_wg_device_ok">Hintergrund auf diesem Gerät festgelegt! 📱</string>
     <string name="x_wg_save">In Bildern speichern</string>
     <string name="x_wg_saved">In deinen Bildern gespeichert 💾</string>
+    <!-- X31: screenshot stickers -->
+    <string name="x_st_title">Verzieren</string>
+    <string name="x_st_saved">Mit deinen Stickern gespeichert! ✨</string>
+    <string name="x_st_shared">Bereit zum Teilen ✨</string>
+    <string name="x_st_size">Größe</string>
+    <string name="x_st_text">Text</string>
+    <string name="x_st_text_hint">Schreib etwas…</string>
+    <string name="x_st_add">Hinzufügen</string>
+    <string name="x_st_hint">Tippe auf einen Sticker, um ihn auszuwählen, ziehe ihn zum Verschieben und nutze zwei Finger zum Vergrößern und Drehen.</string>
     <string-array name="x_fotd_facts">
         <item>Das allererste Android-Telefon, das T-Mobile G1 (HTC Dream), hatte eine ausziehbare Tastatur und einen Trackball.</item>
         <item>Cupcake (1.5) war das erste Android mit Bildschirmtastatur und Widgets auf dem Startbildschirm.</item>

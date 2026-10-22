@@ -457,4 +457,13 @@
     <string name="x_wg_device_ok">Wallpaper set on this device! 📱</string>
     <string name="x_wg_save">Save to pictures</string>
     <string name="x_wg_saved">Saved to your pictures 💾</string>
+    <!-- X31: screenshot stickers -->
+    <string name="x_st_title">Decorate</string>
+    <string name="x_st_saved">Saved with your stickers! ✨</string>
+    <string name="x_st_shared">Ready to share ✨</string>
+    <string name="x_st_size">Size</string>
+    <string name="x_st_text">Text</string>
+    <string name="x_st_text_hint">Type something…</string>
+    <string name="x_st_add">Add</string>
+    <string name="x_st_hint">Tap a sticker to pick it, drag to move it, pinch with two fingers to resize and turn it.</string>
 </resources>

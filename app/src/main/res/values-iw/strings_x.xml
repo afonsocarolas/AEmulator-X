@@ -396,6 +396,15 @@
     <string name="x_wg_device_ok">הטפט הוגדר במכשיר הזה! 📱</string>
     <string name="x_wg_save">שמירה בתמונות</string>
     <string name="x_wg_saved">נשמר בתמונות שלך 💾</string>
+    <!-- X31: screenshot stickers -->
+    <string name="x_st_title">קישוט</string>
+    <string name="x_st_saved">נשמר עם המדבקות שלך! ✨</string>
+    <string name="x_st_shared">מוכן לשיתוף ✨</string>
+    <string name="x_st_size">גודל</string>
+    <string name="x_st_text">טקסט</string>
+    <string name="x_st_text_hint">כתבו משהו…</string>
+    <string name="x_st_add">הוספה</string>
+    <string name="x_st_hint">הקישו על מדבקה כדי לבחור בה, גררו כדי להזיז, ובשתי אצבעות משנים גודל ומסובבים.</string>
     <string-array name="x_fotd_facts">
         <item>הטלפון הראשון עם Android, ה-T-Mobile G1 (HTC Dream), היה עם מקלדת נשלפת וכדור עקיבה.</item>
         <item>Cupcake (1.5) הייתה גרסת Android הראשונה עם מקלדת על המסך ווידג׳טים במסך הבית.</item>

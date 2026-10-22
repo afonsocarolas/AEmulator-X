@@ -396,6 +396,15 @@
     <string name="x_wg_device_ok">Tapeta ustawiona na tym urządzeniu! 📱</string>
     <string name="x_wg_save">Zapisz w obrazach</string>
     <string name="x_wg_saved">Zapisano w Twoich obrazach 💾</string>
+    <!-- X31: screenshot stickers -->
+    <string name="x_st_title">Ozdób</string>
+    <string name="x_st_saved">Zapisano z naklejkami! ✨</string>
+    <string name="x_st_shared">Gotowe do udostępnienia ✨</string>
+    <string name="x_st_size">Rozmiar</string>
+    <string name="x_st_text">Tekst</string>
+    <string name="x_st_text_hint">Napisz coś…</string>
+    <string name="x_st_add">Dodaj</string>
+    <string name="x_st_hint">Stuknij naklejkę, by ją wybrać, przeciągnij, by przesunąć, użyj dwóch palców, by zmienić rozmiar i obrócić.</string>
     <string-array name="x_fotd_facts">
         <item>Pierwszy telefon z Androidem, T-Mobile G1 (HTC Dream), miał wysuwaną klawiaturę i trackball.</item>
         <item>Cupcake (1.5) to pierwszy Android z klawiaturą ekranową i widżetami na ekranie głównym.</item>

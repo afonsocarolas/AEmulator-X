@@ -456,4 +456,13 @@
     <string name="x_wg_device_ok">¡Fondo puesto en este dispositivo! 📱</string>
     <string name="x_wg_save">Guardar en imágenes</string>
     <string name="x_wg_saved">Guardado en tus imágenes 💾</string>
+    <!-- X31: screenshot stickers -->
+    <string name="x_st_title">Decorar</string>
+    <string name="x_st_saved">¡Guardado con tus pegatinas! ✨</string>
+    <string name="x_st_shared">Listo para compartir ✨</string>
+    <string name="x_st_size">Tamaño</string>
+    <string name="x_st_text">Texto</string>
+    <string name="x_st_text_hint">Escribe algo…</string>
+    <string name="x_st_add">Añadir</string>
+    <string name="x_st_hint">Toca una pegatina para elegirla, arrástrala para moverla y usa dos dedos para cambiar su tamaño y girarla.</string>
 </resources>
