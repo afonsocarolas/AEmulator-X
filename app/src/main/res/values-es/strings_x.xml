@@ -444,4 +444,16 @@
     <string name="x_bl_use">Usarlo</string>
     <string name="x_bl_making">Creando…</string>
     <string name="x_bl_saved">¡Tu logo de arranque está listo! Lo verás en el próximo arranque. 🎬</string>
+    <!-- X30: classic wallpaper gallery -->
+    <string name="x_wg_title">Fondos clásicos</string>
+    <string name="x_wg_sub">Los fondos de pantalla originales dentro de tus firmwares</string>
+    <string name="x_wg_looking">Buscando en tus firmwares…</string>
+    <string name="x_wg_none">Aún no hay fondos. Importa un firmware y sus fondos aparecerán aquí.</string>
+    <string name="x_wg_failed">No se pudo usar ese fondo</string>
+    <string name="x_wg_library">Usar en la biblioteca</string>
+    <string name="x_wg_library_ok">¡Fondo de la biblioteca puesto! 📚</string>
+    <string name="x_wg_device">Poner en este dispositivo</string>
+    <string name="x_wg_device_ok">¡Fondo puesto en este dispositivo! 📱</string>
+    <string name="x_wg_save">Guardar en imágenes</string>
+    <string name="x_wg_saved">Guardado en tus imágenes 💾</string>
 </resources>

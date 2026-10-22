@@ -384,6 +384,18 @@
     <string name="x_bl_use">Użyj</string>
     <string name="x_bl_making">Tworzę…</string>
     <string name="x_bl_saved">Twoje logo startowe jest gotowe! Zobaczysz je przy następnym uruchomieniu. 🎬</string>
+    <!-- X30: classic wallpaper gallery -->
+    <string name="x_wg_title">Klasyczne tapety</string>
+    <string name="x_wg_sub">Oryginalne tapety z Twoich firmware</string>
+    <string name="x_wg_looking">Szukam w Twoich firmware…</string>
+    <string name="x_wg_none">Jeszcze nie znaleziono tapet. Zaimportuj firmware, a jego tapety pojawią się tutaj.</string>
+    <string name="x_wg_failed">Nie można użyć tej tapety</string>
+    <string name="x_wg_library">Użyj w bibliotece</string>
+    <string name="x_wg_library_ok">Tapeta biblioteki ustawiona! 📚</string>
+    <string name="x_wg_device">Ustaw na tym urządzeniu</string>
+    <string name="x_wg_device_ok">Tapeta ustawiona na tym urządzeniu! 📱</string>
+    <string name="x_wg_save">Zapisz w obrazach</string>
+    <string name="x_wg_saved">Zapisano w Twoich obrazach 💾</string>
     <string-array name="x_fotd_facts">
         <item>Pierwszy telefon z Androidem, T-Mobile G1 (HTC Dream), miał wysuwaną klawiaturę i trackball.</item>
         <item>Cupcake (1.5) to pierwszy Android z klawiaturą ekranową i widżetami na ekranie głównym.</item>

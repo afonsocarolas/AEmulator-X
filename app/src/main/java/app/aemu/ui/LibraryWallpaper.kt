@@ -43,6 +43,20 @@ object LibraryWallpaper {
         tmp.renameTo(dst)
     }.getOrDefault(false)
 
+    /** The same from a picture already in memory (a firmware's wallpaper). Blocking. */
+    fun saveBytes(ctx: Context, bytes: ByteArray): Boolean = runCatching {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+        var sample = 1
+        while (maxOf(bounds.outWidth, bounds.outHeight) / (sample * 2) >= MAX) sample *= 2
+        val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, BitmapFactory.Options().apply { inSampleSize = sample }) ?: error("not a picture")
+        val dst = file(ctx)
+        val tmp = File(dst.path + ".tmp")
+        tmp.outputStream().use { bmp.compress(Bitmap.CompressFormat.JPEG, 88, it) }
+        bmp.recycle()
+        tmp.renameTo(dst)
+    }.getOrDefault(false)
+
     fun remove(ctx: Context) = file(ctx).delete()
 }
 

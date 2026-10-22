@@ -444,4 +444,16 @@
     <string name="x_bl_use">Usar</string>
     <string name="x_bl_making">Criando…</string>
     <string name="x_bl_saved">Seu logo de inicialização está pronto! Você vai vê-lo na próxima inicialização. 🎬</string>
+    <!-- X30: classic wallpaper gallery -->
+    <string name="x_wg_title">Papéis de parede clássicos</string>
+    <string name="x_wg_sub">Os papéis de parede originais dentro dos seus firmwares</string>
+    <string name="x_wg_looking">Procurando nos seus firmwares…</string>
+    <string name="x_wg_none">Nenhum papel de parede encontrado ainda. Importe um firmware e os papéis de parede dele aparecem aqui.</string>
+    <string name="x_wg_failed">Não foi possível usar esse papel de parede</string>
+    <string name="x_wg_library">Usar na biblioteca</string>
+    <string name="x_wg_library_ok">Papel de parede da biblioteca definido! 📚</string>
+    <string name="x_wg_device">Definir neste aparelho</string>
+    <string name="x_wg_device_ok">Papel de parede definido neste aparelho! 📱</string>
+    <string name="x_wg_save">Salvar nas imagens</string>
+    <string name="x_wg_saved">Salvo nas suas imagens 💾</string>
 </resources>

@@ -384,6 +384,18 @@
     <string name="x_bl_use">L’utiliser</string>
     <string name="x_bl_making">Création…</string>
     <string name="x_bl_saved">Votre logo de démarrage est prêt ! Vous le verrez au prochain démarrage. 🎬</string>
+    <!-- X30: classic wallpaper gallery -->
+    <string name="x_wg_title">Fonds d’écran classiques</string>
+    <string name="x_wg_sub">Les fonds d’écran d’origine de vos firmwares</string>
+    <string name="x_wg_looking">Recherche dans vos firmwares…</string>
+    <string name="x_wg_none">Aucun fond d’écran trouvé pour l’instant. Importez un firmware et ses fonds d’écran apparaîtront ici.</string>
+    <string name="x_wg_failed">Impossible d’utiliser ce fond d’écran</string>
+    <string name="x_wg_library">Utiliser dans la bibliothèque</string>
+    <string name="x_wg_library_ok">Fond de la bibliothèque appliqué ! 📚</string>
+    <string name="x_wg_device">Appliquer sur cet appareil</string>
+    <string name="x_wg_device_ok">Fond d’écran appliqué sur cet appareil ! 📱</string>
+    <string name="x_wg_save">Enregistrer dans les images</string>
+    <string name="x_wg_saved">Enregistré dans vos images 💾</string>
     <string-array name="x_fotd_facts">
         <item>Le tout premier téléphone Android, le T-Mobile G1 (HTC Dream), avait un clavier coulissant et un trackball.</item>
         <item>Cupcake (1.5) a été le premier Android avec un clavier à l’écran et des widgets sur l’écran d’accueil.</item>

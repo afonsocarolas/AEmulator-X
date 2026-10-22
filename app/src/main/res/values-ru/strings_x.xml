@@ -444,4 +444,16 @@
     <string name="x_bl_use">Применить</string>
     <string name="x_bl_making">Создаётся…</string>
     <string name="x_bl_saved">Ваш загрузочный логотип готов! Вы увидите его при следующем запуске. 🎬</string>
+    <!-- X30: classic wallpaper gallery -->
+    <string name="x_wg_title">Классические обои</string>
+    <string name="x_wg_sub">Оригинальные обои из ваших прошивок</string>
+    <string name="x_wg_looking">Ищу в ваших прошивках…</string>
+    <string name="x_wg_none">Обои пока не найдены. Импортируйте прошивку, и её обои появятся здесь.</string>
+    <string name="x_wg_failed">Не удалось использовать эти обои</string>
+    <string name="x_wg_library">Поставить в библиотеку</string>
+    <string name="x_wg_library_ok">Обои библиотеки установлены! 📚</string>
+    <string name="x_wg_device">Установить на это устройство</string>
+    <string name="x_wg_device_ok">Обои установлены на это устройство! 📱</string>
+    <string name="x_wg_save">Сохранить в картинки</string>
+    <string name="x_wg_saved">Сохранено в ваши картинки 💾</string>
 </resources>

@@ -23,6 +23,9 @@ class X29FeaturesTest {
         assertEquals(VoiceCommands.Action.SCREENSHOT, VoiceCommands.match(listOf("zrób zrzut ekranu")))
         assertEquals(VoiceCommands.Action.HOME, VoiceCommands.match(listOf("ekran główny")))
         assertEquals(VoiceCommands.Action.VOLUME_UP, VoiceCommands.match(listOf("lauter")))
+        assertEquals(VoiceCommands.Action.SCREENSHOT, VoiceCommands.match(listOf("צילום מסך")))       // Hebrew
+        assertEquals(VoiceCommands.Action.HOME, VoiceCommands.match(listOf("מסך הבית")))
+        assertEquals(VoiceCommands.Action.BACK, VoiceCommands.match(listOf("חזרה")))
     }
 
     /** Every language has every AEmulator X text (a missing one would quietly show up in English). */
@@ -30,7 +33,7 @@ class X29FeaturesTest {
         val res = listOf(File("src/main/res"), File("app/src/main/res")).first { it.isDirectory }
         fun keys(dir: String) = Regex("<string name=\"([^\"]+)\"").findAll(File(res, "$dir/strings_x.xml").readText()).map { it.groupValues[1] }.toSet()
         val en = keys("values")
-        for (lang in listOf("ru", "pt-rBR", "es", "pl", "fr", "de")) {
+        for (lang in listOf("ru", "pt-rBR", "es", "pl", "fr", "de", "iw")) {
             val missing = en - keys("values-$lang")
             assertTrue("$lang is missing $missing", missing.isEmpty())
         }

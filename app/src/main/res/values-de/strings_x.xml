@@ -384,6 +384,18 @@
     <string name="x_bl_use">Verwenden</string>
     <string name="x_bl_making">Wird erstellt…</string>
     <string name="x_bl_saved">Dein Startlogo ist fertig! Du siehst es beim nächsten Start. 🎬</string>
+    <!-- X30: classic wallpaper gallery -->
+    <string name="x_wg_title">Klassische Hintergründe</string>
+    <string name="x_wg_sub">Die originalen Hintergrundbilder aus deinen Firmwares</string>
+    <string name="x_wg_looking">Suche in deinen Firmwares…</string>
+    <string name="x_wg_none">Noch keine Hintergründe gefunden. Importiere eine Firmware, dann erscheinen ihre Hintergründe hier.</string>
+    <string name="x_wg_failed">Dieser Hintergrund kann nicht verwendet werden</string>
+    <string name="x_wg_library">In der Bibliothek verwenden</string>
+    <string name="x_wg_library_ok">Bibliothekshintergrund gesetzt! 📚</string>
+    <string name="x_wg_device">Auf diesem Gerät festlegen</string>
+    <string name="x_wg_device_ok">Hintergrund auf diesem Gerät festgelegt! 📱</string>
+    <string name="x_wg_save">In Bildern speichern</string>
+    <string name="x_wg_saved">In deinen Bildern gespeichert 💾</string>
     <string-array name="x_fotd_facts">
         <item>Das allererste Android-Telefon, das T-Mobile G1 (HTC Dream), hatte eine ausziehbare Tastatur und einen Trackball.</item>
         <item>Cupcake (1.5) war das erste Android mit Bildschirmtastatur und Widgets auf dem Startbildschirm.</item>

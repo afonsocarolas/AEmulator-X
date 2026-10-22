@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- AEmulator X: the classic wallpaper gallery can set a firmware's wallpaper on this device -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
@@ -162,6 +164,10 @@
         <!-- AEmulator X: Wrapped -->
         <activity android:name=".ui.WrappedActivity" android:exported="false"
             android:theme="@style/Theme.AEmulator.Vm"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <!-- AEmulator X: classic wallpaper gallery -->
+        <activity android:name=".ui.WallpaperGalleryActivity" android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
 
         <!-- AEmulator X: Sleep mode -->

@@ -445,4 +445,16 @@
     <string name="x_bl_use">Use it</string>
     <string name="x_bl_making">Making…</string>
     <string name="x_bl_saved">Your boot logo is ready! You\'ll see it at the next boot. 🎬</string>
+    <!-- X30: classic wallpaper gallery -->
+    <string name="x_wg_title">Classic wallpapers</string>
+    <string name="x_wg_sub">The original wallpapers inside your firmwares</string>
+    <string name="x_wg_looking">Looking inside your firmwares…</string>
+    <string name="x_wg_none">No wallpapers found yet. Import a firmware and its wallpapers show up here.</string>
+    <string name="x_wg_failed">Could not use that wallpaper</string>
+    <string name="x_wg_library">Use in the library</string>
+    <string name="x_wg_library_ok">Library wallpaper set! 📚</string>
+    <string name="x_wg_device">Set on this device</string>
+    <string name="x_wg_device_ok">Wallpaper set on this device! 📱</string>
+    <string name="x_wg_save">Save to pictures</string>
+    <string name="x_wg_saved">Saved to your pictures 💾</string>
 </resources>

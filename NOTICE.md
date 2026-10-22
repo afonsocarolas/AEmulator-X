@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-22**: AEmulator X30 (`0.0.0.2.13-x30`): Hebrew AEmulator X texts (`res/values-iw/strings_x.xml`) and voice command
+  words (`core/VoiceCommands.kt`); classic wallpaper gallery reading the wallpapers of the user's own firmwares, nothing bundled
+  (`app/src/main/java/app/aemu/core/FirmwareWallpapers.kt`, `ui/WallpaperGalleryActivity.kt`, `ui/LibraryWallpaper.kt`,
+  SET_WALLPAPER in `AndroidManifest.xml`); tests in `X29FeaturesTest.kt`, `X30WallpaperTest.kt`.
 - **2026-10-22**: AEmulator X29 (`0.0.0.2.13-x29`): boot logo creator (`app/src/main/java/app/aemu/core/BootLogoMaker.kt`,
   `ui/BootLogoCreator.kt`, `ui/BootAnimSection.kt`), Polish, French and German AEmulator X texts (`res/values-pl/strings_x.xml`,
   `res/values-fr/strings_x.xml`, `res/values-de/strings_x.xml`), voice command words in those languages (`core/VoiceCommands.kt`);
