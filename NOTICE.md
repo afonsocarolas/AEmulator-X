@@ -65,6 +65,9 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-22**: AEmulator X27 (`0.0.0.2.13-x27`): collections (`app/src/main/java/app/aemu/core/Collections.kt`,
+  `ui/CollectionChips.kt`, `MainActivity.kt`), AEmulator Wrapped (`core/WrappedStats.kt`, `ui/WrappedActivity.kt`); tests in
+  `X27FeaturesTest.kt`.
 - **2026-10-21**: AEmulator X26 (`0.0.0.2.13-x26`): the in-app logo (Settings › About) now uses the AEmulator X icon by
   Chris (donkris01) instead of the AEmulator Plus one (`res/drawable-nodpi/logo.png`, made by `docs/assets/make-icon.sh`).
 - **2026-10-21**: AEmulator X25 (`0.0.0.2.13-x25`): gamepad editor (`app/src/main/java/app/aemu/core/PadLayout.kt`,

@@ -49,6 +49,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.CardGiftcard
 import androidx.compose.material.icons.rounded.Museum
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.Android
@@ -175,9 +176,16 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Library(model: LibraryModel) {
-    val images by model.images.collectAsState()
-    val imp by model.import.collectAsState()
+    val allImages by model.images.collectAsState()
     val ctx = LocalContext.current
+    // AEmulator X: collections; the chosen one is remembered
+    val colPrefs = remember { AppPrefs.prefs(ctx) }
+    var collection by remember { mutableStateOf(colPrefs.getString("x_collection", null)) }
+    val images = remember(allImages, collection, app.aemu.core.FirmwareCollections.rev) {
+        val c = collection?.let { n -> app.aemu.core.FirmwareCollections.all(ctx).firstOrNull { it.name == n } }
+        if (c == null) allImages else allImages.filter { it.id in c.ids }
+    }
+    val imp by model.import.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
     var activeVmId by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(lifecycleOwner) {
@@ -357,6 +365,9 @@ fun Library(model: LibraryModel) {
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.st_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.BarChart, null) },
                                 onClick = { moreMenu = false; showStats = true })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_wr_menu)) },
+                                leadingIcon = { Icon(Icons.Rounded.CardGiftcard, null) },
+                                onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, WrappedActivity::class.java)) })
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.help)) },
                                 leadingIcon = { Icon(Icons.Rounded.Info, null) }, onClick = { moreMenu = false; help = true })
                         }
@@ -366,10 +377,10 @@ fun Library(model: LibraryModel) {
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { if (images.isEmpty()) pick.launch(arrayOf("*/*")) else addMenu = true },
+                onClick = { if (allImages.isEmpty()) pick.launch(arrayOf("*/*")) else addMenu = true },
                 icon = { Icon(Icons.Rounded.Add, null) },
                 text = { Text(stringResource(R.string.add_firmware)) },
-                expanded = images.isEmpty() || !scroll.state.collapsedFraction.let { it > 0.5f },
+                expanded = allImages.isEmpty() || !scroll.state.collapsedFraction.let { it > 0.5f },
             )
         },
     ) { pad ->
@@ -379,11 +390,11 @@ fun Library(model: LibraryModel) {
             placeholder = { Text(stringResource(R.string.x_search_hint)) }, leadingIcon = { Icon(Icons.Rounded.Search, null) },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp))
         Box(Modifier.fillMaxSize().padding(top = if (searching) 72.dp else 0.dp)) {
-            if (images.isEmpty() && !imp.active) EmptyState(onHelp = { help = true })
-            if (view3d && images.isNotEmpty()) Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+            if (allImages.isEmpty() && !imp.active) EmptyState(onHelp = { help = true })
+            if (view3d && allImages.isNotEmpty()) Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
                 .padding(start = 16.dp, end = 16.dp, bottom = 120.dp)) {
                 StorageAccessCard()
-                FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(images, gridRefresh) { VmActivity.start(ctx, it.id) }
+                CollectionChips(allImages, collection) { collection = it; colPrefs.edit().putString("x_collection", it).apply() }; FirmwareOfTheDay(allImages.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(allImages, gridRefresh) { VmActivity.start(ctx, it.id) }
                 if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) })
                 AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
                     Box(Modifier.padding(bottom = 12.dp)) {
@@ -395,22 +406,24 @@ fun Library(model: LibraryModel) {
                 val ordered = remember(images, query, sort, favorites, stats) {
                     arrange(images.filter { it.baseId.isEmpty() }) + arrange(images.filter { it.baseId.isNotEmpty() })
                 }
-                Library3D(
+                if (ordered.isEmpty()) Text(stringResource(R.string.x_col_empty), style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(24.dp))
+                else Library3D(
                     ordered,
                     activeVmId,
-                    baseNameOf = { img -> images.firstOrNull { it.id == img.baseId }?.name },
+                    baseNameOf = { img -> allImages.firstOrNull { it.id == img.baseId }?.name },
                     onStart = { img, lowPower -> VmActivity.start(ctx, img.id, lowPower = lowPower) },
                     onSettings = { settingsFor = it },
                     onRename = { renameFor = it },
                     onDelete = { deleteFor = it },
                 )
-            } else if (layout == AppPrefs.LAYOUT_TIMELINE && images.isNotEmpty()) TimelineLibrary(
+            } else if (layout == AppPrefs.LAYOUT_TIMELINE && allImages.isNotEmpty()) TimelineLibrary(
                 // AEmulator X: the Android time machine, firmwares by release year
                 arrange(images),
                 header = {
                     Column {
                         StorageAccessCard()
-                        FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(images, gridRefresh) { VmActivity.start(ctx, it.id) }
+                        CollectionChips(allImages, collection) { collection = it; colPrefs.edit().putString("x_collection", it).apply() }; FirmwareOfTheDay(allImages.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(allImages, gridRefresh) { VmActivity.start(ctx, it.id) }
                         if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) })
                         AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
                             Box(Modifier.padding(bottom = 12.dp)) { ImportCard(imp, onCancel = model::cancelImport, onDismiss = model::dismissImport) }
@@ -433,7 +446,7 @@ fun Library(model: LibraryModel) {
                         onShortcut = { shortcut(img) },
                     )
                 },
-            ) else if (layout == AppPrefs.LAYOUT_GRID && images.isNotEmpty()) androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+            ) else if (layout == AppPrefs.LAYOUT_GRID && allImages.isNotEmpty()) androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
                 // AEmulator X: square tiles, ~2 per row on phones, more on tablets; cards and headers span the row
                 columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(150.dp),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 120.dp),
@@ -443,7 +456,7 @@ fun Library(model: LibraryModel) {
                 val full: (androidx.compose.foundation.lazy.grid.LazyGridItemSpanScope) -> androidx.compose.foundation.lazy.grid.GridItemSpan =
                     { androidx.compose.foundation.lazy.grid.GridItemSpan(it.maxLineSpan) }
                 item(span = full) { StorageAccessCard() }
-                item(span = full) { FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(images, gridRefresh) { VmActivity.start(ctx, it.id) } }
+                item(span = full) { CollectionChips(allImages, collection) { collection = it; colPrefs.edit().putString("x_collection", it).apply() }; FirmwareOfTheDay(allImages.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(allImages, gridRefresh) { VmActivity.start(ctx, it.id) } }
                 if (!imp.active) item(span = full) { FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) }) }
                 item(span = full) {
                     AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
@@ -479,7 +492,7 @@ fun Library(model: LibraryModel) {
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 120.dp),
             ) {
                 item { StorageAccessCard() }
-                item { FirmwareOfTheDay(images.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(images, gridRefresh) { VmActivity.start(ctx, it.id) } }
+                item { CollectionChips(allImages, collection) { collection = it; colPrefs.edit().putString("x_collection", it).apply() }; FirmwareOfTheDay(allImages.filter { it.baseId.isEmpty() }) { VmActivity.start(ctx, it.id) }; DailyCards(allImages, gridRefresh) { VmActivity.start(ctx, it.id) } }
                 item { if (!imp.active) FirmwareFolderCard(onImport = { f -> model.import(android.net.Uri.fromFile(f)) }) }
                 item {
                     AnimatedVisibility(imp.active || imp.error != null || imp.done != null) {
@@ -504,7 +517,7 @@ fun Library(model: LibraryModel) {
                             onSettings = { settingsFor = img },
                             onRename = { renameFor = img },
                             onDelete = { deleteFor = img },
-                            baseName = images.firstOrNull { it.id == img.baseId }?.name,
+                            baseName = allImages.firstOrNull { it.id == img.baseId }?.name,
                             active = activeVmId == img.id,
                             favorite = img.id in favorites,
                             stats = stats[img.id],

@@ -357,4 +357,36 @@
         <item>Самый первый Pixel и первый телефон со встроенным Google Ассистентом.</item>
         <item>Вышел с Android Pie и новой навигацией жестами и делал потрясающие фото всего одной основной камерой.</item>
     </string-array>
+    <!-- X27: collections, Wrapped -->
+    <string name="x_col_all">Все</string>
+    <string name="x_col_new">Новая коллекция</string>
+    <string name="x_col_edit">Изменить коллекцию</string>
+    <string name="x_col_hint">Игры, Старые, Избранное…</string>
+    <string name="x_col_pick">Прошивки в ней</string>
+    <string name="x_col_delete">Удалить коллекцию</string>
+    <string name="x_col_delete_q">Удалить коллекцию «%1$s»? Прошивки останутся в библиотеке.</string>
+    <string name="x_col_empty">Эта коллекция пуста. Удерживайте её значок, чтобы добавить прошивки.</string>
+    <string name="x_wr_menu">Ваши итоги</string>
+    <string name="x_wr_intro_top">Ваша история с</string>
+    <string name="x_wr_intro_bottom">Прошивок в библиотеке: %1$d. Давайте оглянемся назад!</string>
+    <string name="x_wr_time_top">Вы играли</string>
+    <string name="x_wr_time_lots">Это очень много ретро-Android! 🤖</string>
+    <string name="x_wr_time_some">Каждая минута на счету!</string>
+    <string name="x_wr_top_top">Ваша самая любимая прошивка</string>
+    <string name="x_wr_era_top">Ваша любимая эпоха Android</string>
+    <string name="x_wr_era_bottom">%1$d%% вашего игрового времени</string>
+    <string name="x_wr_boots_top">Вы запускали Android</string>
+    <string name="x_wr_boots_bottom">раз. Бип-буп! 🤖</string>
+    <string name="x_wr_shots_top">Сделано скриншотов</string>
+    <string name="x_wr_shots_bottom">и ещё видео и GIF: %1$d 🎬</string>
+    <string name="x_wr_streak_top">Самая длинная серия игры (дней)</string>
+    <string name="x_wr_streak_bottom">Лучшая серия заданий дня: %1$d дн. 🔥</string>
+    <string name="x_wr_badges_top">Получено значков</string>
+    <string name="x_wr_badges_lots">Коллекционер значков! 🏅</string>
+    <string name="x_wr_badges_some">Вас ждут новые значки!</string>
+    <string name="x_wr_end_top">Спасибо за игру</string>
+    <string name="x_wr_end_big">До встречи!</string>
+    <string name="x_wr_end_bottom">Сделано с 💜 вами и AEmulator X</string>
+    <string name="x_wr_share">Поделиться</string>
+    <string name="x_wr_share_text">Мои итоги AEmulator X 🎁\n📚 Прошивок: %1$d\n⏱️ Сыграно: %2$s\n🥇 Любимая: %3$s\n📸 Скриншотов: %4$d\n🏆 Значков: %5$d / %6$d</string>
 </resources>

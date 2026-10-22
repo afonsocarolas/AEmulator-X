@@ -358,4 +358,36 @@
         <item>The very first Pixel, and the first phone with the Google Assistant built in.</item>
         <item>Came with Android Pie and its new gesture navigation, and took amazing photos with just one rear camera.</item>
     </string-array>
+    <!-- X27: collections, Wrapped -->
+    <string name="x_col_all">All</string>
+    <string name="x_col_new">New collection</string>
+    <string name="x_col_edit">Edit collection</string>
+    <string name="x_col_hint">Games, Old ones, Favourites…</string>
+    <string name="x_col_pick">Firmwares in it</string>
+    <string name="x_col_delete">Delete collection</string>
+    <string name="x_col_delete_q">Delete the collection \"%1$s\"? The firmwares stay in your library.</string>
+    <string name="x_col_empty">This collection is empty. Long-press its chip to add firmwares.</string>
+    <string name="x_wr_menu">Your Wrapped</string>
+    <string name="x_wr_intro_top">Your story with</string>
+    <string name="x_wr_intro_bottom">%1$d firmwares in your library. Let\'s look back!</string>
+    <string name="x_wr_time_top">You played for</string>
+    <string name="x_wr_time_lots">That\'s a lot of retro Android! 🤖</string>
+    <string name="x_wr_time_some">Every minute counts!</string>
+    <string name="x_wr_top_top">Your most played firmware</string>
+    <string name="x_wr_era_top">Your favourite Android era</string>
+    <string name="x_wr_era_bottom">%1$d%% of your play time</string>
+    <string name="x_wr_boots_top">You booted Android</string>
+    <string name="x_wr_boots_bottom">times. Beep boop! 🤖</string>
+    <string name="x_wr_shots_top">Screenshots you took</string>
+    <string name="x_wr_shots_bottom">plus %1$d videos and GIFs 🎬</string>
+    <string name="x_wr_streak_top">Your longest play streak (days)</string>
+    <string name="x_wr_streak_bottom">Best daily challenge streak: %1$d days 🔥</string>
+    <string name="x_wr_badges_top">Badges unlocked</string>
+    <string name="x_wr_badges_lots">Badge collector! 🏅</string>
+    <string name="x_wr_badges_some">More badges are waiting for you!</string>
+    <string name="x_wr_end_top">Thanks for playing</string>
+    <string name="x_wr_end_big">See you next time!</string>
+    <string name="x_wr_end_bottom">Made with 💜 by you and AEmulator X</string>
+    <string name="x_wr_share">Share</string>
+    <string name="x_wr_share_text">My AEmulator X Wrapped 🎁\n📚 %1$d firmwares\n⏱️ %2$s played\n🥇 Top: %3$s\n📸 %4$d screenshots\n🏆 %5$d / %6$d badges</string>
 </resources>

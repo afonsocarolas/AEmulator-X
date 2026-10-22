@@ -357,4 +357,36 @@
         <item>El primerísimo Pixel y el primer teléfono con el Asistente de Google integrado.</item>
         <item>Venía con Android Pie y su nueva navegación por gestos, y hacía fotos increíbles con una sola cámara trasera.</item>
     </string-array>
+    <!-- X27: collections, Wrapped -->
+    <string name="x_col_all">Todos</string>
+    <string name="x_col_new">Nueva colección</string>
+    <string name="x_col_edit">Editar colección</string>
+    <string name="x_col_hint">Juegos, Antiguos, Favoritos…</string>
+    <string name="x_col_pick">Firmwares en ella</string>
+    <string name="x_col_delete">Eliminar colección</string>
+    <string name="x_col_delete_q">¿Eliminar la colección \"%1$s\"? Los firmwares siguen en tu biblioteca.</string>
+    <string name="x_col_empty">Esta colección está vacía. Mantén pulsado su botón para añadir firmwares.</string>
+    <string name="x_wr_menu">Tu resumen</string>
+    <string name="x_wr_intro_top">Tu historia con</string>
+    <string name="x_wr_intro_bottom">%1$d firmwares en tu biblioteca. ¡Echemos la vista atrás!</string>
+    <string name="x_wr_time_top">Jugaste</string>
+    <string name="x_wr_time_lots">¡Eso es mucho Android retro! 🤖</string>
+    <string name="x_wr_time_some">¡Cada minuto cuenta!</string>
+    <string name="x_wr_top_top">Tu firmware más jugado</string>
+    <string name="x_wr_era_top">Tu época favorita de Android</string>
+    <string name="x_wr_era_bottom">%1$d%% de tu tiempo de juego</string>
+    <string name="x_wr_boots_top">Iniciaste Android</string>
+    <string name="x_wr_boots_bottom">veces. ¡Bip bup! 🤖</string>
+    <string name="x_wr_shots_top">Capturas de pantalla</string>
+    <string name="x_wr_shots_bottom">y además %1$d vídeos y GIFs 🎬</string>
+    <string name="x_wr_streak_top">Tu racha de juego más larga (días)</string>
+    <string name="x_wr_streak_bottom">Mejor racha de retos del día: %1$d días 🔥</string>
+    <string name="x_wr_badges_top">Logros desbloqueados</string>
+    <string name="x_wr_badges_lots">¡Coleccionista de logros! 🏅</string>
+    <string name="x_wr_badges_some">¡Te esperan más logros!</string>
+    <string name="x_wr_end_top">Gracias por jugar</string>
+    <string name="x_wr_end_big">¡Hasta la próxima!</string>
+    <string name="x_wr_end_bottom">Hecho con 💜 por ti y AEmulator X</string>
+    <string name="x_wr_share">Compartir</string>
+    <string name="x_wr_share_text">Mi resumen de AEmulator X 🎁\n📚 %1$d firmwares\n⏱️ %2$s jugados\n🥇 Favorito: %3$s\n📸 %4$d capturas\n🏆 %5$d / %6$d logros</string>
 </resources>
