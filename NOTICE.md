@@ -65,6 +65,9 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-23**: AEmulator X33 (`0.0.0.2.13-x33`): new coral app icon, artwork by Chris (donkris01) (`docs/assets/icon-x.png`,
+  `docs/assets/logo.png`, `docs/assets/make-icon.sh`, `docs/assets/make-icon-variants.sh`, `res/mipmap-*/ic_launcher_*.png`,
+  `res/drawable-nodpi/logo.png`, `res/values/colors.xml` `ic_bg`, `app/src/main/java/app/aemu/ui/AppIcons.kt`).
 - **2026-10-23**: AEmulator X32 (`0.0.0.2.13-x32`): firmware badges (`app/src/main/java/app/aemu/core/FirmwareTags.kt`,
   `ui/FirmwareTagChips.kt`, `MainActivity.kt`, `LibraryGrid.kt`, `Library3D.kt`), slideshow (`core/SlideOrder.kt`,
   `ui/SlideshowActivity.kt`); tests in `X32FeaturesTest.kt`.

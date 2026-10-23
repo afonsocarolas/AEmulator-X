@@ -13,10 +13,10 @@ set -e
 cd "$(dirname "$0")"
 RES=../../app/src/main/res
 T=$(mktemp -d)
-S=240; C=$((S / 2))
+S=224; C=$((S / 2))
 magick icon-x.png -resize ${S}x${S} "$T/art.png"
 # white marks only, as an alpha mask, faded out like the default icon
-magick -size ${S}x${S} xc:black -fill white -draw "circle $C,$C $C,$((C - S * 56 / 100))" -blur 0x4 "$T/fade.png"
+magick -size ${S}x${S} xc:black -fill white -draw "circle $C,$C $C,$((C - S * 62 / 100))" -blur 0x4 "$T/fade.png"
 magick "$T/art.png" -colorspace gray -level 55%,92% "$T/white.png"
 magick "$T/white.png" "$T/fade.png" -compose Multiply -composite "$T/alpha.png"
 
