@@ -170,6 +170,11 @@
         <activity android:name=".ui.WallpaperGalleryActivity" android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
 
+        <!-- AEmulator X: firmware slideshow -->
+        <activity android:name=".ui.SlideshowActivity" android:exported="false"
+            android:theme="@style/Theme.AEmulator.Vm"
+            android:parentActivityName=".ui.MainActivity" />
+
         <!-- AEmulator X: Sleep mode -->
         <activity android:name=".ui.SleepActivity" android:exported="false"
             android:theme="@style/Theme.AEmulator.Vm"

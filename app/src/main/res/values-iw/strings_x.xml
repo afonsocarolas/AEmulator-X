@@ -405,6 +405,16 @@
     <string name="x_st_text_hint">כתבו משהו…</string>
     <string name="x_st_add">הוספה</string>
     <string name="x_st_hint">הקישו על מדבקה כדי לבחור בה, גררו כדי להזיז, ובשתי אצבעות משנים גודל ומסובבים.</string>
+    <!-- X32: firmware badges, slideshow -->
+    <string name="x_tag_new">חדש</string>
+    <string name="x_tag_never">לא הופעל</string>
+    <string name="x_tag_top">מוביל</string>
+    <string name="x_tag_64">64 ביט</string>
+    <string name="x_tag_fast">מהיר</string>
+    <string name="x_tag_classic">קלאסי</string>
+    <string name="x_tag_container">מכולה</string>
+    <string name="x_ss_title">מצגת</string>
+    <string name="x_ss_empty">עדיין אין מה להציג. צלמו כמה צילומי מסך או ייבאו קושחה, ואז חזרו!</string>
     <string-array name="x_fotd_facts">
         <item>הטלפון הראשון עם Android, ה-T-Mobile G1 (HTC Dream), היה עם מקלדת נשלפת וכדור עקיבה.</item>
         <item>Cupcake (1.5) הייתה גרסת Android הראשונה עם מקלדת על המסך ווידג׳טים במסך הבית.</item>

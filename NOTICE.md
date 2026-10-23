@@ -65,6 +65,9 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-23**: AEmulator X32 (`0.0.0.2.13-x32`): firmware badges (`app/src/main/java/app/aemu/core/FirmwareTags.kt`,
+  `ui/FirmwareTagChips.kt`, `MainActivity.kt`, `LibraryGrid.kt`, `Library3D.kt`), slideshow (`core/SlideOrder.kt`,
+  `ui/SlideshowActivity.kt`); tests in `X32FeaturesTest.kt`.
 - **2026-10-22**: AEmulator X31 (`0.0.0.2.13-x31`): screenshot stickers (`app/src/main/java/app/aemu/core/Stickers.kt`,
   `ui/StickerEditor.kt`, `ui/GalleryActivity.kt`); tests in `X31StickersTest.kt`.
 - **2026-10-22**: AEmulator X30 (`0.0.0.2.13-x30`): Hebrew AEmulator X texts (`res/values-iw/strings_x.xml`) and voice command

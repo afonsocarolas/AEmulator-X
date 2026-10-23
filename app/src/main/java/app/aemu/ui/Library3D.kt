@@ -133,6 +133,7 @@ internal fun Library3D(
     onRename: (GuestImage) -> Unit,
     onDelete: (GuestImage) -> Unit,
     onInfo: (GuestImage) -> Unit = {},
+    topId: String? = null,
 ) {
     if (images.isEmpty()) return
     val ctx = LocalContext.current
@@ -222,7 +223,7 @@ internal fun Library3D(
                 }
             }
             PageDots(images.size, pager.currentPage)
-            Details(current, current.id == activeVmId, baseNameOf(current), ::start, onSettings, onRename, onDelete, onInfo)
+            Details(current, current.id == activeVmId, baseNameOf(current), ::start, onSettings, onRename, onDelete, onInfo, current.id == topId)
         }
     }
 }
@@ -466,12 +467,13 @@ private fun PageDots(count: Int, current: Int) {
 @Composable
 private fun Details(img: GuestImage, active: Boolean, baseName: String?, onStart: (GuestImage, Boolean) -> Unit,
                     onSettings: (GuestImage) -> Unit, onRename: (GuestImage) -> Unit, onDelete: (GuestImage) -> Unit,
-                    onInfo: (GuestImage) -> Unit) {
+                    onInfo: (GuestImage) -> Unit, isTop: Boolean = false) {
     val ctx = LocalContext.current
     val lowPowerLabel = stringResource(R.string.lpm_start)
     Column(Modifier.fillMaxWidth().padding(horizontal = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(img.name, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
         Text(img.displayVersion, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        FirmwareTagChips(img, isTop, Modifier.padding(top = 4.dp))
         Spacer(Modifier.height(6.dp))
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally), modifier = Modifier.fillMaxWidth()) {
             AssistChip(onClick = {}, label = { Text(LibraryLabels.compactSkin(img.skin), maxLines = 1) })

@@ -465,4 +465,14 @@
     <string name="x_st_text_hint">Напишите что-нибудь…</string>
     <string name="x_st_add">Добавить</string>
     <string name="x_st_hint">Нажмите на стикер, чтобы выбрать его, перетащите, чтобы сдвинуть, сведите или разведите два пальца, чтобы изменить размер и повернуть.</string>
+    <!-- X32: firmware badges, slideshow -->
+    <string name="x_tag_new">Новая</string>
+    <string name="x_tag_never">Не запускалась</string>
+    <string name="x_tag_top">Топ</string>
+    <string name="x_tag_64">64-бит</string>
+    <string name="x_tag_fast">Быстрая</string>
+    <string name="x_tag_classic">Классика</string>
+    <string name="x_tag_container">Контейнер</string>
+    <string name="x_ss_title">Слайд-шоу</string>
+    <string name="x_ss_empty">Пока нечего показать. Сделайте скриншоты или импортируйте прошивку и возвращайтесь!</string>
 </resources>

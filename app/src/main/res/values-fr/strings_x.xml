@@ -405,6 +405,16 @@
     <string name="x_st_text_hint">Écrivez quelque chose…</string>
     <string name="x_st_add">Ajouter</string>
     <string name="x_st_hint">Touchez un autocollant pour le choisir, faites-le glisser pour le déplacer, pincez à deux doigts pour le redimensionner et le tourner.</string>
+    <!-- X32: firmware badges, slideshow -->
+    <string name="x_tag_new">Nouveau</string>
+    <string name="x_tag_never">Jamais démarré</string>
+    <string name="x_tag_top">Top</string>
+    <string name="x_tag_64">64 bits</string>
+    <string name="x_tag_fast">Rapide</string>
+    <string name="x_tag_classic">Classique</string>
+    <string name="x_tag_container">Conteneur</string>
+    <string name="x_ss_title">Diaporama</string>
+    <string name="x_ss_empty">Rien à montrer pour l’instant. Faites des captures ou importez un firmware, puis revenez !</string>
     <string-array name="x_fotd_facts">
         <item>Le tout premier téléphone Android, le T-Mobile G1 (HTC Dream), avait un clavier coulissant et un trackball.</item>
         <item>Cupcake (1.5) a été le premier Android avec un clavier à l’écran et des widgets sur l’écran d’accueil.</item>

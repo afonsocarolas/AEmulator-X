@@ -49,6 +49,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Slideshow
 import androidx.compose.material.icons.rounded.Wallpaper
 import androidx.compose.material.icons.rounded.CardGiftcard
 import androidx.compose.material.icons.rounded.Museum
@@ -248,6 +249,8 @@ fun Library(model: LibraryModel) {
         value = withContext(Dispatchers.IO) { images.associate { it.id to app.aemu.core.PlayStats.read(ctx, it.id) } }
     }
     fun arrange(list: List<GuestImage>) = LibrarySort.apply(list, query, sort, favorites, stats)
+    // AEmulator X: the most played firmware gets a 🥇 tag
+    val topId = remember(stats) { app.aemu.core.FirmwareTags.topPlayed(stats.mapValues { it.value.totalMs }) }
     fun toggleFavorite(img: GuestImage) {
         val on = img.id !in favorites
         AppPrefs.setFavorite(ctx, img.id, on)
@@ -360,6 +363,9 @@ fun Library(model: LibraryModel) {
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_wg_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.Wallpaper, null) },
                                 onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, WallpaperGalleryActivity::class.java)) })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_ss_title)) },
+                                leadingIcon = { Icon(Icons.Rounded.Slideshow, null) },
+                                onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, SlideshowActivity::class.java)) })
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_mu_menu)) },
                                 leadingIcon = { Icon(Icons.Rounded.LibraryMusic, null) },
                                 onClick = {
@@ -422,6 +428,7 @@ fun Library(model: LibraryModel) {
                     onRename = { renameFor = it },
                     onDelete = { deleteFor = it },
                     onInfo = { infoFor = it },
+                    topId = topId,
                 )
             } else if (layout == AppPrefs.LAYOUT_TIMELINE && allImages.isNotEmpty()) TimelineLibrary(
                 // AEmulator X: the Android time machine, firmwares by release year
@@ -451,6 +458,7 @@ fun Library(model: LibraryModel) {
                         onFavorite = { toggleFavorite(img) },
                         onShortcut = { shortcut(img) },
                         onInfo = { infoFor = img },
+                        isTop = img.id == topId,
                     )
                 },
             ) else if (layout == AppPrefs.LAYOUT_GRID && allImages.isNotEmpty()) androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
@@ -493,6 +501,7 @@ fun Library(model: LibraryModel) {
                             onFavorite = { toggleFavorite(img) },
                             onShortcut = { shortcut(img) },
                             onInfo = { infoFor = img },
+                            isTop = img.id == topId,
                         )
                     }
                 }
@@ -532,6 +541,7 @@ fun Library(model: LibraryModel) {
                             onFavorite = { toggleFavorite(img) },
                             onShortcut = { shortcut(img) },
                             onInfo = { infoFor = img },
+                            isTop = img.id == topId,
                         )
                         }
                     }
@@ -776,7 +786,7 @@ private fun ImportCard(s: ImportState, onCancel: () -> Unit, onDismiss: () -> Un
 @OptIn(ExperimentalFoundationApi::class)
 private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Unit, onRename: () -> Unit, onDelete: () -> Unit, baseName: String? = null, active: Boolean = false,
                       favorite: Boolean = false, stats: app.aemu.core.PlayStats.Stats? = null, onFavorite: () -> Unit = {}, onShortcut: () -> Unit = {},
-                      onInfo: () -> Unit = {}) {
+                      onInfo: () -> Unit = {}, isTop: Boolean = false) {
     val ctx = LocalContext.current
     val lowPowerLabel = stringResource(R.string.lpm_start)
     // AEmulator X: glass card, gradient release badge, gradient Start button
@@ -788,6 +798,7 @@ private fun ImageCard(img: GuestImage, onStart: () -> Unit, onSettings: () -> Un
                 Column(Modifier.weight(1f)) {
                     Text(img.name, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     Text(img.displayVersion, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    FirmwareTagChips(img, isTop, Modifier.padding(top = 4.dp))
                 }
                 // AEmulator X: favourite and home screen shortcut
                 IconButton(onClick = onFavorite) {

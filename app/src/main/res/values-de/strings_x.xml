@@ -405,6 +405,16 @@
     <string name="x_st_text_hint">Schreib etwas…</string>
     <string name="x_st_add">Hinzufügen</string>
     <string name="x_st_hint">Tippe auf einen Sticker, um ihn auszuwählen, ziehe ihn zum Verschieben und nutze zwei Finger zum Vergrößern und Drehen.</string>
+    <!-- X32: firmware badges, slideshow -->
+    <string name="x_tag_new">Neu</string>
+    <string name="x_tag_never">Nie gestartet</string>
+    <string name="x_tag_top">Top</string>
+    <string name="x_tag_64">64-Bit</string>
+    <string name="x_tag_fast">Schnell</string>
+    <string name="x_tag_classic">Klassiker</string>
+    <string name="x_tag_container">Container</string>
+    <string name="x_ss_title">Diashow</string>
+    <string name="x_ss_empty">Noch nichts zu zeigen. Mach ein paar Screenshots oder importiere eine Firmware und komm wieder!</string>
     <string-array name="x_fotd_facts">
         <item>Das allererste Android-Telefon, das T-Mobile G1 (HTC Dream), hatte eine ausziehbare Tastatur und einen Trackball.</item>
         <item>Cupcake (1.5) war das erste Android mit Bildschirmtastatur und Widgets auf dem Startbildschirm.</item>

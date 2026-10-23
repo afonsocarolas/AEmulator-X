@@ -466,4 +466,14 @@
     <string name="x_st_text_hint">Type something…</string>
     <string name="x_st_add">Add</string>
     <string name="x_st_hint">Tap a sticker to pick it, drag to move it, pinch with two fingers to resize and turn it.</string>
+    <!-- X32: firmware badges, slideshow -->
+    <string name="x_tag_new">New</string>
+    <string name="x_tag_never">Not booted</string>
+    <string name="x_tag_top">Top</string>
+    <string name="x_tag_64">64-bit</string>
+    <string name="x_tag_fast">Fast</string>
+    <string name="x_tag_classic">Classic</string>
+    <string name="x_tag_container">Container</string>
+    <string name="x_ss_title">Slideshow</string>
+    <string name="x_ss_empty">Nothing to show yet. Take some screenshots or import a firmware, then come back!</string>
 </resources>

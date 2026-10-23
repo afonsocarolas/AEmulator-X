@@ -465,4 +465,14 @@
     <string name="x_st_text_hint">Escribe algo…</string>
     <string name="x_st_add">Añadir</string>
     <string name="x_st_hint">Toca una pegatina para elegirla, arrástrala para moverla y usa dos dedos para cambiar su tamaño y girarla.</string>
+    <!-- X32: firmware badges, slideshow -->
+    <string name="x_tag_new">Nuevo</string>
+    <string name="x_tag_never">Sin iniciar</string>
+    <string name="x_tag_top">Top</string>
+    <string name="x_tag_64">64 bits</string>
+    <string name="x_tag_fast">Rápido</string>
+    <string name="x_tag_classic">Clásico</string>
+    <string name="x_tag_container">Contenedor</string>
+    <string name="x_ss_title">Presentación</string>
+    <string name="x_ss_empty">Aún no hay nada que mostrar. ¡Haz capturas o importa un firmware y vuelve!</string>
 </resources>

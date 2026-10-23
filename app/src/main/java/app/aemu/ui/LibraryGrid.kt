@@ -104,6 +104,7 @@ internal fun SquareTile(
     onFavorite: () -> Unit = {},
     onShortcut: () -> Unit = {},
     onInfo: () -> Unit = {},
+    isTop: Boolean = false,
 ) {
     var menu by remember { mutableStateOf(false) }
     val ctx = LocalContext.current
@@ -178,6 +179,7 @@ internal fun SquareTile(
         }
 
         Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(12.dp)) {
+            FirmwareTagChips(img, isTop, Modifier.padding(bottom = 4.dp), max = 2)
             val note = remember(img.id, app.aemu.core.FirmwareNotes.rev) { app.aemu.core.FirmwareNotes.read(ctx, img.id) }
             if (note.isNotEmpty()) Text("📝 " + app.aemu.core.FirmwareNotes.oneLine(note), color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(bottom = 2.dp)
