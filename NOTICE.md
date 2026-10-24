@@ -65,6 +65,8 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-24**: AEmulator X36 (`0.0.0.2.13-x36`): dark mode while a live background is on, so text is readable over the dark
+  scenes (`app/src/main/java/app/aemu/ui/Theme.kt`).
 - **2026-10-24**: AEmulator X35 (`0.0.0.2.13-x35`): live backgrounds (`app/src/main/java/app/aemu/core/LiveScenes.kt`,
   `ui/LiveBackground.kt`, `ui/XStyle.kt`, `ui/AppSettingsActivity.kt`), penalty shootout (`core/Penalty.kt`, `ui/PenaltyActivity.kt`,
   whistle and crowd sounds in `core/UiSounds.kt`, Penalty king badge in `core/Achievements.kt`); tests in `X35LiveScenesTest.kt`,
