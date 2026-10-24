@@ -737,7 +737,7 @@ private fun EmptyState(onHelp: () -> Unit) {
             Box(contentAlignment = Alignment.Center) { Icon(Icons.Rounded.Android, null, Modifier.size(56.dp), tint = MaterialTheme.colorScheme.onPrimaryContainer) }
         }
         Spacer(Modifier.height(24.dp))
-        Text(stringResource(R.string.empty_title), style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.empty_title), style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(8.dp))
         Text(stringResource(R.string.empty_text),
             style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
