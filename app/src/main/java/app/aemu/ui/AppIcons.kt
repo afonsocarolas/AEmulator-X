@@ -51,7 +51,7 @@ object AppIcons {
         Icon("Gold", R.string.x_ic_gold, 0xFF3E2723, R.mipmap.ic_launcher_gold_fg),
         Icon("Retro", R.string.x_ic_retro, 0xFF050A05, R.mipmap.ic_launcher_retro_fg),
         Icon("Christmas", R.string.x_ic_christmas, 0xFFC62828, R.mipmap.ic_launcher_christmas_fg),
-        Icon("Mono", R.string.x_ic_mono, 0xFFFFFFFF, R.mipmap.ic_launcher_mono_fg),
+        Icon("Mono", R.string.x_ic_mono, 0xFFFFFFFF, R.mipmap.ic_launcher_bw_fg),
     )
 
     private fun component(ctx: Context, id: String) = ComponentName(ctx.packageName, "app.aemu.ui.Icon$id")

@@ -6,7 +6,7 @@
 #   gold      gold marks on deep brown
 #   retro     green phosphor marks on black
 #   christmas white marks on Christmas red
-#   mono      black marks on white
+#   bw        black marks on white ("Mono" in the app; not ic_launcher_mono, which is the main icon's monochrome layer)
 # Writes res/mipmap-*/ic_launcher_<name>_fg.png (same placement as make-icon.sh), and the background colours go in
 # res/values/colors.xml as ic_bg_<name>.
 set -e
@@ -35,7 +35,7 @@ magick -size ${S}x${S} gradient:'#FF2BD6-#18FFFF' -rotate 45 -gravity center -ex
 magick -size ${S}x${S} gradient:'#FFE082-#FFA000' "$T/gold_fill.png"
 magick -size ${S}x${S} xc:'#39FF14' "$T/retro_fill.png"
 magick -size ${S}x${S} xc:white "$T/christmas_fill.png"
-magick -size ${S}x${S} xc:'#111111' "$T/mono_fill.png"
-for v in neon gold retro christmas mono; do paint $v "$T/${v}_fill.png"; done
+magick -size ${S}x${S} xc:'#111111' "$T/bw_fill.png"
+for v in neon gold retro christmas bw; do paint $v "$T/${v}_fill.png"; done
 rm -rf "$T"
 echo done

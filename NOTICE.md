@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-24**: AEmulator X34 (`0.0.0.2.13-x34`): the Mono icon style was named ic_launcher_mono, the name of the main icon's
+  monochrome layer, so the main adaptive icon referred back to an adaptive icon and launchers showed the default icon; it is now
+  ic_launcher_bw (`res/mipmap-anydpi-v26/ic_launcher_bw.xml`, `res/mipmap-*/ic_launcher_bw_fg.png`, `AndroidManifest.xml`,
+  `res/values/colors.xml`, `app/src/main/java/app/aemu/ui/AppIcons.kt`, `docs/assets/make-icon-variants.sh`); tests in `X34IconTest.kt`.
 - **2026-10-23**: AEmulator X33 (`0.0.0.2.13-x33`): new coral app icon, artwork by Chris (donkris01) (`docs/assets/icon-x.png`,
   `docs/assets/logo.png`, `docs/assets/make-icon.sh`, `docs/assets/make-icon-variants.sh`, `res/mipmap-*/ic_launcher_*.png`,
   `res/drawable-nodpi/logo.png`, `res/values/colors.xml` `ic_bg`, `app/src/main/java/app/aemu/ui/AppIcons.kt`).

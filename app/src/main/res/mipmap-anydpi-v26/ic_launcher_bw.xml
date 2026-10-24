@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AEmulator X: "mono" (black and white) app icon; not called ic_launcher_mono, the name of the monochrome layer (docs/assets/make-icon-variants.sh), artwork by Chris (donkris01) -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_bg_bw" />
+    <foreground android:drawable="@mipmap/ic_launcher_bw_fg" />
+    <monochrome android:drawable="@mipmap/ic_launcher_mono" />
+</adaptive-icon>
