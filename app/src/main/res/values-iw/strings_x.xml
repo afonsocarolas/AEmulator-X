@@ -415,6 +415,29 @@
     <string name="x_tag_container">מכולה</string>
     <string name="x_ss_title">מצגת</string>
     <string name="x_ss_empty">עדיין אין מה להציג. צלמו כמה צילומי מסך או ייבאו קושחה, ואז חזרו!</string>
+    <!-- X35: live backgrounds -->
+    <string name="x_lb_title">רקע חי</string>
+    <string name="x_lb_sub">סצנה זזה מאחורי הספרייה (תמונת הרקע שלך קודמת לה)</string>
+    <string name="x_lb_off">כבוי</string>
+    <string name="x_lb_stars">שדה כוכבים</string>
+    <string name="x_lb_synth">סינתווייב</string>
+    <string name="x_lb_matrix">מטריקס</string>
+    <string name="x_lb_rain">גשם</string>
+    <string name="x_lb_fireflies">גחליליות</string>
+    <!-- X35: penalty shootout (back) -->
+    <string name="x_pk_title">דו-קרב פנדלים</string>
+    <string name="x_pk_you">את/ה</string>
+    <string name="x_pk_cpu">הטלפון</string>
+    <string name="x_pk_shoot">החליקו את הכדור לכיוון השער כדי לבעוט!\nהחלקה ארוכה יותר = גבוה יותר.</string>
+    <string name="x_pk_keep">את/ה בשער! הקישו לאן לזנק 🧤</string>
+    <string name="x_pk_goal">גול!</string>
+    <string name="x_pk_saved">הצלה!</string>
+    <string name="x_pk_miss">החטאה!</string>
+    <string name="x_pk_won">ניצחת!</string>
+    <string name="x_pk_lost">הפעם הטלפון ניצח</string>
+    <string name="x_pk_again">לשחק שוב</string>
+    <string name="ach_penalty">מלך הפנדלים</string>
+    <string name="ach_penalty_d">לנצח בדו-קרב פנדלים</string>
     <string-array name="x_fotd_facts">
         <item>הטלפון הראשון עם Android, ה-T-Mobile G1 (HTC Dream), היה עם מקלדת נשלפת וכדור עקיבה.</item>
         <item>Cupcake (1.5) הייתה גרסת Android הראשונה עם מקלדת על המסך ווידג׳טים במסך הבית.</item>

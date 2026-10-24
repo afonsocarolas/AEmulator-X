@@ -49,6 +49,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.SportsSoccer
 import androidx.compose.material.icons.rounded.Slideshow
 import androidx.compose.material.icons.rounded.Wallpaper
 import androidx.compose.material.icons.rounded.CardGiftcard
@@ -360,6 +361,9 @@ fun Library(model: LibraryModel) {
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_museum_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.Museum, null) },
                                 onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, MuseumActivity::class.java)) })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_pk_title)) },
+                                leadingIcon = { Icon(Icons.Rounded.SportsSoccer, null) },
+                                onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, PenaltyActivity::class.java)) })
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_wg_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.Wallpaper, null) },
                                 onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, WallpaperGalleryActivity::class.java)) })

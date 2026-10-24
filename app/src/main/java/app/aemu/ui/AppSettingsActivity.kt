@@ -250,6 +250,8 @@ private fun AppSettings(onBack: () -> Unit, onRestyle: () -> Unit) {
                     }
                     // AEmulator X: the home screen icon
                     AppIconPicker()
+                    // AEmulator X: moving scenes behind the library
+                    LiveBackgroundPicker()
                     // AEmulator X: the app's own little sounds
                     var sfx by remember { mutableStateOf(app.aemu.core.UiSounds.enabled(ctx)) }
                     Toggle(stringResource(R.string.x_sfx), stringResource(R.string.x_sfx_sub), sfx) {

@@ -65,6 +65,10 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-24**: AEmulator X35 (`0.0.0.2.13-x35`): live backgrounds (`app/src/main/java/app/aemu/core/LiveScenes.kt`,
+  `ui/LiveBackground.kt`, `ui/XStyle.kt`, `ui/AppSettingsActivity.kt`), penalty shootout (`core/Penalty.kt`, `ui/PenaltyActivity.kt`,
+  whistle and crowd sounds in `core/UiSounds.kt`, Penalty king badge in `core/Achievements.kt`); tests in `X35LiveScenesTest.kt`,
+  `X27PenaltyTest.kt`.
 - **2026-10-24**: AEmulator X34 (`0.0.0.2.13-x34`): the Mono icon style was named ic_launcher_mono, the name of the main icon's
   monochrome layer, so the main adaptive icon referred back to an adaptive icon and launchers showed the default icon; it is now
   ic_launcher_bw (`res/mipmap-anydpi-v26/ic_launcher_bw.xml`, `res/mipmap-*/ic_launcher_bw_fg.png`, `AndroidManifest.xml`,

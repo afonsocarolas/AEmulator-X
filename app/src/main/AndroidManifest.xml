@@ -175,6 +175,11 @@
             android:theme="@style/Theme.AEmulator.Vm"
             android:parentActivityName=".ui.MainActivity" />
 
+        <!-- AEmulator X: Penalty shootout -->
+        <activity android:name=".ui.PenaltyActivity" android:exported="false"
+            android:theme="@style/Theme.AEmulator.Vm"
+            android:parentActivityName=".ui.MainActivity" />
+
         <!-- AEmulator X: Sleep mode -->
         <activity android:name=".ui.SleepActivity" android:exported="false"
             android:theme="@style/Theme.AEmulator.Vm"

@@ -27,7 +27,7 @@ object Achievements {
 
     /** counter keys bumped by the running system */
     const val SCREENSHOT = "screenshot"; const val RECORD = "record"; const val WEB = "web"; const val RETRO = "retro"
-    const val GAME = "game"; const val VNC = "vnc"; const val SNAKE = "snake"
+    const val GAME = "game"; const val VNC = "vnc"; const val SNAKE = "snake"; const val PENALTY_WIN = "penalty_win"
 
     private fun eras(f: Facts) = f.bootedApis.map { app.aemu.ui.AndroidEras.name(it) }.distinct().size
 
@@ -47,6 +47,7 @@ object Achievements {
         Badge("retro", "📺", R.string.ach_retro, R.string.ach_retro_d, 1) { it.counts[RETRO] ?: 0 },
         Badge("gamer", "🕹️", R.string.ach_gamer, R.string.ach_gamer_d, 1) { it.counts[GAME] ?: 0 },
         Badge("dessert", "🐍", R.string.ach_dessert, R.string.ach_dessert_d, 1) { it.counts[SNAKE] ?: 0 },
+        Badge("penalty", "⚽", R.string.ach_penalty, R.string.ach_penalty_d, 1) { it.counts[PENALTY_WIN] ?: 0 },
     )
 
     private fun countsFile(ctx: Context) = File(ctx.filesDir, "x-achievements.counts")

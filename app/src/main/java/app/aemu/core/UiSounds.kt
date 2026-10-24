@@ -17,7 +17,7 @@ import kotlin.random.Random
  * files to license. Off with Settings › Appearance › Sound effects.
  */
 object UiSounds {
-    enum class Sfx { START, SHUTTER, BADGE, CHALLENGE, PARTY, POP, GAME_OVER }
+    enum class Sfx { START, SHUTTER, BADGE, CHALLENGE, PARTY, POP, GAME_OVER, WHISTLE, CHEER }
 
     const val RATE = 44100
     private const val PREF = "x_sfx"
@@ -76,11 +76,34 @@ object UiSounds {
                 Triple(72.0, 1.08, 0.35), Triple(71.0, 1.44, 0.7))
             Sfx.POP -> listOf(Triple(84.0, 0.0, 0.08), Triple(91.0, 0.03, 0.1))
             Sfx.GAME_OVER -> listOf(Triple(72.0, 0.0, 0.3), Triple(67.0, 0.18, 0.3), Triple(63.0, 0.36, 0.3), Triple(60.0, 0.54, 0.7))
-            Sfx.SHUTTER -> emptyList()
+            Sfx.SHUTTER, Sfx.WHISTLE, Sfx.CHEER -> emptyList()
         }
-        val len = if (s == Sfx.SHUTTER) 0.16 else notes.maxOf { it.second + it.third } + 0.05
+        val len = when (s) { Sfx.SHUTTER -> 0.16; Sfx.WHISTLE -> 1.0; Sfx.CHEER -> 1.6; else -> notes.maxOf { it.second + it.third } + 0.05 }
         val out = DoubleArray((len * RATE).toInt())
-        if (s == Sfx.SHUTTER) {
+        if (s == Sfx.WHISTLE) {
+            // a referee's whistle: two short blasts then a long one, a high tone with a fast pea rattle
+            for ((at, l) in listOf(0.0 to 0.12, 0.2 to 0.12, 0.4 to 0.55)) {
+                val start = (at * RATE).toInt()
+                for (i in 0 until (l * RATE).toInt()) {
+                    val k = start + i; if (k >= out.size) break
+                    val t = i.toDouble() / RATE
+                    val env = minOf(1.0, t / 0.01) * minOf(1.0, (l - t) / 0.03)
+                    val f = 2800.0 + 120.0 * sin(2 * PI * 38 * t)
+                    out[k] += 0.4 * env * sin(2 * PI * f * t) * (0.75 + 0.25 * sin(2 * PI * 38 * t))
+                }
+            }
+        } else if (s == Sfx.CHEER) {
+            // a crowd: lots of noise, smoothed so it sounds like many voices, swelling up and fading out
+            val rnd = Random(11)
+            var a = 0.0; var b = 0.0
+            for (k in out.indices) {
+                val t = k.toDouble() / RATE
+                a += 0.12 * (rnd.nextDouble() * 2 - 1 - a)
+                b += 0.5 * (a - b)
+                val env = minOf(1.0, t / 0.25) * minOf(1.0, (1.6 - t) / 0.9)
+                out[k] = 2.2 * env * (a - 0.6 * b) * (1.0 + 0.2 * sin(2 * PI * 3.0 * t))
+            }
+        } else if (s == Sfx.SHUTTER) {
             // two short noise clicks: the shutter opens, then closes
             val rnd = Random(7)
             for ((at, g) in listOf(0.0 to 0.55, 0.07 to 0.4)) {

@@ -415,6 +415,29 @@
     <string name="x_tag_container">Kontener</string>
     <string name="x_ss_title">Pokaz slajdów</string>
     <string name="x_ss_empty">Na razie nie ma czego pokazać. Zrób zrzuty ekranu albo zaimportuj firmware i wróć!</string>
+    <!-- X35: live backgrounds -->
+    <string name="x_lb_title">Żywe tło</string>
+    <string name="x_lb_sub">Ruchoma scena za biblioteką (Twój własny obrazek tła ma pierwszeństwo)</string>
+    <string name="x_lb_off">Wyłączone</string>
+    <string name="x_lb_stars">Gwiazdy</string>
+    <string name="x_lb_synth">Synthwave</string>
+    <string name="x_lb_matrix">Matrix</string>
+    <string name="x_lb_rain">Deszcz</string>
+    <string name="x_lb_fireflies">Świetliki</string>
+    <!-- X35: penalty shootout (back) -->
+    <string name="x_pk_title">Rzuty karne</string>
+    <string name="x_pk_you">TY</string>
+    <string name="x_pk_cpu">TELEFON</string>
+    <string name="x_pk_shoot">Przesuń piłkę w stronę bramki, by strzelić!\nDłuższe przesunięcie = wyżej.</string>
+    <string name="x_pk_keep">Jesteś w bramce! Stuknij, gdzie się rzucić 🧤</string>
+    <string name="x_pk_goal">GOL!</string>
+    <string name="x_pk_saved">OBRONIONY!</string>
+    <string name="x_pk_miss">Pudło!</string>
+    <string name="x_pk_won">Wygrywasz!</string>
+    <string name="x_pk_lost">Tym razem wygrywa telefon</string>
+    <string name="x_pk_again">Zagraj ponownie</string>
+    <string name="ach_penalty">Król karnych</string>
+    <string name="ach_penalty_d">Wygraj serię rzutów karnych</string>
     <string-array name="x_fotd_facts">
         <item>Pierwszy telefon z Androidem, T-Mobile G1 (HTC Dream), miał wysuwaną klawiaturę i trackball.</item>
         <item>Cupcake (1.5) to pierwszy Android z klawiaturą ekranową i widżetami na ekranie głównym.</item>

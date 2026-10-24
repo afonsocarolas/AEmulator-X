@@ -475,4 +475,27 @@
     <string name="x_tag_container">Контейнер</string>
     <string name="x_ss_title">Слайд-шоу</string>
     <string name="x_ss_empty">Пока нечего показать. Сделайте скриншоты или импортируйте прошивку и возвращайтесь!</string>
+    <!-- X35: live backgrounds -->
+    <string name="x_lb_title">Живой фон</string>
+    <string name="x_lb_sub">Движущаяся сцена за библиотекой (ваша картинка-обои важнее)</string>
+    <string name="x_lb_off">Выкл.</string>
+    <string name="x_lb_stars">Звёзды</string>
+    <string name="x_lb_synth">Синтвейв</string>
+    <string name="x_lb_matrix">Матрица</string>
+    <string name="x_lb_rain">Дождь</string>
+    <string name="x_lb_fireflies">Светлячки</string>
+    <!-- X35: penalty shootout (back) -->
+    <string name="x_pk_title">Серия пенальти</string>
+    <string name="x_pk_you">ВЫ</string>
+    <string name="x_pk_cpu">ТЕЛЕФОН</string>
+    <string name="x_pk_shoot">Проведите по мячу к воротам, чтобы ударить!\nЧем длиннее, тем выше.</string>
+    <string name="x_pk_keep">Вы на воротах! Нажмите, куда прыгнуть 🧤</string>
+    <string name="x_pk_goal">ГОЛ!</string>
+    <string name="x_pk_saved">ОТБИЛ!</string>
+    <string name="x_pk_miss">Мимо!</string>
+    <string name="x_pk_won">Вы победили!</string>
+    <string name="x_pk_lost">В этот раз победил телефон</string>
+    <string name="x_pk_again">Ещё раз</string>
+    <string name="ach_penalty">Король пенальти</string>
+    <string name="ach_penalty_d">Выиграйте серию пенальти</string>
 </resources>

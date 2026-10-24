@@ -415,6 +415,29 @@
     <string name="x_tag_container">Container</string>
     <string name="x_ss_title">Diashow</string>
     <string name="x_ss_empty">Noch nichts zu zeigen. Mach ein paar Screenshots oder importiere eine Firmware und komm wieder!</string>
+    <!-- X35: live backgrounds -->
+    <string name="x_lb_title">Lebendiger Hintergrund</string>
+    <string name="x_lb_sub">Eine bewegte Szene hinter der Bibliothek (dein eigenes Hintergrundbild hat Vorrang)</string>
+    <string name="x_lb_off">Aus</string>
+    <string name="x_lb_stars">Sternenfeld</string>
+    <string name="x_lb_synth">Synthwave</string>
+    <string name="x_lb_matrix">Matrix</string>
+    <string name="x_lb_rain">Regen</string>
+    <string name="x_lb_fireflies">Glühwürmchen</string>
+    <!-- X35: penalty shootout (back) -->
+    <string name="x_pk_title">Elfmeterschießen</string>
+    <string name="x_pk_you">DU</string>
+    <string name="x_pk_cpu">TELEFON</string>
+    <string name="x_pk_shoot">Wische den Ball Richtung Tor, um zu schießen!\nLänger wischen = höher.</string>
+    <string name="x_pk_keep">Du stehst im Tor! Tippe, wohin du springst 🧤</string>
+    <string name="x_pk_goal">TOR!</string>
+    <string name="x_pk_saved">GEHALTEN!</string>
+    <string name="x_pk_miss">Daneben!</string>
+    <string name="x_pk_won">Du gewinnst!</string>
+    <string name="x_pk_lost">Diesmal gewinnt das Telefon</string>
+    <string name="x_pk_again">Nochmal spielen</string>
+    <string name="ach_penalty">Elfmeterkönig</string>
+    <string name="ach_penalty_d">Gewinne ein Elfmeterschießen</string>
     <string-array name="x_fotd_facts">
         <item>Das allererste Android-Telefon, das T-Mobile G1 (HTC Dream), hatte eine ausziehbare Tastatur und einen Trackball.</item>
         <item>Cupcake (1.5) war das erste Android mit Bildschirmtastatur und Widgets auf dem Startbildschirm.</item>

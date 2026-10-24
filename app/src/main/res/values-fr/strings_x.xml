@@ -415,6 +415,29 @@
     <string name="x_tag_container">Conteneur</string>
     <string name="x_ss_title">Diaporama</string>
     <string name="x_ss_empty">Rien à montrer pour l’instant. Faites des captures ou importez un firmware, puis revenez !</string>
+    <!-- X35: live backgrounds -->
+    <string name="x_lb_title">Fond animé</string>
+    <string name="x_lb_sub">Une scène qui bouge derrière la bibliothèque (votre propre image de fond passe avant)</string>
+    <string name="x_lb_off">Désactivé</string>
+    <string name="x_lb_stars">Étoiles</string>
+    <string name="x_lb_synth">Synthwave</string>
+    <string name="x_lb_matrix">Matrix</string>
+    <string name="x_lb_rain">Pluie</string>
+    <string name="x_lb_fireflies">Lucioles</string>
+    <!-- X35: penalty shootout (back) -->
+    <string name="x_pk_title">Tirs au but</string>
+    <string name="x_pk_you">VOUS</string>
+    <string name="x_pk_cpu">TÉLÉPHONE</string>
+    <string name="x_pk_shoot">Glissez le ballon vers le but pour tirer !\nPlus le geste est long, plus c’est haut.</string>
+    <string name="x_pk_keep">Vous êtes dans les buts ! Touchez où plonger 🧤</string>
+    <string name="x_pk_goal">BUT !</string>
+    <string name="x_pk_saved">ARRÊT !</string>
+    <string name="x_pk_miss">Raté !</string>
+    <string name="x_pk_won">Vous gagnez !</string>
+    <string name="x_pk_lost">Le téléphone gagne cette fois</string>
+    <string name="x_pk_again">Rejouer</string>
+    <string name="ach_penalty">Roi des penaltys</string>
+    <string name="ach_penalty_d">Gagner une séance de tirs au but</string>
     <string-array name="x_fotd_facts">
         <item>Le tout premier téléphone Android, le T-Mobile G1 (HTC Dream), avait un clavier coulissant et un trackball.</item>
         <item>Cupcake (1.5) a été le premier Android avec un clavier à l’écran et des widgets sur l’écran d’accueil.</item>

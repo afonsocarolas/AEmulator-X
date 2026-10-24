@@ -475,4 +475,27 @@
     <string name="x_tag_container">Contenedor</string>
     <string name="x_ss_title">Presentación</string>
     <string name="x_ss_empty">Aún no hay nada que mostrar. ¡Haz capturas o importa un firmware y vuelve!</string>
+    <!-- X35: live backgrounds -->
+    <string name="x_lb_title">Fondo animado</string>
+    <string name="x_lb_sub">Una escena en movimiento detrás de la biblioteca (tu propia imagen de fondo va primero)</string>
+    <string name="x_lb_off">Apagado</string>
+    <string name="x_lb_stars">Estrellas</string>
+    <string name="x_lb_synth">Synthwave</string>
+    <string name="x_lb_matrix">Matrix</string>
+    <string name="x_lb_rain">Lluvia</string>
+    <string name="x_lb_fireflies">Luciérnagas</string>
+    <!-- X35: penalty shootout (back) -->
+    <string name="x_pk_title">Tanda de penaltis</string>
+    <string name="x_pk_you">TÚ</string>
+    <string name="x_pk_cpu">TELÉFONO</string>
+    <string name="x_pk_shoot">¡Desliza el balón hacia la portería para chutar!\nCuanto más largo, más alto.</string>
+    <string name="x_pk_keep">¡Estás en la portería! Toca donde quieres lanzarte 🧤</string>
+    <string name="x_pk_goal">¡GOL!</string>
+    <string name="x_pk_saved">¡PARADA!</string>
+    <string name="x_pk_miss">¡Fuera!</string>
+    <string name="x_pk_won">¡Ganaste!</string>
+    <string name="x_pk_lost">Esta vez gana el teléfono</string>
+    <string name="x_pk_again">Jugar otra vez</string>
+    <string name="ach_penalty">Rey de los penaltis</string>
+    <string name="ach_penalty_d">Gana una tanda de penaltis</string>
 </resources>

@@ -476,4 +476,27 @@
     <string name="x_tag_container">Container</string>
     <string name="x_ss_title">Slideshow</string>
     <string name="x_ss_empty">Nothing to show yet. Take some screenshots or import a firmware, then come back!</string>
+    <!-- X35: live backgrounds -->
+    <string name="x_lb_title">Live background</string>
+    <string name="x_lb_sub">A moving scene behind the library (your own wallpaper picture comes first)</string>
+    <string name="x_lb_off">Off</string>
+    <string name="x_lb_stars">Starfield</string>
+    <string name="x_lb_synth">Synthwave</string>
+    <string name="x_lb_matrix">Matrix</string>
+    <string name="x_lb_rain">Rain</string>
+    <string name="x_lb_fireflies">Fireflies</string>
+    <!-- X35: penalty shootout (back) -->
+    <string name="x_pk_title">Penalty shootout</string>
+    <string name="x_pk_you">YOU</string>
+    <string name="x_pk_cpu">PHONE</string>
+    <string name="x_pk_shoot">Swipe the ball towards the goal to shoot!\nA longer swipe goes higher.</string>
+    <string name="x_pk_keep">You are in goal! Tap where to dive 🧤</string>
+    <string name="x_pk_goal">GOAL!</string>
+    <string name="x_pk_saved">SAVED!</string>
+    <string name="x_pk_miss">Missed!</string>
+    <string name="x_pk_won">You win!</string>
+    <string name="x_pk_lost">The phone wins this time</string>
+    <string name="x_pk_again">Play again</string>
+    <string name="ach_penalty">Penalty king</string>
+    <string name="ach_penalty_d">Win a penalty shootout</string>
 </resources>
