@@ -1,9 +1,9 @@
 #!/bin/bash
-# AEmulator X: launcher icon layers from docs/assets/icon-x.png (the full artwork by Chris (donkris01), 1024x1024 since
-# X33) with ImageMagick 7.
-#   foreground: the artwork at 224/432 of the layer, so the "×" (its farthest corner, ~0.55 of the size from the centre)
+# AEmulator X: launcher icon layers from docs/assets/icon-x.png (the full artwork by Chris (donkris01): coral in X33,
+# green with the "×" top left since X38) with ImageMagick 7.
+#   foreground: the artwork at 224/432 of the layer, so the "×" (its farthest corner, ~0.57 of the size from the centre)
 #               stays inside the 66dp safe circle; a soft circular fade lets the dashed lines melt into the background
-#               colour (#FD5751, the artwork's own coral, in res/values/colors.xml ic_bg)
+#               colour (#0DA916, the artwork's own green, in res/values/colors.xml ic_bg)
 #   monochrome: only the white marks, same placement (Android 13 themed icons)
 set -e
 cd "$(dirname "$0")"

@@ -46,7 +46,7 @@ object AppIcons {
     class Icon(val id: String, val label: Int, val bg: Long, val fg: Int)
 
     val ALL = listOf(
-        Icon("Default", R.string.x_ic_default, 0xFFFD5751, R.mipmap.ic_launcher_fg),
+        Icon("Default", R.string.x_ic_default, 0xFF0DA916, R.mipmap.ic_launcher_fg),
         Icon("Neon", R.string.x_ic_neon, 0xFF0B0A12, R.mipmap.ic_launcher_neon_fg),
         Icon("Gold", R.string.x_ic_gold, 0xFF3E2723, R.mipmap.ic_launcher_gold_fg),
         Icon("Retro", R.string.x_ic_retro, 0xFF050A05, R.mipmap.ic_launcher_retro_fg),
