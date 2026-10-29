@@ -498,4 +498,12 @@
     <string name="x_pk_again">Jogar de novo</string>
     <string name="ach_penalty">Rei dos pênaltis</string>
     <string name="ach_penalty_d">Vença uma disputa de pênaltis</string>
+    <!-- X39: boot race -->
+    <string name="x_br_title">Corrida de inicialização</string>
+    <string name="x_br_sub">Seus firmwares do início mais rápido ao mais lento. Inicie de novo para bater seus recordes!</string>
+    <string name="x_br_empty">Ainda não há tempos de inicialização. Inicie um firmware e a corrida começa!</string>
+    <string name="x_br_detail">último %1$s · %2$d inicializações</string>
+    <string name="x_br_record">Novo recorde! %1$s (era %2$s)</string>
+    <string name="x_br_first">Tempo de inicialização: %1$s. Bata da próxima vez!</string>
+    <string name="x_br_slower">%1$s · recorde %2$s</string>
 </resources>

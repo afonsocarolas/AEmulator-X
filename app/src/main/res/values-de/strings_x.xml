@@ -438,6 +438,14 @@
     <string name="x_pk_again">Nochmal spielen</string>
     <string name="ach_penalty">Elfmeterkönig</string>
     <string name="ach_penalty_d">Gewinne ein Elfmeterschießen</string>
+    <!-- X39: boot race -->
+    <string name="x_br_title">Start-Rennen</string>
+    <string name="x_br_sub">Deine Firmwares vom schnellsten Start zum langsamsten. Starte erneut, um deine Rekorde zu brechen!</string>
+    <string name="x_br_empty">Noch keine Startzeiten. Starte eine Firmware, und das Rennen beginnt!</string>
+    <string name="x_br_detail">zuletzt %1$s · %2$d Starts</string>
+    <string name="x_br_record">Neuer Rekord! %1$s (vorher %2$s)</string>
+    <string name="x_br_first">Startzeit: %1$s. Schlag sie beim nächsten Mal!</string>
+    <string name="x_br_slower">%1$s · Rekord %2$s</string>
     <string-array name="x_fotd_facts">
         <item>Das allererste Android-Telefon, das T-Mobile G1 (HTC Dream), hatte eine ausziehbare Tastatur und einen Trackball.</item>
         <item>Cupcake (1.5) war das erste Android mit Bildschirmtastatur und Widgets auf dem Startbildschirm.</item>

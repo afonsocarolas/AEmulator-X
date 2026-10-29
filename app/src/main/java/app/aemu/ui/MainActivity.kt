@@ -49,6 +49,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material.icons.rounded.SportsSoccer
 import androidx.compose.material.icons.rounded.Slideshow
 import androidx.compose.material.icons.rounded.Wallpaper
@@ -221,6 +222,9 @@ fun Library(model: LibraryModel) {
     var showAchievements by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
     if (showStats) StatsDialog(onDismiss = { showStats = false })
+    // AEmulator X: boot race leaderboard
+    var showBootRace by remember { mutableStateOf(false) }
+    if (showBootRace) BootRaceDialog(allImages, onDismiss = { showBootRace = false })
     var newBadges by remember { mutableStateOf<List<app.aemu.core.Achievements.Badge>>(emptyList()) }
     LaunchedEffect(gridRefresh) {
         val fresh = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { runCatching { app.aemu.core.Achievements.newlyUnlocked(ctx) }.getOrDefault(emptyList()) }
@@ -380,6 +384,9 @@ fun Library(model: LibraryModel) {
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.st_title)) },
                                 leadingIcon = { Icon(Icons.Rounded.BarChart, null) },
                                 onClick = { moreMenu = false; showStats = true })
+                            androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_br_title)) },
+                                leadingIcon = { Icon(Icons.Rounded.Timer, null) },
+                                onClick = { moreMenu = false; showBootRace = true })
                             androidx.compose.material3.DropdownMenuItem(text = { Text(stringResource(R.string.x_wr_menu)) },
                                 leadingIcon = { Icon(Icons.Rounded.CardGiftcard, null) },
                                 onClick = { moreMenu = false; ctx.startActivity(Intent(ctx, WrappedActivity::class.java)) })

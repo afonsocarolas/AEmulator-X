@@ -49,6 +49,8 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
     @Volatile var bootAt = 0L
         private set
     @Volatile var bootDoneAt = 0L
+    /** AEmulator X: how the last boot did in the boot race (set a moment after boot completes) */
+    @Volatile var lastBootResult: BootRace.Result? = null
     // the boot animation has gone: the lock screen or the home screen is up (7.0+ reports boot_completed only after the user unlocks)
     @Volatile var screenUpAt = 0L
     /** Times of the zygote crashes: a system that keeps dying is stopped instead of being restarted forever. */
@@ -346,6 +348,7 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
         Keeper.hold(ctx, img.name)
         bootAt = System.currentTimeMillis()
         bootDoneAt = 0
+        lastBootResult = null
         setState(State.BOOTING)
         // The vendor libs mmi pulls in (mmi_led.so, libmm-disp-apis.so, hwcomposer…) link libbinder, which starts a binder
         // thread pool. Without binderd every BINDER_WRITE_READ fails with ENOTCONN, and libbinder's joinThreadPool()
@@ -857,6 +860,7 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
         watchFb0()
         bootAt = System.currentTimeMillis()
         bootDoneAt = 0
+        lastBootResult = null
         everBooted = false; zygoteRestarts = 0; imeRetried = false
         bootAnimCheckRunning.set(false); bootAnimFixes = 0
         touchWizMediaStarted = false
@@ -1646,6 +1650,8 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
         runCatching {
             ImageStore.update(ctx, img.id) { it.copy(lastBootMs = bootDoneAt - bootAt, bootCount = it.bootCount + 1) }
         }.onFailure { log("boot statistics: could not save: ${it.message}") }
+        // AEmulator X: boot race (the real system only, not recovery or charging)
+        if (!recoveryMode && !lowPowerBoot) lastBootResult = runCatching { BootRace.record(ctx, img.id, bootDoneAt - bootAt) }.getOrNull()
         // AEmulator X: daily challenges
         Achievements.bump(ctx, DailyChallenge.BOOT)
         Achievements.bump(ctx, DailyChallenge.bootKey(DailyPick.factGroup(img.api)))
@@ -2001,6 +2007,7 @@ class GuestVm(val ctx: Context, val img: GuestImage, val lowPowerBoot: Boolean =
         val z = img.services.firstOrNull { it.name == "zygote" } ?: return
         if (img.api >= 24) runCatching { TreeFixer(ctx, paths, img, ::log).ensureHostPathAlias() }
         bootDoneAt = 0
+        lastBootResult = null
         setState(State.BOOTING)
         paths.socket("zygote").delete()
         paths.socket("zygote_secondary").delete()

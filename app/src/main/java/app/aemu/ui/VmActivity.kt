@@ -645,6 +645,8 @@ class VmActivity : ComponentActivity() {
 
     /** on-screen game buttons shown (menu toggle, remembered in vm_ui prefs) */
     private var padVisible by mutableStateOf(false)
+    /** AEmulator X: the boot race result shown for a few seconds after a boot */
+    private var bootBanner by mutableStateOf<app.aemu.core.BootRace.Result?>(null)
     /** AEmulator X: play timer (wall-clock end, 0 = off), its picker and its "time's up" */
     private var timerEnd by mutableLongStateOf(0L)
     private var timerDialog by mutableStateOf(false)
@@ -990,6 +992,44 @@ class VmActivity : ComponentActivity() {
         if (::vm.isInitialized) vm.audio.tap = null
         runOnUiThread { recStartedAt = 0L }
         rec.stop()?.let { toast(getString(R.string.x_rec_saved, it)) }
+    }
+
+    // ------------------------------------------------------------------ AEmulator X: boot race
+
+    /** A moment after the system has booted: its time, and a celebration when it beat its record. */
+    @Composable
+    private fun androidx.compose.foundation.layout.BoxScope.BootRaceBanner() {
+        LaunchedEffect(state) {
+            if (state != GuestVm.State.RUNNING || !::vm.isInitialized) return@LaunchedEffect
+            repeat(120) {
+                val r = vm.lastBootResult
+                if (r != null) {
+                    vm.lastBootResult = null
+                    bootBanner = r
+                    if (r.outcome == app.aemu.core.BootRace.Outcome.RECORD)
+                        app.aemu.core.UiSounds.play(this@VmActivity, app.aemu.core.UiSounds.Sfx.CHALLENGE)
+                    delay(if (r.outcome == app.aemu.core.BootRace.Outcome.SLOWER) 4000 else 7000)
+                    bootBanner = null
+                    return@LaunchedEffect
+                }
+                delay(1000)
+            }
+        }
+        val r = bootBanner ?: return
+        val record = r.outcome == app.aemu.core.BootRace.Outcome.RECORD
+        val text = when (r.outcome) {
+            app.aemu.core.BootRace.Outcome.RECORD -> "🏆 " + getString(R.string.x_br_record, app.aemu.core.BootRace.seconds(r.ms),
+                app.aemu.core.BootRace.seconds(r.previousBest ?: r.ms))
+            app.aemu.core.BootRace.Outcome.FIRST -> "🏁 " + getString(R.string.x_br_first, app.aemu.core.BootRace.seconds(r.ms))
+            app.aemu.core.BootRace.Outcome.SLOWER -> "⏱️ " + getString(R.string.x_br_slower, app.aemu.core.BootRace.seconds(r.ms),
+                app.aemu.core.BootRace.seconds(r.previousBest ?: r.ms))
+        }
+        Surface(shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+            color = if (record) Color(0xF2FFB300) else Color(0xCC000000),
+            modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 12.dp, start = 16.dp, end = 16.dp)) {
+            Text(text, color = if (record) Color(0xFF3E2723) else Color.White, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp))
+        }
     }
 
     // ------------------------------------------------------------------ AEmulator X: play timer
@@ -2132,6 +2172,7 @@ class VmActivity : ComponentActivity() {
                 app.aemu.core.GamepadMap.key(keyCode, padMode())?.let { code -> vm.input.key(code, down) }
             }, layout = padLayout, editing = padEditing, selected = padSelected, onSelect = { padSelected = it }, onLayout = { padLayout = it })
             PlayTimerLayer()
+            BootRaceBanner()
             if (padEditing) PadEditorBar(Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 8.dp, start = 12.dp, end = 12.dp).widthIn(max = 460.dp))
 
             // AEmulator X: performance overlay; tap it to hide

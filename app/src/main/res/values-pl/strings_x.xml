@@ -438,6 +438,14 @@
     <string name="x_pk_again">Zagraj ponownie</string>
     <string name="ach_penalty">Król karnych</string>
     <string name="ach_penalty_d">Wygraj serię rzutów karnych</string>
+    <!-- X39: boot race -->
+    <string name="x_br_title">Wyścig uruchamiania</string>
+    <string name="x_br_sub">Twoje firmware od najszybszego uruchomienia do najwolniejszego. Uruchamiaj ponownie, by bić rekordy!</string>
+    <string name="x_br_empty">Brak czasów uruchamiania. Uruchom firmware, a wyścig się zacznie!</string>
+    <string name="x_br_detail">ostatnio %1$s · uruchomień: %2$d</string>
+    <string name="x_br_record">Nowy rekord! %1$s (było %2$s)</string>
+    <string name="x_br_first">Czas uruchamiania: %1$s. Pobij go następnym razem!</string>
+    <string name="x_br_slower">%1$s · rekord %2$s</string>
     <string-array name="x_fotd_facts">
         <item>Pierwszy telefon z Androidem, T-Mobile G1 (HTC Dream), miał wysuwaną klawiaturę i trackball.</item>
         <item>Cupcake (1.5) to pierwszy Android z klawiaturą ekranową i widżetami na ekranie głównym.</item>

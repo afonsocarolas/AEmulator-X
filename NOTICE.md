@@ -65,6 +65,8 @@ The Plus notice below, with its credits and history, is kept unchanged.
   `VmActivity.kt` `receiveFiles`); quick-start home screen widget (`app/src/main/java/app/aemu/ui/RecentWidget.kt`,
   `res/layout/widget_recent.xml`, `res/xml/widget_recent_info.xml`, `res/values/widget_styles.xml`,
   `res/drawable/widget_*.xml`; tests in `RecentWidgetTest.kt`).
+- **2026-10-29**: AEmulator X39 (`0.0.0.2.13-x39`): boot race (`app/src/main/java/app/aemu/core/BootRace.kt`, `core/GuestVm.kt`,
+  `ui/BootRaceDialog.kt`, `VmActivity.kt`, `MainActivity.kt`); tests in `X39BootRaceTest.kt`.
 - **2026-10-28**: AEmulator X38 (`0.0.0.2.13-x38`): new green app icon, artwork by Chris (donkris01) (`docs/assets/icon-x.png`,
   `docs/assets/logo.png`, `docs/assets/make-icon.sh`, `res/mipmap-*/ic_launcher_*.png`, `res/drawable-nodpi/logo.png`,
   `res/values/colors.xml` `ic_bg`, `app/src/main/java/app/aemu/ui/AppIcons.kt`).

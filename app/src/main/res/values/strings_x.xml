@@ -499,4 +499,12 @@
     <string name="x_pk_again">Play again</string>
     <string name="ach_penalty">Penalty king</string>
     <string name="ach_penalty_d">Win a penalty shootout</string>
+    <!-- X39: boot race -->
+    <string name="x_br_title">Boot race</string>
+    <string name="x_br_sub">Your firmwares from the fastest boot to the slowest. Boot again to beat your records!</string>
+    <string name="x_br_empty">No boot times yet. Start a firmware and the race begins!</string>
+    <string name="x_br_detail">last %1$s · %2$d boots</string>
+    <string name="x_br_record">New record! %1$s (was %2$s)</string>
+    <string name="x_br_first">Boot time: %1$s. Beat it next time!</string>
+    <string name="x_br_slower">%1$s · record %2$s</string>
 </resources>

@@ -438,6 +438,14 @@
     <string name="x_pk_again">Rejouer</string>
     <string name="ach_penalty">Roi des penaltys</string>
     <string name="ach_penalty_d">Gagner une séance de tirs au but</string>
+    <!-- X39: boot race -->
+    <string name="x_br_title">Course au démarrage</string>
+    <string name="x_br_sub">Vos firmwares du démarrage le plus rapide au plus lent. Redémarrez pour battre vos records !</string>
+    <string name="x_br_empty">Pas encore de temps de démarrage. Lancez un firmware et la course commence !</string>
+    <string name="x_br_detail">dernier %1$s · %2$d démarrages</string>
+    <string name="x_br_record">Nouveau record ! %1$s (avant %2$s)</string>
+    <string name="x_br_first">Temps de démarrage : %1$s. Battez-le la prochaine fois !</string>
+    <string name="x_br_slower">%1$s · record %2$s</string>
     <string-array name="x_fotd_facts">
         <item>Le tout premier téléphone Android, le T-Mobile G1 (HTC Dream), avait un clavier coulissant et un trackball.</item>
         <item>Cupcake (1.5) a été le premier Android avec un clavier à l’écran et des widgets sur l’écran d’accueil.</item>

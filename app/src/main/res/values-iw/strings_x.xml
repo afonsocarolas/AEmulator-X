@@ -438,6 +438,14 @@
     <string name="x_pk_again">לשחק שוב</string>
     <string name="ach_penalty">מלך הפנדלים</string>
     <string name="ach_penalty_d">לנצח בדו-קרב פנדלים</string>
+    <!-- X39: boot race -->
+    <string name="x_br_title">מרוץ הפעלות</string>
+    <string name="x_br_sub">הקושחות שלך מההפעלה המהירה ביותר לאיטית ביותר. הפעילו שוב כדי לשבור שיאים!</string>
+    <string name="x_br_empty">עדיין אין זמני הפעלה. הפעילו קושחה והמרוץ מתחיל!</string>
+    <string name="x_br_detail">אחרון %1$s · %2$d הפעלות</string>
+    <string name="x_br_record">שיא חדש! %1$s (היה %2$s)</string>
+    <string name="x_br_first">זמן הפעלה: %1$s. נסו לשבור אותו בפעם הבאה!</string>
+    <string name="x_br_slower">%1$s · שיא %2$s</string>
     <string-array name="x_fotd_facts">
         <item>הטלפון הראשון עם Android, ה-T-Mobile G1 (HTC Dream), היה עם מקלדת נשלפת וכדור עקיבה.</item>
         <item>Cupcake (1.5) הייתה גרסת Android הראשונה עם מקלדת על המסך ווידג׳טים במסך הבית.</item>

@@ -498,4 +498,12 @@
     <string name="x_pk_again">Ещё раз</string>
     <string name="ach_penalty">Король пенальти</string>
     <string name="ach_penalty_d">Выиграйте серию пенальти</string>
+    <!-- X39: boot race -->
+    <string name="x_br_title">Гонка запусков</string>
+    <string name="x_br_sub">Ваши прошивки от самого быстрого запуска к самому медленному. Запускайте снова, чтобы побить рекорды!</string>
+    <string name="x_br_empty">Времени запуска пока нет. Запустите прошивку, и гонка начнётся!</string>
+    <string name="x_br_detail">последний %1$s · запусков: %2$d</string>
+    <string name="x_br_record">Новый рекорд! %1$s (было %2$s)</string>
+    <string name="x_br_first">Время запуска: %1$s. Побейте его в следующий раз!</string>
+    <string name="x_br_slower">%1$s · рекорд %2$s</string>
 </resources>
