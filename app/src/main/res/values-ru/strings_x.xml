@@ -506,4 +506,20 @@
     <string name="x_br_record">Новый рекорд! %1$s (было %2$s)</string>
     <string name="x_br_first">Время запуска: %1$s. Побейте его в следующий раз!</string>
     <string name="x_br_slower">%1$s · рекорд %2$s</string>
+    <!-- X40: Android boot history -->
+    <string name="x_bh_title">История загрузки Android</string>
+    <string name="x_bh_empty">Импортируйте прошивку, и её экран загрузки появится здесь.</string>
+    <string name="x_bh_zip">Оригинальная анимация загрузки этой прошивки</string>
+    <string name="x_bh_classic">Классический логотип Android, нарисованный из картинок самой прошивки</string>
+    <string name="x_bh_vendor">Собственный формат производителя: его могут показать только их телефоны</string>
+    <string name="x_bh_none">В этой прошивке не найден экран загрузки</string>
+    <string-array name="x_bh_era">
+        <item>Android 1.x–2.3 показывал серебристое слово ANDROID с бегущим по нему бликом, если производитель не добавлял свою анимацию.</item>
+        <item>Honeycomb создавался для планшетов, в синем футуристичном стиле, включая экран загрузки.</item>
+        <item>Ice Cream Sandwich и Jelly Bean принесли стиль Holo: светящийся синий свет на чёрном.</item>
+        <item>С KitKat экран загрузки стал красочнее, в цветах Google.</item>
+        <item>От Lollipop до Nougat при запуске Android двигались яркие фигуры Material Design.</item>
+        <item>Oreo и Pie были попроще, а многие производители показывали свой логотип.</item>
+        <item>С Android 10 экран загрузки показывает новое слово android, а большинство производителей используют свою фирменную анимацию.</item>
+    </string-array>
 </resources>

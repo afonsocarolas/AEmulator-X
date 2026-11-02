@@ -481,4 +481,20 @@
         <item>ה-Pixel הראשון, והטלפון הראשון עם Google Assistant מובנה.</item>
         <item>הגיע עם Android Pie והניווט החדש במחוות, וצילם תמונות מדהימות עם מצלמה אחורית אחת בלבד.</item>
     </string-array>
+    <!-- X40: Android boot history -->
+    <string name="x_bh_title">היסטוריית ההפעלה של Android</string>
+    <string name="x_bh_empty">ייבאו קושחה ומסך ההפעלה שלה יופיע כאן.</string>
+    <string name="x_bh_zip">הנפשת ההפעלה המקורית של הקושחה הזו</string>
+    <string name="x_bh_classic">הלוגו הקלאסי של Android, מצויר מהתמונות של הקושחה עצמה</string>
+    <string name="x_bh_vendor">פורמט משלו של היצרן: רק הטלפונים שלו יכולים להציג אותו</string>
+    <string name="x_bh_none">לא נמצא מסך הפעלה בקושחה הזו</string>
+    <string-array name="x_bh_era">
+        <item>Android 1.x–2.3 הציג את המילה ANDROID בכסף עם ברק שחולף עליה, אלא אם היצרן הוסיף הנפשה משלו.</item>
+        <item>Honeycomb נבנתה לטאבלטים, במראה כחול ועתידני בכל מקום, גם במסך ההפעלה.</item>
+        <item>Ice Cream Sandwich ו-Jelly Bean הביאו את סגנון Holo: אור כחול זוהר על רקע שחור.</item>
+        <item>עם KitKat מסך ההפעלה נעשה צבעוני יותר, בצבעים של Google.</item>
+        <item>מ-Lollipop ועד Nougat, צורות צבעוניות של Material Design נעו בזמן ש-Android עלה.</item>
+        <item>Oreo ו-Pie נשארו פשוטים, ויצרנים רבים הציגו את הלוגו שלהם.</item>
+        <item>מ-Android 10 מסך ההפעלה מציג את המילה android החדשה, ורוב היצרנים משתמשים בהנפשה משלהם.</item>
+    </string-array>
 </resources>

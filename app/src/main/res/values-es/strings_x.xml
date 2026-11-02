@@ -506,4 +506,20 @@
     <string name="x_br_record">¡Nuevo récord! %1$s (antes %2$s)</string>
     <string name="x_br_first">Tiempo de arranque: %1$s. ¡Supéralo la próxima vez!</string>
     <string name="x_br_slower">%1$s · récord %2$s</string>
+    <!-- X40: Android boot history -->
+    <string name="x_bh_title">Historia del arranque de Android</string>
+    <string name="x_bh_empty">Importa un firmware y su pantalla de arranque aparecerá aquí.</string>
+    <string name="x_bh_zip">La animación de arranque original de este firmware</string>
+    <string name="x_bh_classic">El logo clásico de Android, dibujado con las imágenes del propio firmware</string>
+    <string name="x_bh_vendor">Formato propio del fabricante: solo sus teléfonos pueden mostrarlo</string>
+    <string name="x_bh_none">No se encontró pantalla de arranque en este firmware</string>
+    <string-array name="x_bh_era">
+        <item>Android 1.x–2.3 mostraba la palabra ANDROID plateada con un brillo que la cruzaba, salvo que el fabricante pusiera su propia animación.</item>
+        <item>Honeycomb se hizo para tablets, con un aspecto azul y futurista en todo, incluido el arranque.</item>
+        <item>Ice Cream Sandwich y Jelly Bean trajeron el estilo Holo: luz azul brillante sobre negro.</item>
+        <item>Con KitKat, la pantalla de arranque se volvió más colorida, con los colores de Google.</item>
+        <item>De Lollipop a Nougat, formas coloridas de Material Design se movían mientras arrancaba Android.</item>
+        <item>Oreo y Pie fueron más sencillos, y muchos fabricantes mostraban su propio logo.</item>
+        <item>Desde Android 10, el arranque muestra la nueva palabra android, y la mayoría de fabricantes usa su propia animación.</item>
+    </string-array>
 </resources>

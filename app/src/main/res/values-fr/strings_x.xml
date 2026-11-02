@@ -481,4 +481,20 @@
         <item>Le tout premier Pixel, et le premier téléphone avec l’Assistant Google intégré.</item>
         <item>Livré avec Android Pie et sa nouvelle navigation par gestes, il faisait de superbes photos avec une seule caméra arrière.</item>
     </string-array>
+    <!-- X40: Android boot history -->
+    <string name="x_bh_title">Histoire du démarrage d’Android</string>
+    <string name="x_bh_empty">Importez un firmware et son écran de démarrage apparaîtra ici.</string>
+    <string name="x_bh_zip">L’animation de démarrage d’origine de ce firmware</string>
+    <string name="x_bh_classic">Le logo classique d’Android, dessiné à partir des images du firmware lui-même</string>
+    <string name="x_bh_vendor">Le format propre au fabricant : seuls ses téléphones peuvent l’afficher</string>
+    <string name="x_bh_none">Aucun écran de démarrage trouvé dans ce firmware</string>
+    <string-array name="x_bh_era">
+        <item>Android 1.x–2.3 affichait le mot ANDROID argenté traversé par un reflet, sauf si le fabricant ajoutait sa propre animation.</item>
+        <item>Honeycomb était fait pour les tablettes, avec un style bleu et futuriste partout, démarrage compris.</item>
+        <item>Ice Cream Sandwich et Jelly Bean ont apporté le style Holo : une lumière bleue brillante sur fond noir.</item>
+        <item>Avec KitKat, l’écran de démarrage est devenu plus coloré, aux couleurs de Google.</item>
+        <item>De Lollipop à Nougat, des formes colorées Material Design bougeaient pendant le démarrage.</item>
+        <item>Oreo et Pie sont restés simples, et beaucoup de fabricants affichaient leur propre logo.</item>
+        <item>Depuis Android 10, le démarrage affiche le nouveau mot android, et la plupart des fabricants utilisent leur propre animation.</item>
+    </string-array>
 </resources>

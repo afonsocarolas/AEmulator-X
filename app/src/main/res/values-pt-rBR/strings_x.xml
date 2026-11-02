@@ -506,4 +506,20 @@
     <string name="x_br_record">Novo recorde! %1$s (era %2$s)</string>
     <string name="x_br_first">Tempo de inicialização: %1$s. Bata da próxima vez!</string>
     <string name="x_br_slower">%1$s · recorde %2$s</string>
+    <!-- X40: Android boot history -->
+    <string name="x_bh_title">Histórico de inicialização do Android</string>
+    <string name="x_bh_empty">Importe um firmware e a tela de inicialização dele aparece aqui.</string>
+    <string name="x_bh_zip">A animação de inicialização original deste firmware</string>
+    <string name="x_bh_classic">O logo clássico do Android, desenhado com as imagens do próprio firmware</string>
+    <string name="x_bh_vendor">Formato próprio do fabricante: só os celulares dele conseguem mostrar</string>
+    <string name="x_bh_none">Nenhuma tela de inicialização encontrada neste firmware</string>
+    <string-array name="x_bh_era">
+        <item>O Android 1.x–2.3 mostrava a palavra ANDROID prateada com um brilho passando por ela, a não ser que o fabricante colocasse sua própria animação.</item>
+        <item>O Honeycomb foi feito para tablets, com um visual azul e futurista em tudo, inclusive na inicialização.</item>
+        <item>Ice Cream Sandwich e Jelly Bean trouxeram o estilo Holo: luz azul brilhante sobre o preto.</item>
+        <item>Com o KitKat, a tela de inicialização ficou mais colorida, nas cores do Google.</item>
+        <item>Do Lollipop ao Nougat, formas coloridas do Material Design se mexiam enquanto o Android iniciava.</item>
+        <item>Oreo e Pie eram mais simples, e muitos fabricantes mostravam o próprio logo.</item>
+        <item>A partir do Android 10, a inicialização mostra a nova palavra android, e a maioria dos fabricantes usa a própria animação.</item>
+    </string-array>
 </resources>

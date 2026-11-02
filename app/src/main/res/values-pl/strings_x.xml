@@ -481,4 +481,20 @@
         <item>Pierwszy Pixel i pierwszy telefon z wbudowanym Asystentem Google.</item>
         <item>Miał Androida Pie z nową nawigacją gestami i robił świetne zdjęcia tylko jednym tylnym aparatem.</item>
     </string-array>
+    <!-- X40: Android boot history -->
+    <string name="x_bh_title">Historia uruchamiania Androida</string>
+    <string name="x_bh_empty">Zaimportuj firmware, a jego ekran startowy pojawi się tutaj.</string>
+    <string name="x_bh_zip">Oryginalna animacja startowa tego firmware</string>
+    <string name="x_bh_classic">Klasyczne logo Androida, narysowane z obrazków samego firmware</string>
+    <string name="x_bh_vendor">Własny format producenta: pokażą go tylko jego telefony</string>
+    <string name="x_bh_none">Nie znaleziono ekranu startowego w tym firmware</string>
+    <string-array name="x_bh_era">
+        <item>Android 1.x–2.3 pokazywał srebrny napis ANDROID z przesuwającym się po nim błyskiem, chyba że producent dodał własną animację.</item>
+        <item>Honeycomb powstał dla tabletów, w niebieskim, futurystycznym stylu, także na ekranie startowym.</item>
+        <item>Ice Cream Sandwich i Jelly Bean przyniosły styl Holo: świecące niebieskie światło na czarnym tle.</item>
+        <item>Z KitKat ekran startowy stał się bardziej kolorowy, w kolorach Google.</item>
+        <item>Od Lollipop do Nougat podczas startu Androida poruszały się kolorowe kształty Material Design.</item>
+        <item>Oreo i Pie były prostsze, a wielu producentów pokazywało własne logo.</item>
+        <item>Od Androida 10 ekran startowy pokazuje nowy napis android, a większość producentów używa własnej animacji.</item>
+    </string-array>
 </resources>

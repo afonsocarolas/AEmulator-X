@@ -180,6 +180,10 @@
             android:theme="@style/Theme.AEmulator.Vm"
             android:parentActivityName=".ui.MainActivity" />
 
+        <!-- AEmulator X: Android boot history -->
+        <activity android:name=".ui.BootHistoryActivity" android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
         <!-- AEmulator X: Sleep mode -->
         <activity android:name=".ui.SleepActivity" android:exported="false"
             android:theme="@style/Theme.AEmulator.Vm"

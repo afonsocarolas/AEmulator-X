@@ -507,4 +507,20 @@
     <string name="x_br_record">New record! %1$s (was %2$s)</string>
     <string name="x_br_first">Boot time: %1$s. Beat it next time!</string>
     <string name="x_br_slower">%1$s · record %2$s</string>
+    <!-- X40: Android boot history -->
+    <string name="x_bh_title">Android boot history</string>
+    <string name="x_bh_empty">Import a firmware and its boot screen will show up here.</string>
+    <string name="x_bh_zip">The original boot animation from this firmware</string>
+    <string name="x_bh_classic">Android\'s classic logo, drawn from this firmware\'s own pictures</string>
+    <string name="x_bh_vendor">The maker\'s own boot screen format: only their phones can play it</string>
+    <string name="x_bh_none">No boot screen found in this firmware</string>
+    <string-array name="x_bh_era">
+        <item>Android 1.x–2.3 showed the silver ANDROID word with a light sliding across it, unless the phone maker added its own animation.</item>
+        <item>Honeycomb was made for tablets, with a blue, futuristic look everywhere, boot screen included.</item>
+        <item>Ice Cream Sandwich and Jelly Bean brought the Holo style: glowing blue light on black.</item>
+        <item>With KitKat, the boot screen became more colourful, in Google\'s colours.</item>
+        <item>From Lollipop to Nougat, colourful Material Design shapes moved while Android started.</item>
+        <item>Oreo and Pie kept it simple, and many phone makers showed their own logo instead.</item>
+        <item>From Android 10, the boot screen shows the new android word, and most makers use their own brand animation.</item>
+    </string-array>
 </resources>
